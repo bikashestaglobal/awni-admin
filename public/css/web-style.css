@@ -1,0 +1,819 @@
+/*
+    DEMO STYLE
+*/
+
+*{
+    padding: 0;
+    margin: 0;
+}
+.text-theme{
+    /* color: #32aeb1 !important; */
+    color: teal !important;
+}
+.bg-theme {
+    /* background-color: #32aeb1 !important; */
+    background-color: teal !important;
+}
+
+@media only screen and (max-width: 768px){
+    .col-xs-6{
+        width:50% !important;
+    }
+    .hide-in-mobile{
+        display: none;
+    }
+}
+p{
+    font-size: 15px !important;
+    padding: 0;
+    margin: 0;
+}
+
+
+
+
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+h1{
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif !important;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none !important;
+    transition: all 0.3s;
+}
+
+.navbar {
+    background: #fff;
+    border: none;
+    border-radius: 0;
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+/* ---------------------------------- 
+ Right Sidebar Style
+------------------------------------*/
+#right-sidebar {
+    width: 350px;
+    position: fixed;
+    top: 0;
+    right: -350px;
+    height: 100vh;
+    z-index: 999;
+    background: white;
+    color: teal;
+    transition: all 0.3s;
+    overflow-y: scroll;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+@media only screen and (max-width: 768px){
+    #right-sidebar {
+        width: 250px;
+        position: fixed;
+        top: 0;
+        right: -250px;
+        height: 100vh;
+        z-index: 999;
+        background: white;
+        color: teal;
+        transition: all 0.3s;
+        overflow-y: scroll;
+        box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    }
+}
+
+#right-sidebar.active {
+    right: 0;
+}
+#right-sidebar h6 {
+    font-size: 14px;
+}
+
+#right-sidebar #dismiss {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+#right-sidebar #dismiss:hover {
+    background: #fff;
+    color: #32aeb1;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+#left-sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    height: 100vh;
+    z-index: 999;
+    background: #fff;
+    color: teal;
+    transition: all 0.3s;
+    overflow-y: scroll;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+#left-sidebar.active {
+    left: 0;
+}
+
+#dismiss {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+#dismiss:hover {
+    background: #fff;
+    color: #32aeb1;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+.overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+#left-sidebar .sidebar-header .btn-profile{
+    background-color: teal;
+    color: #fff;
+    border-radius: 100%;
+    padding: 10px 15px;
+}
+#left-sidebar .sidebar-header p{
+    font-size: 15px;
+    color: teal;
+    margin: 5px;
+    font-weight: 700;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#left-sidebar .sidebar-header {
+    padding: 10px 20px;
+}
+
+#left-sidebar ul.components {
+    padding: 0px 0;
+}
+
+
+#left-sidebar ul li a {
+    padding: 10px 20px;
+    color: #9c9a9a;
+    border-bottom: 1px solid #f1f0f0;
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    font-family: Tahoma;
+}
+
+/* #sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+} */
+
+/* #sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    background: #32aeb1;
+} */
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+/* ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+} */
+
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: absolute;
+    background-color: #faf8f8;
+    /* background-color: #d6d3d3; */
+    top: 0;
+    right: 0;
+}
+
+/******************* 
+    Top Header Style 
+********************/
+.header{
+    background-color: teal;
+    padding: 0px 25px;
+    position: sticky !important;
+    top: 0;
+    z-index: 99 !important;
+}
+.header .logo{
+    min-height: 50px !important; 
+    max-height: 80px !important;
+    padding: 5px !important;
+}
+
+.header .searchBox{
+    position: relative;
+    margin: 16px auto;
+}
+
+.header .searchBox input[type="search"]{
+    padding: 6px 15px;
+    width: 80%;
+    height: 46px;
+    border: 0;
+    outline: 0;
+    border-radius: 4px 0px 0px 4px;
+    color: #5a5a5a;
+
+}
+.header .searchBox .btn{
+    background-color: #ebe6e6;
+    color: #32aeb1;
+    font-size: 19px;
+    padding: 9px 20px;
+    margin-top: -6px;
+    margin-left: -4px;
+    border: 0;
+    border-radius: 0px 4px 4px 0px;
+}
+.header .cartBtn{
+    font-size: 20px;
+    margin-top: 12px;
+}
+
+.header .userBtn{
+    font-size: 18px;
+    color: white;
+    margin-top: 12px;
+    border-radius: 0;
+    transition: 0s;
+}
+.header .userBtn:hover{
+    background-color: white;
+    color: teal;
+}
+.header .userBtn:hover .userBtnList{
+    display: inline;
+    background-color: white;
+    color: teal;
+}
+.header .userBtnList{
+    width: 250px;
+    position: absolute;
+    font-size: 15px; 
+    top: 56px; 
+    text-align: left;
+    display: none;
+    right: 12px;
+    padding: 10px 20px;
+    cursor: context-menu;
+}
+
+
+.header .loginSignupBtn{
+    font-size: 18px;
+    color: white;
+    margin-top: 12px;
+}
+.header #searchBtnForMobile{
+    display: none;
+}
+
+
+/* left sidebar colleps on desktop */
+#sidebarCollapse{
+    display: none;
+}
+
+.sidebarCollepsAdmin{
+    display: inline !important;
+}
+/* Top Header for mobile */
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+   #sidebarCollapse{
+       display: inline;
+       margin-top: 7px;
+   }
+   .header{
+        padding: 0px;
+        margin: 0;
+    }
+    .header .logo{
+        min-height: 45px !important; 
+        width: 140px !important;
+        max-height: 65px !important;
+        padding-top: 8px !important;
+    }
+   .header .searchBox{
+        display: none;
+    }
+    .header .userBtn{
+        display: none;
+    }
+    .header .loginSignupBtn{
+        display: none;
+    }
+    .header .cartBtn{
+        font-size: 17px;
+        margin-top: 7px;
+    }
+    .header #searchBtnForMobile{
+        display: inline;
+        margin-top: 7px;
+    }
+    .header .searchBoxForMobile{
+        display: block;
+        position: relative;
+        padding: 12px;
+    }
+    
+    .header .searchBoxForMobile input[type="search"]{
+        padding: 2px 50px 2px 15px;
+        width: 100%;
+        height: 35px;
+        font-size: 14px;
+        border: 0;
+        outline: 0;
+        border-radius: 1px;
+        color: #5a5a5a;
+    
+    }
+    .header .searchBoxForMobile .btn{
+        background-color: #ffffff;
+        color: #32aeb1;
+        height: 35px;
+        font-size: 15px;
+        position: absolute;
+        right: 13px;
+        border: 0;
+    }
+    .header .searchBoxForMobile .searchedItemForMobile{
+        background-color: rgb(255, 255, 255);
+        padding: 0 12px !important;
+        position: relative;
+        right: 150;
+        top: 2px;
+    }
+    .header .searchBoxForMobile .searchedItemForMobile{
+        background-color: rgb(255, 255, 255);
+        padding: 10px;
+        position: relative;
+        right: 150;
+        top: 2px;
+    }
+    .header .searchBoxForMobile .searchedItemForMobile .row h5{
+        font-size: 14px !important;
+        margin-top: 5px;
+    }
+    .header .searchBoxForMobile .searchedItemForMobile .row:hover{
+        background-color: rgb(221, 226, 226);
+        transition: 0.5s;
+    }
+}
+
+
+/* For Category Slider */
+.categorySlider{
+    background-color: rgb(255, 255, 255);
+}
+.slick-arrow{
+    background-color: teal !important;
+    border-radius: 100%;
+}
+
+/* Top Brands Card */
+.topBrands h1{
+    font-size: 35px;
+}
+/* Top Brand style for mobile */
+@media only screen and (max-width: 768px) {
+    .topBrands{
+        display: none;
+    }
+}
+.devider{
+    height: 5px;
+    width: 100px;
+    margin: auto;
+}
+
+/* Card Style */
+#p-card{
+    padding: 5px;
+}
+#p-card .card-body{
+    position: relative !important;
+}
+
+#p-card .card-body .discount{
+    position: absolute !important;
+    background-color: rgb(212, 28, 28);
+    height: 40px;
+    width: 40px;
+    top: 10px;
+    left: 10px;
+    border-radius: 20px;
+    font-size: 20px !important;
+    position: relative;
+    text-align: center;
+}
+#p-card .card-body .discount #percent, #value{
+    font-size: 10px;
+    color: white;
+    position: absolute;
+}
+#p-card .card-body .discount #percent{
+    top: 6px;
+    left: 11px;
+}
+#p-card .card-body .discount #value{
+    top: 17px;
+    left: 12px;
+}
+
+#p-card h4{
+    font-size: 17px;
+    padding: 2px;
+    color: teal;
+}
+#p-card p{
+    padding: 0;
+    margin: 0;
+}
+#p-card .price{
+    color: teal;
+    padding: 12px;
+    font-weight: 500;
+}
+#p-card .mrp{
+    color: rgb(125, 131, 131);
+    padding: 10px;
+    margin-left: 5px;
+    font-weight: 500;
+    text-decoration: line-through;
+}
+#p-card .cart-form button{
+    border: 0;
+    outline: 0;
+    padding: 1px 5px;
+    background-color: teal;
+    color: white;
+    border-radius: 0;
+}
+#p-card .cart-form input{
+    border: 0;
+    outline: 0;
+    padding: 1px 5px;
+    background-color: rgb(223, 224, 224);
+    color: #5a5a5a;
+    width: 40px;
+    text-align: center;
+    border-radius: 0;
+    margin-top: 8px;
+}
+#p-card .add-to-cart-btn{
+    border: 0;
+    outline: 0;
+    padding: 4px 5px;
+    background-color: teal;
+    color: white;
+    border-radius: 0;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+
+@media only screen and (min-width: 768px){
+    .productForMobile{
+        display: none !important;
+    }
+}
+@media only screen and (max-width: 768px){
+    
+    .productForDesktop{
+        display: none !important;
+    }
+
+    #p-card h4{
+        font-size: 17px;
+        color: teal;
+    }
+    #p-card p{
+        padding: 0;
+        margin: 0;
+    }
+    #p-card .img{
+        height: 250px;
+    }
+    #p-card .price{
+        color: teal;
+        padding: 12px;
+        font-weight: 500;
+    }
+    #p-card .description p, ul, li, a{
+        font-size: 13px;
+        font-weight: 400;
+        color: #5a5a5a;
+    }
+    #p-card .mrp{
+        color: rgb(125, 131, 131);
+        padding: 10px;
+        margin-left: 5px;
+        font-weight: 500;
+        text-decoration: line-through;
+    }
+    #p-card .cart-form button{
+        border: 0;
+        outline: 0;
+        padding: 1px 5px;
+        background-color: teal;
+        color: white;
+        border-radius: 0;
+    }
+    #p-card .cart-form input{
+        border: 0;
+        outline: 0;
+        padding: 1px 15px !important;
+        background-color: rgb(223, 224, 224);
+        color: #5a5a5a;
+        text-align: center;
+        width: 60px;
+        border-radius: 0;
+        margin-top: 8px;
+    }
+    #p-card .add-to-cart-btn{
+        border: 0;
+        outline: 0;
+        padding: 4px 5px;
+        background-color: teal;
+        color: white;
+        border-radius: 0;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+}
+
+/* Footer */
+#footer{
+    border-top: 1px solid #dbd9d9;
+}
+#footer h4{
+    color: #666565;
+    font-size: 18px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+#footer ul{
+    list-style-type: none;
+    padding: 0;
+}
+#footer ul li{
+    list-style-type: none;
+    padding: 5px 0;
+}
+#footer ul li a{
+    color:rgb(134, 134, 134);
+    font-size: 14px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-decoration: none !important;
+}
+
+/* featuredBrand */
+.featuredBrand .head, .body{
+    padding: 10px 20px 5px 20px;
+    /* px-5 pt-3 pb-2 */
+}
+@media only screen and (max-width: 768px){
+    .featuredBrand .head, .body{
+        padding: 5px 0px;
+        /* px-5 pt-3 pb-2 */
+    }
+}
+
+/* Login Page design */
+.login-form .btn{
+    border-radius: 30px;
+    background-color: rgb(1, 116, 116);
+    border: 0;
+    color: white;
+}
+.login-form .forgot-password{
+    color: tomato !important;
+    font-family: Tahoma;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+
+
+/*  */
+/* Dropdown Button */
+.dropdown{
+    padding: 0px;
+    display: block !important;
+}
+.dropbtn {
+    background-color: white;
+    color: #444343;
+    font-size: 16px;
+    width: 100% !important;
+    padding: 8px 15px;
+    text-align: left;
+    border-radius: 5px;
+    border: 1px solid #dddada;
+    cursor: pointer;
+  }
+  
+  /* Dropdown button on hover & focus */
+  .dropbtn:focus {
+    box-shadow: 0 0 0pt 2pt rgb(153, 226, 226);
+    outline: none;
+  }
+  
+  /* The search field */
+  #myInput, #myInput2 {
+    box-sizing: border-box;
+    background-image: url('searchicon.png');
+    background-position: 14px 12px;
+    background-repeat: no-repeat;
+    font-size: 16px;
+    padding: 8px 15px;
+    border: none;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* The search field when it gets focus/clicked on */
+  #myInput:focus {outline: 3px solid #ddd;}
+  
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f6f6f6;
+    min-width: 100%;
+    border: 1px solid #ddd;
+    z-index: 1;
+  }
+  
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {background-color: #f1f1f1}
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {display:block;}
+  .hide {display: none;}
+
+  /* Profile */
+  .profile .img{
+      height: 80px;
+      width: 80px;
+      border-radius: 40px;
+  }
+  .profile p{
+      font-size: 15px;
+      padding: 0;
+      margin: 0;
+  }
+  .profile h5{
+      font-size: 15px;
+  }
+  .tracker{
+    height: 20px;
+    width: 20px;
+    background: #c0bfbf;
+    position: absolute; 
+    top: 25px;
+    left: 0px; 
+    border-radius: 20px;
+  }
+  .tracker-right{
+    height: 20px;
+    width: 20px;
+    background: #c0bfbf;
+    position: absolute; 
+    top: 25px;
+    right: 0px; 
+    border-radius: 20px;
+  }
+  .tracker span{
+      font-size: 22px;
+      position: absolute;
+      top: -7px;
+      color: teal;
+      left: -1px;
+  }
+  .tracker-right span{
+      font-size: 22px;
+      position: absolute;
+      top: -7px;
+      color: teal;
+      left: -1px;
+  }
+
+
+  @media only screen and (min-width: 600px) {
+    iframe {
+      height: 500px !important;
+    }
+  }

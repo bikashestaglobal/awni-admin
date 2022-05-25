@@ -1,0 +1,195 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.top-navbar{
+  position: static !important;
+  top: 0 !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.navbar{
+  border-bottom: 0.1px solid white !important;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* CK Edior */
+.ck-editor__editable {
+  min-height: 200px;
+}
+
+/* Website */
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Aclonica&display=swap');
+.web-logo{
+  width: 180px;
+}
+.header-section{
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("https://images.unsplash.com/photo-1470219556762-1771e7f9427d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80");
+}
+.web-nav-item{
+  padding: 0px 10px;
+}
+.web-nav-link{
+  color: #fff !important;
+}
+
+.small-heading{
+  font-family: Tahoma;
+  font-size: 1.2em;
+  text-align: center;
+  font-weight: 500;
+  color: white;
+}
+.big-heading{
+  font-family: 'Anton', sans-serif;
+  font-size: 60px;
+  text-align: center;
+  color: white;
+}
+
+
+.medium-heading{
+  font-family: 'Aclonica', sans-serif;
+  font-size: 30px;
+  text-align: center;
+}
+.f-c-manual{
+  padding: 10px !important;
+  height: 45px !important;
+  border-radius: 2px !important;
+}
+.f-b-manual{
+  height: 45px !important;
+  border-radius: 2px !important;
+}
+
+.section-1{
+  background-color: #f8f8f8 !important;
+}
+.big-icon{
+  font-size: 45px;
+}
+.v-big-icon{
+  font-size: 65px;
+  padding: 0;
+}
+.icon-rounded{
+  border: 1px solid#fc4b6c !important;
+  border-radius: 100%;
+  padding: 8px;
+  transition: 0.5s;
+}
+.icon-rounded:hover{
+  border: 1px solid#fc4b6c !important;
+  background-color: #fc4b6c !important;
+  border-radius: 100%;
+  padding: 8px;
+  color: white !important;
+}
+.arrow-image{
+  width: 100px;
+  height: 42px;
+  position: absolute;
+  right: -13px;
+  top: 15px;
+}
+
+.arrow-text{
+  position: absolute;
+  right: 14px;
+  top: 19px;
+}
+
+.footer-section{
+  /* background-image: /; */
+  background:linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("/assets/images/background/weatherbg.jpg");
+  background-size:cover;
+}
+
+.section-2 .card:hover{
+  /* box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important; */
+}
+
+.home-cat-card:hover .fas{
+  
+}
+/* https://sharkcoder.com/visual/shapes */
+
+.business-logo{
+  height: 100px;
+  width: 100px;
+  border: 3px solid rgb(46, 1, 1);
+  border-radius: 100%;
+}
+.listing-logo{
+  height: 260px;
+}
+.small-card:hover{
+  cursor: pointer;
+}
+
+
+/* Profile Image */
+.edit-profile-btn{
+  position:absolute; 
+  top:40px; 
+  right: 120px;
+  cursor: pointer;
+}
+.user-profile-img{
+  height: 150px;
+  width: 150px;
+  border-radius: 100%;
+}
+.comment-profile-img{
+  height: 60px;
+  width: 60px;
+  border-radius: 100%;
+}
+.description p{
+  font-size: 17px;
+  word-spacing: 2px;
+  font-weight: 400;
+  color: #41454d;
+  text-align: justify;
+}
+
+.profile-pic{
+  border-radius: 100%;
+}
+.bg-muted{
+  background-color: #f5f5f5;
+}
