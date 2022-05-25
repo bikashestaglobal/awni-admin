@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import CKEditor from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 
@@ -33,9 +31,9 @@ const AddColor = () => {
             M.toast({ html: result.message, classes: "bg-success" });
             history.goBack();
           } else {
-            const errorKeys = Object.keys(result.error);
+            const errorKeys = Object.keys(result.errors);
             errorKeys.forEach((key) => {
-              M.toast({ html: result.error[key], classes: "bg-danger" });
+              M.toast({ html: result.errors[key], classes: "bg-danger" });
             });
             M.toast({ html: result.message, classes: "bg-danger" });
           }

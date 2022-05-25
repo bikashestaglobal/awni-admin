@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import M from "materialize-css";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import Config from "../../../../config/Config";
+import Config from "../../../config/Config";
 import date from "date-and-time";
 // import { storage } from "../../../firebase/FirebaseConfig";
 
