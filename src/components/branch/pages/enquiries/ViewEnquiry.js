@@ -110,6 +110,7 @@ const ViewCustomer = () => {
                           <h4>{enquiryData.name || ""}</h4>
                           <h5>{enquiryData.email || ""}</h5>
                           <h5>{enquiryData.mobile || ""}</h5>
+                          <h5>{enquiryData.city || ""}</h5>
                         </div>
                       </div>
                     </div>
@@ -122,6 +123,17 @@ const ViewCustomer = () => {
                     <div className={"card-body pb-0 pt-2"}>
                       <h4>MESSAGE</h4>
                       {enquiryData.message || ""}
+
+                      <h4>
+                        Product :{" "}
+                        <a
+                          target="_blank"
+                          href={`${Config.CLIENT_URL}/product/${enquiryData.product_slug}`}
+                          className="btn btn-info"
+                        >
+                          View
+                        </a>
+                      </h4>
                     </div>
                   </div>
                 </div>

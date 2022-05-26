@@ -7,6 +7,7 @@ const EditEnquiry = () => {
   const history = useHistory();
   const { id } = useParams();
   const [isUpdateLoaded, setIsUpdateLoaded] = useState(true);
+  const [enquiryLoading, setEnquiryLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
   });
@@ -52,6 +53,7 @@ const EditEnquiry = () => {
 
   // get Records
   useEffect(() => {
+    setEnquiryLoading(true);
     fetch(`${Config.SERVER_URL}/enquiries/${id}`, {
       method: "GET",
       headers: {
@@ -67,8 +69,10 @@ const EditEnquiry = () => {
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
           }
+          setEnquiryLoading(false);
         },
         (error) => {
+          setEnquiryLoading(false);
           M.toast({ html: error, classes: "bg-danger" });
         }
       );
@@ -104,94 +108,109 @@ const EditEnquiry = () => {
                 <div className="col-md-12">
                   <h3 className={"my-3 text-info"}>ENQUIRY Details</h3>
                 </div>
+                {enquiryLoading ? (
+                  <div className={"bg-white p-3 col-md-12 text-center"}>
+                    <span
+                      className="spinner-border spinner-border-sm mr-1"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Loading..
+                  </div>
+                ) : (
+                  <>
+                    {/* CUSTOMER NAME */}
+                    <div className={"form-group col-md-6"}>
+                      <label htmlFor="" className="text-dark h6 active">
+                        CUSTOMER NAME!
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(evt) =>
+                          setFormData({ ...formData, name: evt.target.value })
+                        }
+                        className="form-control"
+                        placeholder={"Rahul "}
+                      />
+                    </div>
 
-                {/* CUSTOMER NAME */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    CUSTOMER NAME!
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(evt) =>
-                      setFormData({ ...formData, name: evt.target.value })
-                    }
-                    className="form-control"
-                    placeholder={"Rahul "}
-                  />
-                </div>
+                    {/* CUSTOMER EMAIL */}
+                    <div className={"form-group col-md-6"}>
+                      <label htmlFor="" className="text-dark h6 active">
+                        CUSTOMER EMAIL!
+                      </label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(evt) =>
+                          setFormData({ ...formData, email: evt.target.value })
+                        }
+                        className="form-control"
+                        placeholder={"rahul@gmail.com "}
+                      />
+                    </div>
 
-                {/* CUSTOMER EMAIL */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    CUSTOMER EMAIL!
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(evt) =>
-                      setFormData({ ...formData, email: evt.target.value })
-                    }
-                    className="form-control"
-                    placeholder={"rahul@gmail.com "}
-                  />
-                </div>
+                    {/* CUSTOMER QUERY */}
+                    <div className={"form-group col-md-6"}>
+                      <label htmlFor="" className="text-dark h6 active">
+                        CUSTOMER QUERY!
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.message}
+                        onChange={(evt) =>
+                          setFormData({
+                            ...formData,
+                            message: evt.target.value,
+                          })
+                        }
+                        className="form-control"
+                        placeholder={"rahul@gmail.com "}
+                      />
+                    </div>
 
-                {/* CUSTOMER QUERY */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    CUSTOMER QUERY!
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.message}
-                    onChange={(evt) =>
-                      setFormData({ ...formData, message: evt.target.value })
-                    }
-                    className="form-control"
-                    placeholder={"rahul@gmail.com "}
-                  />
-                </div>
+                    {/* ENQUIRY STATUS */}
+                    <div className={"form-group col-md-6"}>
+                      <label htmlFor="" className="text-dark h6 active">
+                        ENQUIRY STATUS!
+                      </label>
+                      <select
+                        value={formData.status}
+                        onChange={(evt) =>
+                          setFormData({ ...formData, status: evt.target.value })
+                        }
+                        className="form-control"
+                      >
+                        <option value="PENDING">PENDING</option>
+                        <option value="REPLIED">REPLIED</option>
+                        <option value="COMPLETED">COMPLETED</option>
+                      </select>
+                    </div>
 
-                {/* ENQUIRY STATUS */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    ENQUIRY STATUS!
-                  </label>
-                  <select
-                    value={formData.status}
-                    onChange={(evt) =>
-                      setFormData({ ...formData, status: evt.target.value })
-                    }
-                    className="form-control"
-                  >
-                    <option value="PENDING">PENDING</option>
-                    <option value="REPLIED">REPLIED</option>
-                    <option value="COMPLETED">COMPLETED</option>
-                  </select>
-                </div>
-
-                <div className={"form-group col-md-12"}>
-                  <button
-                    className="btn btn-info rounded px-3 py-2"
-                    type={"submit"}
-                  >
-                    {isUpdateLoaded ? (
-                      <div>
-                        <i className="fas fa-plus"></i> Update
-                      </div>
-                    ) : (
-                      <div>
-                        <span
-                          className="spinner-border spinner-border-sm mr-1"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Loading..
-                      </div>
-                    )}
-                  </button>
-                </div>
+                    <div className={"form-group col-md-12"}>
+                      <button
+                        className="btn btn-info rounded px-3 py-2"
+                        type={"submit"}
+                      >
+                        {isUpdateLoaded ? (
+                          <div>
+                            <i className="fas fa-plus"></i> Update
+                          </div>
+                        ) : (
+                          <div>
+                            <span
+                              className="spinner-border spinner-border-sm mr-1"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            Loading..
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </form>
           </div>

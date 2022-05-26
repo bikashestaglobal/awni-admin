@@ -129,6 +129,7 @@ function AddProduct() {
             M.toast({ html: result.message, classes: "bg-success" });
             imageSubmitHandler(result.body.id);
             colorSubmitHandler(result.body.id);
+            history.goBack();
           } else {
             const errorKeys = Object.keys(result.errors);
             errorKeys.forEach((key) => {
@@ -165,7 +166,6 @@ function AddProduct() {
           console.log(result);
           if (result.status === 200) {
             M.toast({ html: result.message, classes: "bg-success" });
-            history.goBack();
           } else {
             const errorKeys = Object.keys(result.errors);
             errorKeys.forEach((key) => {
@@ -205,7 +205,6 @@ function AddProduct() {
           console.log(result);
           if (result.status === 200) {
             M.toast({ html: result.message, classes: "bg-success" });
-            history.goBack();
           } else {
             const errorKeys = Object.keys(result.errors);
             errorKeys.forEach((key) => {

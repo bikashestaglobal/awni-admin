@@ -9,9 +9,13 @@ const EditHomepageBanner = () => {
   const { id } = useParams();
   const [isUpdateLoaded, setIsUpdateLoaded] = useState(true);
   const [imageUploading, setImageUploading] = useState(false);
+  const [bannerDataLoading, setBannerDataLoading] = useState(false);
   const [formData, setFormData] = useState({
     position: "",
     image: "",
+    title: "",
+    place: "",
+    webpage_url: "",
   });
   const [progress, setProgress] = useState("");
 
@@ -96,8 +100,11 @@ const EditHomepageBanner = () => {
     evt.preventDefault();
     setIsUpdateLoaded(false);
     const updateData = {
-      position: formData.position,
-      image: formData.image,
+      position: formData.position || undefined,
+      image: formData.image || undefined,
+      webpage_url: formData.webpage_url || undefined,
+      title: formData.title || undefined,
+      place: formData.place || undefined,
     };
     fetch(`${Config.SERVER_URL}/homepageBanners/${id}`, {
       method: "PUT",
@@ -130,6 +137,7 @@ const EditHomepageBanner = () => {
 
   // get Records
   useEffect(() => {
+    setBannerDataLoading(true);
     fetch(`${Config.SERVER_URL}/homepageBanners/${id}`, {
       method: "GET",
       headers: {
@@ -140,6 +148,7 @@ const EditHomepageBanner = () => {
       .then((res) => res.json())
       .then(
         (result) => {
+          setBannerDataLoading(false);
           if (result.status === 200) {
             setFormData(result.body);
           } else {
@@ -147,6 +156,7 @@ const EditHomepageBanner = () => {
           }
         },
         (error) => {
+          setBannerDataLoading(false);
           M.toast({ html: error, classes: "bg-danger" });
         }
       );
@@ -173,162 +183,175 @@ const EditHomepageBanner = () => {
         {/* Edit Banner Form */}
         <div className="row">
           <div className={"col-md-11 mx-auto"}>
-            <form
-              onSubmit={updateSubmitHandler}
-              className="form-horizontal form-material"
-            >
-              {/* Banner Details */}
-              <div className={"row shadow-sm bg-white py-3"}>
-                <div className="col-md-12">
-                  <h3 className={"my-3 text-info"}>Banner Details</h3>
-                </div>
+            {!bannerDataLoading ? (
+              <form
+                onSubmit={updateSubmitHandler}
+                className="form-horizontal form-material"
+              >
+                {/* Banner Details */}
+                <div className={"row shadow-sm bg-white py-3"}>
+                  <div className="col-md-12">
+                    <h3 className={"my-3 text-info"}>Banner Details</h3>
+                  </div>
 
-                {/* BANNER PLACE  */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    SELECT BANNER PLACE !
-                  </label>
-                  <select
-                    name=""
-                    id=""
-                    className="form-control"
-                    value={formData.place}
-                    onChange={(evt) =>
-                      setFormData({ ...formData, place: evt.target.value })
-                    }
-                  >
-                    <option value="BETWEEN_PRODUCT">BETWEEN_PRODUCT</option>
-                    <option value="AFTER_SLIDER">AFTER_SLIDER</option>
-                  </select>
-                </div>
-
-                {/* BANNER TITLE  */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    BANNER TITLE !
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(evt) =>
-                      setFormData({ ...formData, title: evt.target.value })
-                    }
-                    className="form-control"
-                    placeholder={"Counter Basin"}
-                  />
-                </div>
-
-                {/* WEBPAGE URL  */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    WEBPAGE URL !
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.webpage_url}
-                    onChange={(evt) =>
-                      setFormData({
-                        ...formData,
-                        webpage_url: evt.target.value,
-                      })
-                    }
-                    className="form-control"
-                    placeholder={"/about"}
-                  />
-                </div>
-
-                {/* BANNER POSITION */}
-                <div className={"form-group col-md-6"}>
-                  <label htmlFor="" className="text-dark h6 active">
-                    BANNER POSITION !
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.position}
-                    onChange={(evt) =>
-                      setFormData({ ...formData, position: evt.target.value })
-                    }
-                    name={"discount"}
-                    className="form-control"
-                    placeholder={"1"}
-                  />
-                </div>
-                {/* Images */}
-                {formData.image == "null" ? (
-                  <div className={"form-group mb-12 col-md-6"}>
-                    <label className={"text-dark h6 mb-2"}>IMAGE !</label>
-                    <input
-                      type="file"
+                  {/* BANNER PLACE  */}
+                  <div className={"form-group col-md-6"}>
+                    <label htmlFor="" className="text-dark h6 active">
+                      SELECT BANNER PLACE !
+                    </label>
+                    <select
                       name=""
-                      id={"imageIputBox"}
+                      id=""
                       className="form-control"
-                      onChange={(e) => imgChangeHandler(e)}
+                      value={formData.place}
+                      onChange={(evt) =>
+                        setFormData({ ...formData, place: evt.target.value })
+                      }
+                    >
+                      <option value="BETWEEN_PRODUCT">BETWEEN_PRODUCT</option>
+                      <option value="AFTER_SLIDER">AFTER_SLIDER</option>
+                    </select>
+                  </div>
+
+                  {/* BANNER TITLE  */}
+                  <div className={"form-group col-md-6"}>
+                    <label htmlFor="" className="text-dark h6 active">
+                      BANNER TITLE !
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(evt) =>
+                        setFormData({ ...formData, title: evt.target.value })
+                      }
+                      className="form-control"
+                      placeholder={"Counter Basin"}
                     />
                   </div>
-                ) : (
-                  <div className={"form-group mb-12 col-md-6"}>
-                    <label className={"text-dark h6 mb-2"}>IMAGE</label>
+
+                  {/* WEBPAGE URL  */}
+                  <div className={"form-group col-md-6"}>
+                    <label htmlFor="" className="text-dark h6 active">
+                      WEBPAGE URL !
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.webpage_url}
+                      onChange={(evt) =>
+                        setFormData({
+                          ...formData,
+                          webpage_url: evt.target.value,
+                        })
+                      }
+                      className="form-control"
+                      placeholder={"/about"}
+                    />
                   </div>
-                )}
-                <div className={"form-group mb-12 col-md-6"}>
-                  {imageUploading ? (
-                    <div className="bg-white p-3 text-center ">
-                      <span
-                        class="spinner-border spinner-border-sm mr-1"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Image Uploading ({progress}%)
+
+                  {/* BANNER POSITION */}
+                  <div className={"form-group col-md-6"}>
+                    <label htmlFor="" className="text-dark h6 active">
+                      BANNER POSITION !
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.position}
+                      onChange={(evt) =>
+                        setFormData({ ...formData, position: evt.target.value })
+                      }
+                      name={"discount"}
+                      className="form-control"
+                      placeholder={"1"}
+                    />
+                  </div>
+                  {/* Images */}
+                  {formData.image == "null" ? (
+                    <div className={"form-group mb-12 col-md-6"}>
+                      <label className={"text-dark h6 mb-2"}>IMAGE !</label>
+                      <input
+                        type="file"
+                        name=""
+                        id={"imageIputBox"}
+                        className="form-control"
+                        onChange={(e) => imgChangeHandler(e)}
+                      />
                     </div>
                   ) : (
-                    <div className="img-frame">
-                      {formData.image != "null" ? (
-                        <div className="">
-                          <img
-                            style={{
-                              height: "80px",
-                              width: "80px",
-                              borderRadius: "40px",
-                            }}
-                            src={formData.image}
-                          />
-                          <button
-                            type="button"
-                            className="btn bg-danger"
-                            onClick={(evt) => imgDeleteHandler(formData.image)}
-                          >
-                            X
-                          </button>
-                        </div>
-                      ) : (
-                        ""
-                      )}
+                    <div className={"form-group mb-12 col-md-6"}>
+                      <label className={"text-dark h6 mb-2"}>IMAGE</label>
                     </div>
                   )}
-                </div>
-                <div className={"form-group col-md-12"}>
-                  <button
-                    className="btn btn-info rounded px-3 py-2"
-                    type={"submit"}
-                  >
-                    {isUpdateLoaded ? (
-                      <div>
-                        <i className="fas fa-plus"></i> Update
-                      </div>
-                    ) : (
-                      <div>
+                  <div className={"form-group mb-12 col-md-6"}>
+                    {imageUploading ? (
+                      <div className="bg-white p-3 text-center ">
                         <span
-                          className="spinner-border spinner-border-sm mr-1"
+                          class="spinner-border spinner-border-sm mr-1"
                           role="status"
                           aria-hidden="true"
                         ></span>
-                        Loading..
+                        Image Uploading ({progress}%)
+                      </div>
+                    ) : (
+                      <div className="img-frame">
+                        {formData.image != "null" ? (
+                          <div className="">
+                            <img
+                              style={{
+                                height: "80px",
+                                width: "80px",
+                                borderRadius: "40px",
+                              }}
+                              src={formData.image}
+                            />
+                            <button
+                              type="button"
+                              className="btn bg-danger"
+                              onClick={(evt) =>
+                                imgDeleteHandler(formData.image)
+                              }
+                            >
+                              X
+                            </button>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     )}
-                  </button>
+                  </div>
+                  <div className={"form-group col-md-12"}>
+                    <button
+                      className="btn btn-info rounded px-3 py-2"
+                      type={"submit"}
+                    >
+                      {isUpdateLoaded ? (
+                        <div>
+                          <i className="fas fa-plus"></i> Update
+                        </div>
+                      ) : (
+                        <div>
+                          <span
+                            className="spinner-border spinner-border-sm mr-1"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Loading..
+                        </div>
+                      )}
+                    </button>
+                  </div>
                 </div>
+              </form>
+            ) : (
+              <div className={"bg-white p-3 text-center"}>
+                <span
+                  className="spinner-border spinner-border-sm mr-1"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Loading..
               </div>
-            </form>
+            )}
           </div>
         </div>
       </div>

@@ -231,7 +231,7 @@ const AddSubCategory = () => {
                 </div>
 
                 {/* Images */}
-                <div className={"form-group mb-12 col-md-6"}>
+                {/* <div className={"form-group mb-12 col-md-6"}>
                   <label className={"text-dark h6 mb-2"}>
                     CATEGORY IMAGE !
                   </label>
@@ -242,9 +242,9 @@ const AddSubCategory = () => {
                     className="form-control"
                     onChange={(e) => fileChangeHandler(e, "image")}
                   />
-                </div>
+                </div> */}
 
-                <div className={"form-group mb-12 col-md-6"}>
+                {/* <div className={"form-group mb-12 col-md-6"}>
                   {imageUploading ? (
                     <div className="bg-white p-3 text-center ">
                       <span
@@ -281,7 +281,7 @@ const AddSubCategory = () => {
                       )}
                     </div>
                   )}
-                </div>
+                </div> */}
 
                 {/* Catalogue */}
                 <div className={"form-group mb-12 col-md-6"}>

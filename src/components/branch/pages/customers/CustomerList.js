@@ -3,8 +3,8 @@ import M from "materialize-css";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import Config from "../../../config/Config";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 const date = require("date-and-time");
-// import { storage } from "../../../firebase/FirebaseConfig";
 
 //  Component Function
 const CustomerList = (props) => {
@@ -187,14 +187,14 @@ const CustomerList = (props) => {
                   <h4 className="float-left mt-2 mr-2">Search: </h4>
 
                   {/* <!-- Button trigger modal --> */}
-                  <Link
+                  {/* <Link
                     className="btn btn-info float-right rounded"
                     to={{
                       pathname: "/branch/shape/add",
                     }}
                   >
                     <span className={"fas fa-plus"}></span> Shape
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>
@@ -206,6 +206,7 @@ const CustomerList = (props) => {
                   <div className="card-body py-0">
                     <div className="table-responsive">
                       <table
+                        id="table-to-xls"
                         className={"table table-bordered table-striped my-0"}
                       >
                         <thead>
@@ -302,17 +303,29 @@ const CustomerList = (props) => {
                       </table>
                       {/* Pagination */}
                       <div className="mt-2 d-flex justify-content-between">
-                        <div className="limit form-group shadow-sm px-3 border">
-                          <select
-                            name=""
-                            id=""
-                            className="form-control"
-                            onChange={limitHandler}
-                          >
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                          </select>
+                        <div className="d-flex justify-content-between">
+                          <div className="limit form-group shadow-sm px-3 border">
+                            <select
+                              name=""
+                              id=""
+                              className="form-control"
+                              onChange={limitHandler}
+                            >
+                              <option value="10">10</option>
+                              <option value="20">20</option>
+                              <option value="30">30</option>
+                            </select>
+                          </div>
+                          <div className="pl-1">
+                            <ReactHTMLTableToExcel
+                              id="test-table-xls-button"
+                              className="btn btn-info"
+                              table="table-to-xls"
+                              filename="users"
+                              sheet="user"
+                              buttonText="Export to Excel"
+                            />
+                          </div>
                         </div>
                         <nav aria-label="Page navigation example">
                           <ul className="pagination">

@@ -279,9 +279,9 @@ const EditSubCategory = () => {
                   </div>
 
                   {/* Category Image */}
-                  <div className="col-md-12">
+                  {/* <div className="col-md-12">
                     <div className="row">
-                      {/* Images */}
+                      
                       {formData.image == "null" ? (
                         <div className={"form-group mb-12 col-md-6"}>
                           <label className={"text-dark h6 mb-2"}>
@@ -341,7 +341,7 @@ const EditSubCategory = () => {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Category Catalogue */}
                   <div className="col-md-12">
@@ -416,18 +416,16 @@ const EditSubCategory = () => {
                     <label htmlFor="" className="text-dark h6 active">
                       PARENT CATEGORY !
                     </label>
-                    <div className="border p-2" style={{ height: "150px" }}>
-                      <Select
-                        options={parentCategories}
-                        defaultValue={{
-                          label: formData.par_cat_name,
-                          value: formData.par_cat_id,
-                        }}
-                        onChange={(evt) => {
-                          setFormData({ ...formData, par_cat_id: evt.value });
-                        }}
-                      />
-                    </div>
+                    <Select
+                      options={parentCategories}
+                      defaultValue={{
+                        label: formData.par_cat_name,
+                        value: formData.par_cat_id,
+                      }}
+                      onChange={(evt) => {
+                        setFormData({ ...formData, par_cat_id: evt.value });
+                      }}
+                    />
                   </div>
 
                   {/* Update Button */}

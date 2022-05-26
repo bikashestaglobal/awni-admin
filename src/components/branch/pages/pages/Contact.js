@@ -227,7 +227,11 @@ const Contact = () => {
                   />
                 </div>
 
+                {/*Address  */}
                 <div className={"form-group col-md-12"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    ENTER OFFICE ADDRESS !
+                  </label>
                   <CKEditor
                     editor={ClassicEditor}
                     style={{ height: "100px" }}

@@ -31,8 +31,8 @@ const ViewCustomer = () => {
           setIsCustomerLoaded(true);
           if (result.status === 200) {
             setProfileData(result.body);
-            if (result.body.email) {
-              getEnquiry(result.body.email);
+            if (result.body.mobile) {
+              getEnquiry(result.body.mobile);
             }
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
@@ -74,8 +74,8 @@ const ViewCustomer = () => {
   }, []);
 
   // get Enquiry
-  const getEnquiry = (email) => {
-    fetch(`${Config.SERVER_URL}/enquiries?email=${email}&limit=30`, {
+  const getEnquiry = (mobile) => {
+    fetch(`${Config.SERVER_URL}/enquiries?mobile=${mobile}&limit=30`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const ViewCustomer = () => {
         (result) => {
           if (result.status === 200) {
             setEnquiries(result.body);
-            console.log("Enquiry", result.body);
+            // console.log("Enquiry", result.body);
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
           }
@@ -136,7 +136,9 @@ const ViewCustomer = () => {
                           />
                         </div>
                         <div className="info py-3 px-4">
-                          <h4>{profileData.name || ""}</h4>
+                          <h4 style={{ fontWeight: "500" }}>
+                            {profileData.name || ""}
+                          </h4>
                           <h5>{profileData.email || ""}</h5>
                           <h5>{profileData.mobile || ""}</h5>
                         </div>
@@ -149,7 +151,9 @@ const ViewCustomer = () => {
                 <div className="col-md-5">
                   <div className={"card mb-0 mt-2 border-0 rounded"}>
                     <div className={"card-body pb-0 pt-2"}>
-                      <h4>PERSONAL INFORMATION</h4>
+                      <h4 style={{ fontWeight: "600" }}>
+                        PERSONAL INFORMATION
+                      </h4>
                       <div className="table-responsive">
                         <table className="table">
                           <tr>
@@ -157,33 +161,18 @@ const ViewCustomer = () => {
                             <td>{profileData.id || ""}</td>
                           </tr>
                           <tr>
-                            <th>Billing Name</th>
-                            <td>{profileData.billing_name || ""}</td>
+                            <th>Address</th>
+                            <td>
+                              {profileData.address_1 || ""}{" "}
+                              {profileData.address_2 || ""}
+                            </td>
                           </tr>
-                          <tr>
-                            <th>Billing Email</th>
-                            <td>{profileData.billing_email || ""}</td>
-                          </tr>
-                          <tr>
-                            <th>Billing Mobile</th>
-                            <td>{profileData.billing_mobile || ""}</td>
-                          </tr>
-                          <tr>
-                            <th>Address-1</th>
-                            <td>{profileData.address_1 || ""}</td>
-                          </tr>
-                          <tr>
-                            <th>Address-2</th>
-                            <td>{profileData.address_2 || ""}</td>
-                          </tr>
+
                           <tr>
                             <th>Country</th>
                             <td>{profileData.country || ""}</td>
                           </tr>
-                          <tr>
-                            <th>State</th>
-                            <td>{profileData.state || ""}</td>
-                          </tr>
+
                           <tr>
                             <th>City</th>
                             <td>{profileData.city || ""}</td>
@@ -230,33 +219,39 @@ const ViewCustomer = () => {
                 <div className="col-md-7">
                   <div className={"card mb-0 mt-2 border-0 rounded"}>
                     <div className={"card-body pb-0 pt-2"}>
-                      <h4>ENQUIRY DETAILS</h4>
+                      <h4 style={{ fontWeight: "600" }}>ENQUIRY DETAILS</h4>
                       <div className="table-responsive">
                         <table className="table">
                           <tr>
                             <th>#ID</th>
+                            <th>CITY</th>
                             <th>MESSAGE</th>
                             <th>DATE</th>
                             <th>STATUS</th>
                             <th>ACTION</th>
                           </tr>
                           {enquiries.length ? (
-                            enquiries.map((enqyiry, index) => {
+                            enquiries.map((enquiry, index) => {
                               return (
                                 <tr key={index}>
-                                  <th>{enqyiry.id}</th>
-                                  <th>{enqyiry.message}</th>
+                                  <th>{++index}</th>
+                                  <th>{enquiry.city}</th>
+                                  <th>
+                                    {enquiry.message.length > 20
+                                      ? enquiry.message.slice(0, 20) + ".."
+                                      : enquiry.message}
+                                  </th>
                                   <th>
                                     {format(
-                                      new Date(enqyiry.created_at),
+                                      new Date(enquiry.created_at),
                                       "DD-MM-YYYY"
                                     )}
                                   </th>
-                                  <th>{enqyiry.status}</th>
+                                  <th>{enquiry.status}</th>
                                   <td>
                                     <Link
                                       className="btn btn-info"
-                                      to={`/awni-admin/enquiry/view/${enqyiry.id}`}
+                                      to={`/awni-admin/enquiry/view/${enquiry.id}`}
                                     >
                                       <i className="fa fa-eye"></i>
                                     </Link>
@@ -277,7 +272,7 @@ const ViewCustomer = () => {
                 <div className="col-md-12">
                   <div className={"card mb-0 mt-2 border-0 rounded"}>
                     <div className={"card-body pb-0 pt-2"}>
-                      <h4>WISHLIST DETAILS</h4>
+                      <h4 style={{ fontWeight: "600" }}>WISHLIST DETAILS</h4>
                       <div className="table-responsive">
                         <table className="table">
                           <tr>
