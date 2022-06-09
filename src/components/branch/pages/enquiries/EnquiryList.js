@@ -24,6 +24,9 @@ function EnquiryList(props) {
   const [allRecords, setAllRecords] = useState([]);
   const [isDeleted, setIsDeleted] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+  const [queryText, setQueryText] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   // Delete Submit Handler
   const deleteSubmitHandler = () => {
@@ -110,7 +113,11 @@ function EnquiryList(props) {
   useEffect(() => {
     setIsAllRecordLoaded(false);
     fetch(
-      `${Config.SERVER_URL}/enquiries?skip=${pagination.skip}&limit=${pagination.limit}&status=${statusFilter}`,
+      `${Config.SERVER_URL}/enquiries?skip=${pagination.skip}&limit=${
+        pagination.limit
+      }&status=${statusFilter}&query=${queryText || "null"}&start_date=${
+        startDate || "null"
+      }&end_date=${endDate || "null"}`,
       {
         method: "GET",
         headers: {
@@ -134,12 +141,16 @@ function EnquiryList(props) {
           setIsAllRecordLoaded(true);
         }
       );
-  }, [pagination, isDeleted, statusFilter]);
+  }, [pagination, isDeleted, statusFilter, queryText, startDate, endDate]);
 
   // Count Records
   useEffect(() => {
     fetch(
-      `${Config.SERVER_URL}/enquiries?skip=0&limit=50000&status=${statusFilter}`,
+      `${
+        Config.SERVER_URL
+      }/enquiries?skip=0&limit=50000&status=${statusFilter}&query=${
+        queryText || "null"
+      }&start_date=${startDate || "null"}&end_date=${endDate || "null"}`,
       {
         method: "GET",
         headers: {
@@ -162,7 +173,7 @@ function EnquiryList(props) {
           setIsAllRecordLoaded(true);
         }
       );
-  }, [isDeleted, statusFilter]);
+  }, [isDeleted, statusFilter, queryText, startDate, endDate]);
 
   // Return function
   return (
@@ -190,7 +201,18 @@ function EnquiryList(props) {
             <div className={"card mb-0 mt-2 border-0 rounded"}>
               <div className={"card-body pb-0 pt-2"}>
                 <div>
-                  <h4 className="float-left mt-2 mr-2">Search: </h4>
+                  <div className="d-flex float-left">
+                    <h4 className="mt-2 mr-2">Search: </h4>
+                    <input
+                      type="search"
+                      onChange={(evt) => {
+                        setIsAllRecordLoaded(false);
+                        setQueryText(evt.target.value);
+                      }}
+                      className="form-control search-input"
+                      placeholder="Name/Email/Mobile/City/Message"
+                    />
+                  </div>
 
                   {/* <!-- Button trigger modal --> */}
                   <div className="float-right d-flex">
@@ -205,6 +227,22 @@ function EnquiryList(props) {
                         <option value="REPLIED">REPLIED</option>
                         <option value="COMPLETED">COMPLETED</option>
                       </select>
+                    </div>
+                    <div className="">
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(evt) => setStartDate(evt.target.value)}
+                        className="p-1 mr-2"
+                      />
+                    </div>
+                    <div className="">
+                      <input
+                        type="date"
+                        className="p-1 mr-2"
+                        value={endDate}
+                        onChange={(evt) => setEndDate(evt.target.value)}
+                      />
                     </div>
                     <Link
                       className="btn btn-info rounded"

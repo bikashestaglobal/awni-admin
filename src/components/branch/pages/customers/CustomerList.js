@@ -19,9 +19,16 @@ const CustomerList = (props) => {
   const [isDeleteLaoded, setIsDeleteLaoded] = useState(true);
   const [isAllCustomersLoaded, setIsAllCustomersLoaded] = useState(false);
   const [allCustomers, setAllCustomers] = useState([]);
-
+  const [queryText, setQueryText] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+
+  // Filter Object
+  const [verification, setVerification] = useState("null");
+  const [status, setStatus] = useState("null");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [filterButon, setFilterButton] = useState("false");
 
   // Delete Submit Handler
   const deleteSubmitHandler = () => {
@@ -106,8 +113,15 @@ const CustomerList = (props) => {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllCustomersLoaded(false);
     fetch(
-      `${Config.SERVER_URL}/customers?skip=${pagination.skip}&limit=${pagination.limit}`,
+      `${Config.SERVER_URL}/customers?skip=${pagination.skip}&limit=${
+        pagination.limit
+      }&query=${queryText || "null"}&is_verified=${
+        verification || "null"
+      }&status=${status || "null"}&start_date=${startDate || "null"}&end_date=${
+        endDate || "null"
+      }`,
       {
         method: "GET",
         headers: {
@@ -131,17 +145,24 @@ const CustomerList = (props) => {
           setIsAllCustomersLoaded(true);
         }
       );
-  }, [pagination, isDeleted]);
+  }, [pagination, isDeleted, queryText, filterButon]);
 
   // Count Records
   useEffect(() => {
-    fetch(`${Config.SERVER_URL}/customers?skip=0&limit=5000`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
+    fetch(
+      `${Config.SERVER_URL}/customers?skip=0&limit=50000&query=${
+        queryText || "null"
+      }&is_verified=${verification || "null"}&status=${
+        status || "null"
+      }&start_date=${startDate || "null"}&end_date=${endDate || "null"}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then(
         (result) => {
@@ -184,7 +205,18 @@ const CustomerList = (props) => {
             <div className={"card mb-0 mt-2 border-0 rounded"}>
               <div className={"card-body pb-0 pt-2"}>
                 <div>
-                  <h4 className="float-left mt-2 mr-2">Search: </h4>
+                  <div className="d-flex float-left">
+                    <h4 className="mt-2 mr-2">Search: </h4>
+                    <input
+                      type="search"
+                      onChange={(evt) => {
+                        setIsAllCustomersLoaded(false);
+                        setQueryText(evt.target.value);
+                      }}
+                      className="form-control search-input"
+                      placeholder="Name/Email/Mobile"
+                    />
+                  </div>
 
                   {/* <!-- Button trigger modal --> */}
                   {/* <Link
@@ -195,6 +227,56 @@ const CustomerList = (props) => {
                   >
                     <span className={"fas fa-plus"}></span> Shape
                   </Link> */}
+                  <div className="float-right d-flex">
+                    <div className="">
+                      <select
+                        className="p-2 mr-2"
+                        value={verification}
+                        onChange={(evt) => setVerification(evt.target.value)}
+                      >
+                        <option value="null">VERIFICATION</option>
+                        <option value="true">VERIFIED</option>
+                        <option value="false">UNVERIFIED</option>
+                      </select>
+                    </div>
+                    <div className="">
+                      <select
+                        className="p-2 mr-2"
+                        value={status}
+                        onChange={(evt) => setStatus(evt.target.value)}
+                      >
+                        <option value="null">STATUS</option>
+                        <option value="true">ACTIVE</option>
+                        <option value="false">BLOCKED</option>
+                      </select>
+                    </div>
+                    <div className="">
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(evt) => setStartDate(evt.target.value)}
+                        className="p-1 mr-2"
+                      />
+                    </div>
+                    <div className="">
+                      <input
+                        type="date"
+                        className="p-1 mr-2"
+                        value={endDate}
+                        onChange={(evt) => setEndDate(evt.target.value)}
+                      />
+                    </div>
+                    <div className="">
+                      <button
+                        className="btn btn-info rounded-0"
+                        onClick={(evt) => {
+                          setFilterButton(!filterButon);
+                        }}
+                      >
+                        Filter Data
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -213,6 +295,8 @@ const CustomerList = (props) => {
                           <tr>
                             <th>SN</th>
                             <th>NAME</th>
+                            <th>MOBILE</th>
+                            <th>EMAIL</th>
                             <th>VERIFIED</th>
                             <th>STATUS</th>
                             <th>DATE</th>
@@ -225,6 +309,8 @@ const CustomerList = (props) => {
                               <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{customer.name}</td>
+                                <td>{customer.mobile}</td>
+                                <td>{customer.email}</td>
                                 <td>
                                   {customer.is_verified ? (
                                     <span className="badge badge-success">

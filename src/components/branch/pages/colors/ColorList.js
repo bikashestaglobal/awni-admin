@@ -19,6 +19,7 @@ const ColorList = (props) => {
   const [allColor, setAllColor] = useState([]);
   const [isDeleted, setIsDeleted] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+  const [queryText, setQueryText] = useState("");
 
   // Delete Submit Handler
   const deleteSubmitHandler = () => {
@@ -104,7 +105,9 @@ const ColorList = (props) => {
   // Get Data From Database
   useEffect(() => {
     fetch(
-      `${Config.SERVER_URL}/colors?skip=${pagination.skip}&limit=${pagination.limit}`,
+      `${Config.SERVER_URL}/colors?skip=${pagination.skip}&limit=${
+        pagination.limit
+      }&query=${queryText || "null"}`,
       {
         method: "GET",
         headers: {
@@ -128,17 +131,22 @@ const ColorList = (props) => {
           setIsAllColorLoaded(true);
         }
       );
-  }, [pagination, isDeleted]);
+  }, [pagination, isDeleted, queryText]);
 
   // Count Records
   useEffect(() => {
-    fetch(`${Config.SERVER_URL}/colors?skip=0&limit=5000`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
+    fetch(
+      `${Config.SERVER_URL}/colors?skip=0&limit=5000&query=${
+        queryText || "null"
+      }`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then(
         (result) => {
@@ -153,7 +161,7 @@ const ColorList = (props) => {
           setIsAllColorLoaded(true);
         }
       );
-  }, [isDeleted]);
+  }, [isDeleted, queryText]);
 
   // Return function
   return (
@@ -181,7 +189,18 @@ const ColorList = (props) => {
             <div className={"card mb-0 mt-2 border-0 rounded"}>
               <div className={"card-body pb-0 pt-2"}>
                 <div>
-                  <h4 className="float-left mt-2 mr-2">Search: </h4>
+                  <div className="d-flex float-left">
+                    <h4 className="mt-2 mr-2">Search: </h4>
+                    <input
+                      type="search"
+                      onChange={(evt) => {
+                        setIsAllColorLoaded(false);
+                        setQueryText(evt.target.value);
+                      }}
+                      className="form-control search-input"
+                      placeholder="Name"
+                    />
+                  </div>
 
                   {/* <!-- Button trigger modal --> */}
                   <Link

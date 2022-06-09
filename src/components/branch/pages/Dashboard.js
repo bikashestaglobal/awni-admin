@@ -4,6 +4,8 @@ import M from "materialize-css";
 import { Link } from "react-router-dom";
 import Config from "../../config/Config";
 import Chart from "chart.js/auto";
+import { Bar } from "react-chartjs-2";
+import date from "date-and-time";
 
 // Global Variable For BarChart
 var batch = {};
@@ -23,6 +25,11 @@ function Dashboard() {
   const [allEnquiriesLoading, setAllEnquiriesLoading] = useState(true);
 
   const [recComment, setRecCommment] = useState([]);
+  const [enqChartLoading, setEnqChartLoading] = useState(false);
+  const [enqData, setEnqData] = useState({
+    labels: [],
+    datasets: [],
+  });
 
   // All Products
   useEffect(() => {
@@ -103,6 +110,55 @@ function Dashboard() {
       );
   }, []);
 
+  // Data for Enquiry Charts
+  useEffect(() => {
+    setEnqChartLoading(true);
+    fetch(Config.SERVER_URL + "/enquiries/generateReport", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status == 200) {
+            const labels = [];
+            const data = [];
+
+            result.body.map((item, index) => {
+              labels.push(date.format(new Date(item.day), "MMM DD"));
+              data.push(item.count);
+            });
+
+            let datasets = [
+              {
+                label: "Enquiries",
+                backgroundColor: "rgba(75,192,192,1)",
+                borderColor: "rgba(0,0,0,1)",
+                borderWidth: 1,
+                data: data,
+              },
+            ];
+
+            setEnqData({
+              ...enqData,
+              labels: labels,
+              datasets: datasets,
+            });
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+          setEnqChartLoading(false);
+        },
+        (error) => {
+          setEnqChartLoading(false);
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  }, []);
+
   return (
     <div>
       <div className="page-wrapper px-0 pt-0">
@@ -131,7 +187,7 @@ function Dashboard() {
             className={"row page-titles px-1 my-0 shadow-none"}
             style={{ background: "none" }}
           >
-            <div className={"col-md-12 px-0"}>
+            <div className={"col-md-12"}>
               <div className={"card"}>
                 <div className={"card-body"}>
                   <h3 className="card-title mb-3">Stats Overview</h3>
@@ -246,17 +302,15 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* <!-- Row --> */}
-          {/* <div
+          {/* <!-- Charts --> */}
+          <div
             className={"row page-titles px-1 my-0 shadow-none "}
             style={{ background: "none" }}
           >
-            <div className="col-md-8 px-0">
+            <div className="col-md-8">
               <div className={"card"}>
                 <div className={"card-body"}>
-                  {isChartDataLoaded ? (
-                    <canvas className={"bg-white"} id="batchBarChart"></canvas>
-                  ) : (
+                  {enqChartLoading ? (
                     <div className={"text-center"}>
                       <span
                         className="spinner-border spinner-border-sm mr-1"
@@ -264,12 +318,29 @@ function Dashboard() {
                         aria-hidden="true"
                       ></span>
                     </div>
+                  ) : (
+                    <div>
+                      <Bar
+                        data={enqData}
+                        options={{
+                          title: {
+                            display: true,
+                            text: "Average Rainfall per month",
+                            fontSize: 20,
+                          },
+                          legend: {
+                            display: true,
+                            position: "right",
+                          },
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="col-md-4 px-0">
+            {/* <div className="col-md-4">
               <div className={"card"}>
                 <div className={"card-body"}>
                   {isChartDataLoaded ? (
@@ -288,17 +359,15 @@ function Dashboard() {
                   )}
                 </div>
               </div>
-            </div>
-          </div> */}
+            </div> */}
+          </div>
 
           {/* <!-- Row --> */}
-          <div
+          {/* <div
             className="row page-titles px-1 my-0 shadow-none"
             style={{ background: "none" }}
           >
-            {/* <!-- Column --> */}
             <div className="col-lg-4 col-xlg-3 col-md-5 px-0">
-              {/* <!-- Column --> */}
               <div className="card">
                 <img
                   className="card-img-top"
@@ -320,22 +389,13 @@ function Dashboard() {
                   <h5> {state && state.email} </h5>
                   <h5> {state && state.mobile} </h5>
 
-                  {/* {state && (
-                    <a
-                      target={"_blank"}
-                      href={state.youtube}
-                      className="btn btn-circle btn-secondary"
-                    >
-                      <i className="mdi mdi-youtube"></i>
-                    </a>
-                  )} */}
+           
                 </div>
               </div>
             </div>
 
             <div className="col-lg-8 col-xlg-9 col-md-7 px-0">
               <div className="card">
-                {/* <!-- Nav tabs --> */}
                 <ul className="nav nav-tabs profile-tab" role="tablist">
                   <li className="nav-item">
                     {" "}
@@ -349,7 +409,6 @@ function Dashboard() {
                     </a>{" "}
                   </li>
                 </ul>
-                {/* <!-- Tab panes --> */}
                 <div className="tab-content">
                   <div className="tab-pane active" id="home" role="tabpanel">
                     <div className="card-body">
@@ -395,7 +454,7 @@ function Dashboard() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* <!-- ============================================================== --> */}
         </div>
         {/* <!-- ============================================================== --> */}

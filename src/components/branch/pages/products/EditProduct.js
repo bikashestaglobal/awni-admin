@@ -20,6 +20,7 @@ function EditProduct() {
     size: "",
     code: "",
     weight: "",
+    status: "",
     description: "",
     par_cat_id: "",
     cat_id: "",
@@ -109,6 +110,7 @@ function EditProduct() {
       mrp: product.mrp,
       selling_price: product.selling_price,
       size: product.size,
+      status: product.status,
       range_id: selectRange.value,
       weight: product.weight,
       code: product.code,
@@ -767,6 +769,28 @@ function EditProduct() {
                     className="form-control"
                     placeholder={"550"}
                   />
+                </div>
+
+                {/* Product Status */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    PRODUCT STATUS !
+                  </label>
+                  <select
+                    name=""
+                    value={product.status}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        status: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    id=""
+                  >
+                    <option value="true">ACTIVE</option>
+                    <option value="false">DISABLE</option>
+                  </select>
                 </div>
 
                 {/* Product Size */}

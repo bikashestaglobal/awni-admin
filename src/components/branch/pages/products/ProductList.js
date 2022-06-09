@@ -22,6 +22,10 @@ const ProductList = (props) => {
   const [allProduct, setAllProduct] = useState([]);
   const [isDeleted, setIsDeleted] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+  const [queryText, setQueryText] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [maxPriceFilter, setMaxPriceFilter] = useState("");
+  const [minPriceFilter, setMinPriceFilter] = useState("");
 
   // Delete Submit Handler
   const deleteSubmitHandler = () => {
@@ -106,8 +110,13 @@ const ProductList = (props) => {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllProductLoaded(false);
     fetch(
-      `${Config.SERVER_URL}/products?skip=${pagination.skip}&limit=${pagination.limit}`,
+      `${Config.SERVER_URL}/products?skip=${pagination.skip}&limit=${
+        pagination.limit
+      }&query=${queryText || "null"}&status=${statusFilter || "true"}&min=${
+        minPriceFilter || 0
+      }&max=${maxPriceFilter || 500000}`,
       {
         method: "GET",
         headers: {
@@ -131,17 +140,31 @@ const ProductList = (props) => {
           setIsAllProductLoaded(true);
         }
       );
-  }, [pagination, isDeleted]);
+  }, [
+    pagination,
+    isDeleted,
+    queryText,
+    statusFilter,
+    minPriceFilter,
+    maxPriceFilter,
+  ]);
 
   // Count Records
   useEffect(() => {
-    fetch(`${Config.SERVER_URL}/products?skip=0&limit=0`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
+    fetch(
+      `${Config.SERVER_URL}/products?skip=0&limit=50000&query=${
+        queryText || "null"
+      }&status=${statusFilter || "true"}&min=${minPriceFilter || 0}&max=${
+        maxPriceFilter || 500000
+      }`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then(
         (result) => {
@@ -156,7 +179,7 @@ const ProductList = (props) => {
           setIsAllProductLoaded(true);
         }
       );
-  }, [isDeleted]);
+  }, [isDeleted, queryText, statusFilter, minPriceFilter, maxPriceFilter]);
 
   // Return function
   return (
@@ -184,17 +207,59 @@ const ProductList = (props) => {
             <div className={"card mb-0 mt-2 border-0 rounded"}>
               <div className={"card-body pb-0 pt-2"}>
                 <div>
-                  <h4 className="float-left mt-2 mr-2">Search: </h4>
+                  <div className="d-flex float-left">
+                    <h4 className="mt-2 mr-2">Search: </h4>
+                    <input
+                      type="search"
+                      onChange={(evt) => {
+                        setIsAllProductLoaded(false);
+                        setQueryText(evt.target.value);
+                      }}
+                      className="form-control search-input"
+                      placeholder="Search By Everything"
+                    />
+                  </div>
 
                   {/* <!-- Button trigger modal --> */}
-                  <Link
-                    className="btn btn-info float-right rounded"
-                    to={{
-                      pathname: "/awni-admin/product/add",
-                    }}
-                  >
-                    <span className={"fas fa-plus"}></span> Product
-                  </Link>
+                  <div className="float-right d-flex">
+                    <div className="">
+                      <select
+                        className="p-2 mr-2 search-input"
+                        value={statusFilter}
+                        onChange={(evt) => setStatusFilter(evt.target.value)}
+                      >
+                        <option value="null">STATUS</option>
+                        <option value="true">Active</option>
+                        <option value="false">Disable</option>
+                      </select>
+                    </div>
+                    <div className="">
+                      <input
+                        type="number"
+                        className="form-control search-input"
+                        placeholder="Min Price"
+                        value={minPriceFilter}
+                        onChange={(evt) => setMinPriceFilter(evt.target.value)}
+                      />
+                    </div>
+                    <div className="">
+                      <input
+                        type="number"
+                        className="form-control search-input"
+                        placeholder="Max Price"
+                        value={maxPriceFilter}
+                        onChange={(evt) => setMaxPriceFilter(evt.target.value)}
+                      />
+                    </div>
+                    <Link
+                      className="btn btn-info float-right rounded"
+                      to={{
+                        pathname: "/awni-admin/product/add",
+                      }}
+                    >
+                      <span className={"fas fa-plus"}></span> Product
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -218,11 +283,13 @@ const ProductList = (props) => {
                             <th>CODE</th>
                             <th>WEIGHT</th>
                             <th>SIZE</th>
+                            <th>STATUS</th>
                             <th className="text-center">ACTION</th>
                           </tr>
                         </thead>
                         <tbody>
                           {allProduct.map((product, index) => {
+                            console.log(product);
                             return (
                               <tr key={index}>
                                 <td>{++index}</td>
@@ -232,6 +299,17 @@ const ProductList = (props) => {
                                 <td>{product.code}</td>
                                 <td>{product.weight}</td>
                                 <td>{product.size}</td>
+                                <td>
+                                  {product.status ? (
+                                    <span className="badge bg-info text-light">
+                                      Active
+                                    </span>
+                                  ) : (
+                                    <span className="badge bg-danger text-light">
+                                      Disable
+                                    </span>
+                                  )}
+                                </td>
 
                                 <td className="text-center">
                                   {/* Update Button */}

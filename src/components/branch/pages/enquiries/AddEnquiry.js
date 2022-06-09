@@ -9,6 +9,7 @@ const AddEnquiry = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    mobile: "",
     message: "",
   });
 
@@ -107,6 +108,21 @@ const AddEnquiry = () => {
                     }
                     className="form-control"
                     placeholder={"tannuja@gmail.com"}
+                  />
+                </div>
+                {/*  CUSTOMER MOBILE  */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    CUSTOMER MOBILE !
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.mobile}
+                    onChange={(evt) =>
+                      setFormData({ ...formData, mobile: evt.target.value })
+                    }
+                    className="form-control"
+                    placeholder={"9117162463"}
                   />
                 </div>
 

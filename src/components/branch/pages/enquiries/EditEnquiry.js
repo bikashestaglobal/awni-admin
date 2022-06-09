@@ -19,7 +19,7 @@ const EditEnquiry = () => {
     const updateData = {
       name: formData.name,
       email: formData.email,
-      message: formData.message,
+      message: formData.message || undefined,
       status: formData.status,
     };
     fetch(`${Config.SERVER_URL}/enquiries/${id}`, {
