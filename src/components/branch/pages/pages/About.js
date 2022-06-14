@@ -144,6 +144,7 @@ const About = () => {
       mission_fe_image: formData.mission_fe_image,
       why_title: formData.why_title || undefined,
       why_description: whyDescription || undefined,
+      youtube_video: formData.youtube_video || undefined,
     };
 
     let url = "";
@@ -152,8 +153,6 @@ const About = () => {
     } else {
       url = `${Config.SERVER_URL}/aboutUs`;
     }
-
-    console.log(updateData);
 
     fetch(url, {
       method: doUpdate ? "PUT" : "POST",
@@ -200,6 +199,7 @@ const About = () => {
         (result) => {
           if (result.status === 200) {
             if (result.body) {
+              console.log(result.body);
               setFormData(result.body);
               setAboutDescription(result.body.about_description || "");
               setMissionDescription(result.body.mission_description || "");
@@ -232,6 +232,11 @@ const About = () => {
         }
       );
   }, []);
+
+  const youtubeUrlHander = (evt) => {
+    let url = evt.target.value.split("=")[1];
+    setFormData({ ...formData, youtube_video: url });
+  };
 
   return (
     <div className="page-wrapper">
@@ -617,6 +622,27 @@ const About = () => {
                       setVisionDescription(data);
                     }}
                     data={visionDescription}
+                  />
+                </div>
+              </div>
+
+              {/* Homepage Youtube */}
+              <div className={"row shadow-sm bg-white py-3 mt-2"}>
+                <div className="col-md-12">
+                  <h3 className={"my-3 text-info"}>Homepage Youtube Video</h3>
+                </div>
+
+                {/* ENTER VIDEO URL  */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    ENTER VIDEO URL !
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.youtube_video}
+                    onChange={youtubeUrlHander}
+                    className="form-control"
+                    placeholder={"url"}
                   />
                 </div>
               </div>

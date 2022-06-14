@@ -23,7 +23,7 @@ const ProductList = (props) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [queryText, setQueryText] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [maxPriceFilter, setMaxPriceFilter] = useState("");
   const [minPriceFilter, setMinPriceFilter] = useState("");
 
@@ -228,7 +228,7 @@ const ProductList = (props) => {
                         value={statusFilter}
                         onChange={(evt) => setStatusFilter(evt.target.value)}
                       >
-                        <option value="null">STATUS</option>
+                        <option value="all">All</option>
                         <option value="true">Active</option>
                         <option value="false">Disable</option>
                       </select>

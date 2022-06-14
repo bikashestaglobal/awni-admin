@@ -31,6 +31,10 @@ function Dashboard() {
     datasets: [],
   });
 
+  const [enqStartDate, setEnqStartDate] = useState("null");
+  const [enqEndDate, setEnqEndDate] = useState("null");
+  const [enqDays, setEnqDays] = useState("");
+
   // All Products
   useEffect(() => {
     fetch(Config.SERVER_URL + "/products?limit=50000", {
@@ -113,13 +117,20 @@ function Dashboard() {
   // Data for Enquiry Charts
   useEffect(() => {
     setEnqChartLoading(true);
-    fetch(Config.SERVER_URL + "/enquiries/generateReport", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
+    fetch(
+      `${
+        Config.SERVER_URL
+      }/enquiries/generateReport?startDate=${enqStartDate}&endDate=${enqEndDate}&days=${
+        enqDays || "null"
+      }`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then(
         (result) => {
@@ -128,7 +139,11 @@ function Dashboard() {
             const data = [];
 
             result.body.map((item, index) => {
-              labels.push(date.format(new Date(item.day), "MMM DD"));
+              if (enqStartDate == "null" && enqEndDate == "null") {
+                labels.push(date.format(new Date(item.day), "MMM DD YYYY"));
+              } else {
+                labels.push(date.format(new Date(item.day), "MMM YYYY"));
+              }
               data.push(item.count);
             });
 
@@ -157,7 +172,7 @@ function Dashboard() {
           M.toast({ html: error, classes: "bg-danger" });
         }
       );
-  }, []);
+  }, [enqStartDate, enqEndDate, enqDays]);
 
   return (
     <div>
@@ -310,6 +325,45 @@ function Dashboard() {
             <div className="col-md-8">
               <div className={"card"}>
                 <div className={"card-body"}>
+                  <div className="d-flex justify-content-between">
+                    <h3>Enquiry Data</h3>
+                    <div className="form-group d-flex">
+                      <div className="">
+                        <input
+                          type="text"
+                          style={{ width: "140px" }}
+                          value={enqDays}
+                          onChange={(evt) => setEnqDays(evt.target.value)}
+                          className="form-control search-input"
+                          placeholder="Enter Last Days"
+                        />
+                      </div>
+                      <div className="pl-1">
+                        <input
+                          type="date"
+                          value={enqStartDate}
+                          onChange={(evt) => setEnqStartDate(evt.target.value)}
+                          className="form-control search-input"
+                        />
+                      </div>
+                      <div className="pl-2">
+                        <input
+                          type="date"
+                          value={enqEndDate}
+                          onChange={(evt) => setEnqEndDate(evt.target.value)}
+                          className="form-control search-input"
+                        />
+                      </div>
+                    </div>
+                    <div className="">
+                      <Link
+                        className="bnt btn-info p-2 rounded"
+                        to={"/awni-admin/enquiries"}
+                      >
+                        View All
+                      </Link>
+                    </div>
+                  </div>
                   {enqChartLoading ? (
                     <div className={"text-center"}>
                       <span

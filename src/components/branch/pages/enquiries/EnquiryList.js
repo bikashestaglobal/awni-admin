@@ -222,7 +222,7 @@ function EnquiryList(props) {
                         value={statusFilter}
                         onChange={(evt) => setStatusFilter(evt.target.value)}
                       >
-                        <option value="undefined">SELECT</option>
+                        <option value="undefined">ALL</option>
                         <option value="PENDING">PENDING</option>
                         <option value="REPLIED">REPLIED</option>
                         <option value="COMPLETED">COMPLETED</option>
