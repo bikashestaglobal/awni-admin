@@ -4,6 +4,7 @@ import $ from "jquery";
 import { Link } from "react-router-dom";
 import Config from "../../../config/Config";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
+
 //  Component Function
 const ColorList = (props) => {
   const [pagination, setPagination] = useState({
@@ -203,6 +204,7 @@ const ColorList = (props) => {
                   </div>
 
                   {/* <!-- Button trigger modal --> */}
+
                   <Link
                     className="btn btn-info float-right rounded"
                     to={{
@@ -210,6 +212,24 @@ const ColorList = (props) => {
                     }}
                   >
                     <span className={"fas fa-plus"}></span> Color
+                  </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/color/addFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-file"}></span> Add By CSV
+                  </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/color/editFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-edit"}></span> Update By CSV
                   </Link>
                 </div>
               </div>
@@ -227,7 +247,7 @@ const ColorList = (props) => {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th className="text-center">ACTION</th>
                           </tr>
@@ -236,7 +256,7 @@ const ColorList = (props) => {
                           {allColor.map((color, index) => {
                             return (
                               <tr key={index}>
-                                <td>{index + 1}</td>
+                                <td>{color.id}</td>
                                 <td>{color.name}</td>
                                 <td className="text-center">
                                   {/* Update Button */}
@@ -293,7 +313,7 @@ const ColorList = (props) => {
                               id="test-table-xls-button"
                               className="btn btn-info"
                               table="table-to-xls"
-                              filename="colors"
+                              filename="colors.csv"
                               sheet="color"
                               buttonText="Export to Excel"
                             />

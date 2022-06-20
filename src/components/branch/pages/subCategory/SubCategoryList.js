@@ -215,6 +215,24 @@ function SubCategoryList(props) {
                   >
                     <span className={"fas fa-plus"}></span> Category
                   </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/subCategory/addFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-file"}></span>Add By CSV
+                  </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/subCategory/editFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-edit"}></span> Update By CSV
+                  </Link>
                 </div>
               </div>
             </div>
@@ -231,10 +249,9 @@ function SubCategoryList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th>SLUG</th>
-                            <th>IMAGE</th>
                             <th>CATALOGUE</th>
                             <th>PARENT</th>
                             <th>STATUS</th>
@@ -246,29 +263,10 @@ function SubCategoryList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.name}</td>
                                 <td>{record.slug}</td>
-                                <td>
-                                  {record.image != "null" ? (
-                                    <img
-                                      className="Imgloader"
-                                      onLoad={(evt) => {
-                                        evt.target.classList.remove(
-                                          "Imgloader"
-                                        );
-                                      }}
-                                      style={{
-                                        height: "80px",
-                                        width: "80px",
-                                        borderRadius: "40px",
-                                      }}
-                                      src={record.image}
-                                    />
-                                  ) : (
-                                    "N/A"
-                                  )}
-                                </td>
+
                                 <td>
                                   {record.catalogue != "null" ? (
                                     <a

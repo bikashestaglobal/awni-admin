@@ -172,12 +172,12 @@ function RangeList(props) {
         {/* Bread crumb and right sidebar toggle */}
         <div className="row page-titles mb-0">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor m-b-0 m-t-0">Why Awni</h3>
+            <h3 className="text-themecolor m-b-0 m-t-0">Range Lists</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link to="/awni-admin">Admin</Link>
               </li>
-              <li className="breadcrumb-item active">Why List</li>
+              <li className="breadcrumb-item active">Range List</li>
             </ol>
           </div>
         </div>
@@ -213,6 +213,24 @@ function RangeList(props) {
                   >
                     <span className={"fas fa-plus"}></span> Add Range
                   </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/range/addFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-file"}></span> Add By CSV
+                  </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/range/editFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-edit"}></span> Update By CSV
+                  </Link>
                 </div>
               </div>
             </div>
@@ -229,7 +247,7 @@ function RangeList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th>CREATED AT</th>
                             <th className="text-center">ACTION</th>
@@ -239,9 +257,8 @@ function RangeList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.name}</td>
-
                                 <td>
                                   {date.format(
                                     new Date(record.created_at),

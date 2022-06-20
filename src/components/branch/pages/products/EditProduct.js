@@ -365,13 +365,14 @@ function EditProduct() {
   };
 
   const deleteColorHandler = (evt, value) => {
+    console.log("-------", value);
     evt.preventDefault();
     const filtered = selectedColors.filter(
-      (color, index) => color.color_id != value.color_id
+      (color, index) => color.id != value.id
     );
 
     setSelectedColors([...filtered]);
-    colorDeleteSubmitHandler(value.color_id);
+    colorDeleteSubmitHandler(value.id);
   };
 
   // get Product
@@ -611,35 +612,35 @@ function EditProduct() {
     setCategories(sCat);
   }, [productLoaded]);
 
-  // get All Colors
-  useEffect(() => {
-    let url = `${Config.SERVER_URL}/colors?limit=5000`;
+  // // get All Colors
+  // useEffect(() => {
+  //   let url = `${Config.SERVER_URL}/colors?limit=5000`;
 
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          if (result.status === 200) {
-            // if (!result.body.length) setSelectSCat([]);
-            let f = result.body.map((v) => {
-              return { label: v.name, value: v.id };
-            });
-            setColors(f);
-          } else {
-            M.toast({ html: result.message, classes: "bg-danger" });
-          }
-        },
-        (error) => {
-          M.toast({ html: error, classes: "bg-danger" });
-        }
-      );
-  }, []);
+  //   fetch(url, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then(
+  //       (result) => {
+  //         if (result.status === 200) {
+  //           // if (!result.body.length) setSelectSCat([]);
+  //           let f = result.body.map((v) => {
+  //             return { label: v.name, value: v.id };
+  //           });
+  //           setColors(f);
+  //         } else {
+  //           M.toast({ html: result.message, classes: "bg-danger" });
+  //         }
+  //       },
+  //       (error) => {
+  //         M.toast({ html: error, classes: "bg-danger" });
+  //       }
+  //     );
+  // }, []);
 
   // get Product Colors
   useEffect(() => {
@@ -659,6 +660,7 @@ function EditProduct() {
                 return {
                   name: item.name,
                   color_id: item.color_id,
+                  id: item.id,
                 };
               });
               console.log("clrs", clrs);
@@ -1162,7 +1164,6 @@ function EditProduct() {
                   </label>
                   <div className="border p-2">
                     {selectedColors.map((value, index) => {
-                      console.log("value", value);
                       return (
                         <span
                           key={index}

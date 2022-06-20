@@ -95,6 +95,18 @@ import EditChildCategory from "./pages/childCategory/EditChildCategory";
 import EditCustomer from "./pages/customers/EditCustomer";
 import ViewCustomer from "./pages/customers/ViewCustomer";
 import ViewEnquiry from "./pages/enquiries/ViewEnquiry";
+import AddColorFromCSV from "./pages/colors/AddColorFromCSV";
+import AddRangeFromCSV from "./pages/ranges/AddRangeFromCSV";
+import AddParCatFromCSV from "./pages/parentCategory/AddParCatFromCSV";
+import AddSubCatFromCSV from "./pages/subCategory/AddSubCatFromCSV";
+import AddChildCatFromCSV from "./pages/childCategory/AddChildCatFromCSV";
+import AddProductFromCSV from "./pages/products/AddProductFromCSV";
+import EditRangeFromCSV from "./pages/ranges/EditRangeFromCSV";
+import EditColorFromCSV from "./pages/colors/EditColorFromCSV";
+import EditParCatFromCSV from "./pages/parentCategory/EditParCatFromCSV";
+import EditSubCatFromCSV from "./pages/subCategory/EditSubCatFromCSV";
+import EditChildCatFromCSV from "./pages/childCategory/EditChildCatFromCSV";
+import EditProductFromCSV from "./pages/products/EditProductFomCSV";
 
 // Create Context
 export const BranchContext = createContext();
@@ -133,6 +145,17 @@ const Routing = () => {
       />
       <Route
         exact
+        path="/awni-admin/parentCategory/addFromCSV"
+        component={AddParCatFromCSV}
+      />
+
+      <Route
+        exact
+        path="/awni-admin/parentCategory/editFromCSV"
+        component={EditParCatFromCSV}
+      />
+      <Route
+        exact
         path="/awni-admin/parentCategory/edit/:id"
         component={EditParCategory}
       />
@@ -144,6 +167,18 @@ const Routing = () => {
         path="/awni-admin/subCategory/add"
         component={AddSubCategory}
       />
+      <Route
+        exact
+        path="/awni-admin/subCategory/addFromCSV"
+        component={AddSubCatFromCSV}
+      />
+
+      <Route
+        exact
+        path="/awni-admin/subCategory/editFromCSV"
+        component={EditSubCatFromCSV}
+      />
+
       <Route
         exact
         path="/awni-admin/subCategory/edit/:id"
@@ -161,6 +196,18 @@ const Routing = () => {
         path="/awni-admin/childCategory/add"
         component={AddChildCategory}
       />
+
+      <Route
+        exact
+        path="/awni-admin/childCategory/addFromCSV"
+        component={AddChildCatFromCSV}
+      />
+      <Route
+        exact
+        path="/awni-admin/childCategory/editFromCSV"
+        component={EditChildCatFromCSV}
+      />
+
       <Route
         exact
         path="/awni-admin/childCategory/edit/:id"
@@ -170,11 +217,33 @@ const Routing = () => {
       {/* Range */}
       <Route exact path="/awni-admin/ranges" component={RangeList} />
       <Route exact path="/awni-admin/range/add" component={AddRange} />
+      <Route
+        exact
+        path="/awni-admin/range/addFromCSV"
+        component={AddRangeFromCSV}
+      />
+      <Route
+        exact
+        path="/awni-admin/range/editFromCSV"
+        component={EditRangeFromCSV}
+      />
       <Route exact path="/awni-admin/range/edit/:id" component={EditRange} />
 
       {/* Products */}
       <Route exact path="/awni-admin/products" component={ProductList} />
       <Route exact path="/awni-admin/product/add" component={AddProduct} />
+      <Route
+        exact
+        path="/awni-admin/product/addFromCSV"
+        component={AddProductFromCSV}
+      />
+
+      <Route
+        exact
+        path="/awni-admin/product/editFromCSV"
+        component={EditProductFromCSV}
+      />
+
       <Route
         exact
         path="/awni-admin/product/edit/:id"
@@ -305,6 +374,16 @@ const Routing = () => {
       {/* Colors */}
       <Route exact path="/awni-admin/colors" component={ColorList} />
       <Route exact path="/awni-admin/color/add" component={AddColor} />
+      <Route
+        exact
+        path="/awni-admin/color/addFromCSV"
+        component={AddColorFromCSV}
+      />
+      <Route
+        exact
+        path="/awni-admin/color/editFromCSV"
+        component={EditColorFromCSV}
+      />
       <Route exact path="/awni-admin/color/edit/:id" component={EditColor} />
 
       {/* Orders */}

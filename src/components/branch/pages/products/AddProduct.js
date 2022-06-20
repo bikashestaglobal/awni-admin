@@ -90,6 +90,7 @@ function AddProduct() {
           .child(image.name)
           .getDownloadURL()
           .then((url) => {
+            console.log(url);
             if (type == "default_image") {
               setDefaultImages(url);
             } else {

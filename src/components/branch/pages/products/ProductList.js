@@ -251,8 +251,26 @@ const ProductList = (props) => {
                         onChange={(evt) => setMaxPriceFilter(evt.target.value)}
                       />
                     </div>
+
                     <Link
-                      className="btn btn-info float-right rounded"
+                      className="btn btn-info rounded mx-2"
+                      to={{
+                        pathname: "/awni-admin/product/addFromCSV",
+                      }}
+                    >
+                      <span className={"fas fa-plus"}></span> By CSV
+                    </Link>
+                    <Link
+                      className="btn btn-info float-right rounded mr-2"
+                      to={{
+                        pathname: "/awni-admin/product/editFromCSV",
+                      }}
+                    >
+                      <span className={"fas fa-edit"}></span> Update By CSV
+                    </Link>
+
+                    <Link
+                      className="btn btn-info rounded"
                       to={{
                         pathname: "/awni-admin/product/add",
                       }}
@@ -276,7 +294,7 @@ const ProductList = (props) => {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th>MRP</th>
                             <th>SELLING PRICE</th>
@@ -292,7 +310,7 @@ const ProductList = (props) => {
                             console.log(product);
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{product.id}</td>
                                 <td>{product.name}</td>
                                 <td>{product.mrp}</td>
                                 <td>{product.selling_price}</td>

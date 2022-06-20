@@ -176,7 +176,7 @@ function ChildCategoryList(props) {
         {/* Bread crumb and right sidebar toggle */}
         <div className="row page-titles mb-0">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor m-b-0 m-t-0">Sub Category</h3>
+            <h3 className="text-themecolor m-b-0 m-t-0">Child Category</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link to="/awni-admin">Admin</Link>
@@ -216,6 +216,24 @@ function ChildCategoryList(props) {
                   >
                     <span className={"fas fa-plus"}></span> Category
                   </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/childCategory/addFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-file"}></span>Add By CSV
+                  </Link>
+
+                  <Link
+                    className="btn btn-info float-right rounded mr-2"
+                    to={{
+                      pathname: "/awni-admin/childCategory/editFromCSV",
+                    }}
+                  >
+                    <span className={"fas fa-edit"}></span> Update By CSV
+                  </Link>
                 </div>
               </div>
             </div>
@@ -232,7 +250,7 @@ function ChildCategoryList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th>SLUG</th>
                             <th>PARENT CAT</th>
@@ -246,7 +264,7 @@ function ChildCategoryList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.name}</td>
                                 <td>{record.slug}</td>
                                 <td>{record.par_cat_name}</td>
