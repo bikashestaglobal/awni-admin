@@ -10,6 +10,7 @@ const EditChildCatFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
+  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -36,6 +37,10 @@ const EditChildCatFromCSV = () => {
           // Get data from array and call the api
           objects.map((item, i) => {
             if (item.id != "") {
+              item.slug = item.name
+                .toLowerCase()
+                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+                .replace(/\s+/g, "-");
               submitHandler(item);
             }
           });
@@ -54,10 +59,10 @@ const EditChildCatFromCSV = () => {
   // Update Submit Handler
   const submitHandler = ({ id, par_cat_id, cat_id, name, slug }) => {
     const updateData = {
-      name,
-      slug,
-      par_cat_id,
-      cat_id,
+      name: name || undefined,
+      slug: slug || undefined,
+      par_cat_id: par_cat_id || undefined,
+      cat_id: cat_id || undefined,
     };
     fetch(`${Config.SERVER_URL}/childCategories/${id}`, {
       method: "PUT",
@@ -94,36 +99,64 @@ const EditChildCatFromCSV = () => {
       );
   };
 
+  const makeElement = (elemName, innerText = null, row = null) => {
+    const elem = document.createElement(elemName);
+    if (innerText) {
+      elem.innerHTML = innerText;
+    }
+    if (row) {
+      row.appendChild(elem);
+    }
+    return elem;
+  };
+
   const downloadCSVHandler = () => {
-    let table = document.createElement("table");
+    let table = makeElement("table");
     table.setAttribute("id", "download-csv");
-    let thead = document.createElement("thead");
+    let thead = makeElement("thead");
     table.appendChild(thead);
 
-    let row = document.createElement("tr");
-    let thForId = document.createElement("th");
-    let thForParCatId = document.createElement("th");
-    let thForCatId = document.createElement("th");
-    let thForName = document.createElement("th");
-    let thForSlug = document.createElement("th");
-
-    thForId.innerHTML = "id";
-    thForParCatId.innerHTML = "par_cat_id";
-    thForCatId.innerHTML = "cat_id";
-    thForName.innerHTML = "name";
-    thForSlug.innerHTML = "slug";
-
-    row.appendChild(thForId);
-    row.appendChild(thForParCatId);
-    row.appendChild(thForCatId);
-    row.appendChild(thForName);
-    row.appendChild(thForSlug);
+    let row = makeElement("tr");
+    makeElement("th", "id", row);
+    makeElement("th", "par_cat_id", row);
+    makeElement("th", "cat_id", row);
+    makeElement("th", "name", row);
 
     thead.appendChild(row);
+    // Load Data from the Database
+    setIsAllRecordLoaded(false);
+    fetch(`${Config.SERVER_URL}/childCategories?limit=${50000}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsAllRecordLoaded(true);
+          if (result.status === 200) {
+            result.body.map((item, index) => {
+              let dataRow = document.createElement("tr");
+              makeElement("td", item.id.toString(), dataRow);
+              makeElement("td", item.par_cat_id.toString(), dataRow);
+              makeElement("td", item.cat_id.toString(), dataRow);
+              makeElement("td", item.name, dataRow);
 
-    document.body.appendChild(table);
-
-    tableToCSV("child-category.csv");
+              thead.appendChild(dataRow);
+            });
+            tableToCSV("child-category.csv", table);
+            // setAllRecords(result.body || []);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+          setIsAllRecordLoaded(true);
+        }
+      );
   };
 
   return (
@@ -161,7 +194,20 @@ const EditChildCatFromCSV = () => {
                       className="btn btn-info"
                       type="button"
                     >
-                      <i className="fa fa-download"></i> Download CSV Format
+                      {isAllRecordLoaded ? (
+                        <span>
+                          <i className="fa fa-download"></i> Download CSV Format
+                        </span>
+                      ) : (
+                        <div>
+                          <span
+                            className="spinner-border spinner-border-sm mr-1"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Loading..
+                        </div>
+                      )}
                     </button>
                   </div>
                 </div>

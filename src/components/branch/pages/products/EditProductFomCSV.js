@@ -10,6 +10,7 @@ const EditProductFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
+  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -39,13 +40,17 @@ const EditProductFromCSV = () => {
           objects.map(async (item, index) => {
             const product = { ...item };
             if (product.color_ids) {
-              product.color_ids = product.color_ids.split(",");
+              product.color_ids = product.color_ids.split("_");
             }
             if (product.images) {
-              product.images = product.images.split(",");
+              product.images = product.images.split("_");
             }
 
             if (product.id) {
+              item.slug = item.name
+                .toLowerCase()
+                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+                .replace(/\s+/g, "-");
               submitHandler(product);
             }
           });
@@ -59,10 +64,13 @@ const EditProductFromCSV = () => {
     }
   };
 
-  const makeElement = (elemName, innerText = null) => {
+  const makeElement = (elemName, innerText = null, row = null) => {
     const elem = document.createElement(elemName);
     if (innerText) {
       elem.innerHTML = innerText;
+    }
+    if (row) {
+      row.appendChild(elem);
     }
     return elem;
   };
@@ -74,53 +82,28 @@ const EditProductFromCSV = () => {
     table.appendChild(thead);
 
     let row = makeElement("tr");
-    let thForId = makeElement("th", "id");
-    let thForName = makeElement("th", "name");
-    let thForSlug = makeElement("th", "slug");
-    let thForMRP = makeElement("th", "mrp");
-    let thForSellingPrice = makeElement("th", "selling_price");
-    let thForStatus = makeElement("th", "status");
-    let thForSize = makeElement("th", "size");
-    let thForCode = makeElement("th", "code");
-    let thForWeight = makeElement("th", "weight");
-    let thForParCatId = makeElement("th", "par_cat_id");
-    let thForCatId = makeElement("th", "cat_id");
-    let thForChildCatId = makeElement("th", "child_cat_id");
-    let thForRange = makeElement("th", "range_id");
-    let thForColor = makeElement("th", "color_ids");
-    let thForDescription = makeElement("th", "description");
-    let thForDefaultImage = makeElement("th", "default_image");
-    let thForImages = makeElement("th", "images");
-
-    row.appendChild(thForId);
-    row.appendChild(thForName);
-    row.appendChild(thForSlug);
-    row.appendChild(thForMRP);
-    row.appendChild(thForSellingPrice);
-    row.appendChild(thForStatus);
-    row.appendChild(thForSize);
-    row.appendChild(thForCode);
-    row.appendChild(thForWeight);
-    row.appendChild(thForParCatId);
-    row.appendChild(thForCatId);
-    row.appendChild(thForChildCatId);
-    row.appendChild(thForRange);
-    row.appendChild(thForColor);
-    row.appendChild(thForDescription);
-    row.appendChild(thForDefaultImage);
-    row.appendChild(thForImages);
+    makeElement("th", "id", row);
+    makeElement("th", "name", row);
+    makeElement("th", "mrp", row);
+    makeElement("th", "selling_price", row);
+    makeElement("th", "status", row);
+    makeElement("th", "size", row);
+    makeElement("th", "code", row);
+    makeElement("th", "weight", row);
+    makeElement("th", "par_cat_id", row);
+    makeElement("th", "cat_id", row);
+    makeElement("th", "child_cat_id", row);
+    makeElement("th", "range_id", row);
+    makeElement("th", "color_ids", row);
+    makeElement("th", "description", row);
+    makeElement("th", "default_image", row);
+    makeElement("th", "images", row);
 
     thead.appendChild(row);
-
-    document.body.appendChild(table);
-
-    tableToCSV("product.csv");
-  };
-
-  const insertDataHandler = (data) => {
-    fetch(Config.SERVER_URL + "/products/byCSV", {
-      method: "POST",
-      body: JSON.stringify(data),
+    // Load Data from the Database
+    setIsAllRecordLoaded(false);
+    fetch(`${Config.SERVER_URL}/products/withColorAndImages`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
@@ -129,21 +112,38 @@ const EditProductFromCSV = () => {
       .then((res) => res.json())
       .then(
         (result) => {
+          setIsAllRecordLoaded(true);
           if (result.status === 200) {
-            M.toast({ html: result.message, classes: "bg-success" });
-            history.goBack();
-          } else {
-            const errorKeys = Object.keys(result.errors);
-            errorKeys.forEach((key) => {
-              M.toast({ html: result.errors[key], classes: "bg-danger" });
+            result.body.map((item, index) => {
+              let dataRow = document.createElement("tr");
+              makeElement("td", item.id, dataRow);
+              makeElement("td", item.name, dataRow);
+              makeElement("td", item.mrp, dataRow);
+              makeElement("td", item.selling_price, dataRow);
+              makeElement("td", item.status, dataRow);
+              makeElement("td", item.size, dataRow);
+              makeElement("td", item.code, dataRow);
+              makeElement("td", item.weight, dataRow);
+              makeElement("td", item.par_cat_id, dataRow);
+              makeElement("td", item.cat_id, dataRow);
+              makeElement("td", item.child_cat_id, dataRow);
+              makeElement("td", item.range_id, dataRow);
+              makeElement("td", item.color_ids, dataRow);
+              makeElement("td", item.description, dataRow);
+              makeElement("td", item.default_image, dataRow);
+              makeElement("td", item.images, dataRow);
+
+              thead.appendChild(dataRow);
             });
+            tableToCSV("product.csv", table);
+            // setAllRecords(result.body || []);
+          } else {
             M.toast({ html: result.message, classes: "bg-danger" });
           }
-          setUploadLoading(false);
         },
         (error) => {
-          setUploadLoading(false);
           M.toast({ html: error, classes: "bg-danger" });
+          setIsAllRecordLoaded(true);
         }
       );
   };
@@ -154,6 +154,7 @@ const EditProductFromCSV = () => {
     product.images = undefined;
     product.color_ids = undefined;
     product.id = undefined;
+
     product.name = product.name || undefined;
     product.slug = product.slug || undefined;
     product.mrp = product.mrp || undefined;
@@ -182,15 +183,14 @@ const EditProductFromCSV = () => {
         (result) => {
           if (result.status === 200) {
             // M.toast({ html: result.message, classes: "bg-success" });
-            // imageSubmitHandler(result.body.id, images);
-            // colorSubmitHandler(result.body.id, color_ids);
-            // history.goBack();
+            removeOldImageHandler(result.body.id, newProduct.images);
+            removeOldColorHandler(result.body.id, newProduct.color_ids);
           } else {
-            // const errorKeys = Object.keys(result.errors);
-            // errorKeys.forEach((key) => {
-            //   M.toast({ html: result.errors[key], classes: "bg-danger" });
-            // });
-            // M.toast({ html: result.message, classes: "bg-danger" });
+            const errorKeys = Object.keys(result.errors);
+            errorKeys.forEach((key) => {
+              M.toast({ html: result.errors[key], classes: "bg-danger" });
+            });
+            M.toast({ html: result.message, classes: "bg-danger" });
           }
           setUploaded((old) => {
             return [
@@ -201,6 +201,38 @@ const EditProductFromCSV = () => {
               },
             ];
           });
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  };
+
+  // Remove Old Images Handler
+  const removeOldImageHandler = (product_id, urls) => {
+    fetch(
+      `${Config.SERVER_URL}/productImages/deleteByProductId/${product_id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            M.toast({ html: result.message, classes: "bg-success" });
+          } else {
+            const errorKeys = Object.keys(result.errors);
+            errorKeys.forEach((key) => {
+              M.toast({ html: result.errors[key], classes: "bg-danger" });
+            });
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+          imageSubmitHandler(product_id, urls);
         },
         (error) => {
           M.toast({ html: error, classes: "bg-danger" });
@@ -227,7 +259,7 @@ const EditProductFromCSV = () => {
       .then(
         (result) => {
           if (result.status === 200) {
-            // M.toast({ html: result.message, classes: "bg-success" });
+            M.toast({ html: result.message, classes: "bg-success" });
           } else {
             const errorKeys = Object.keys(result.errors);
             errorKeys.forEach((key) => {
@@ -235,6 +267,38 @@ const EditProductFromCSV = () => {
             });
             M.toast({ html: result.message, classes: "bg-danger" });
           }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  };
+
+  // Remove Old Images Handler
+  const removeOldColorHandler = (product_id, colorsIds) => {
+    fetch(
+      `${Config.SERVER_URL}/productColors/deleteByProductId/${product_id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            M.toast({ html: result.message, classes: "bg-success" });
+          } else {
+            const errorKeys = Object.keys(result.errors);
+            errorKeys.forEach((key) => {
+              M.toast({ html: result.errors[key], classes: "bg-danger" });
+            });
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+          colorSubmitHandler(product_id, colorsIds);
         },
         (error) => {
           M.toast({ html: error, classes: "bg-danger" });
@@ -311,7 +375,20 @@ const EditProductFromCSV = () => {
                       className="btn btn-info"
                       type="button"
                     >
-                      <i className="fa fa-download"></i> Download CSV Format
+                      {isAllRecordLoaded ? (
+                        <span>
+                          <i className="fa fa-download"></i> Download CSV Format
+                        </span>
+                      ) : (
+                        <div>
+                          <span
+                            className="spinner-border spinner-border-sm mr-1"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Loading..
+                        </div>
+                      )}
                     </button>
                   </div>
                 </div>

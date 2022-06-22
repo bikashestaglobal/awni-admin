@@ -66,12 +66,16 @@ const AddColorFromCSV = () => {
     let thForName = document.createElement("th");
     thForName.innerHTML = "name";
 
+    let dummyRow = document.createElement("tr");
+    let tdForDummyData = document.createElement("td");
+    tdForDummyData.innerHTML = "Dummy";
+
     row.appendChild(thForName);
+    dummyRow.appendChild(tdForDummyData);
     thead.appendChild(row);
+    thead.appendChild(dummyRow);
 
-    document.body.appendChild(table);
-
-    tableToCSV("colors.csv");
+    tableToCSV("colors.csv", table);
   };
 
   const insertDataHandler = (data) => {

@@ -38,6 +38,12 @@ const AddParCatFromCSV = () => {
           // Get data from array and call the api
           objects.map((item, i) => {
             if (item.name) {
+              // Generate slug
+              item.slug = item.name
+                .toLowerCase()
+                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+                .replace(/\s+/g, "-");
+
               submitHandler(item);
             }
             if (i == objects.length - 1) {
@@ -56,26 +62,39 @@ const AddParCatFromCSV = () => {
     }
   };
 
+  const makeElement = (elemName, innerText = null, row = null) => {
+    const elem = document.createElement(elemName);
+    if (innerText) {
+      elem.innerHTML = innerText;
+    }
+    if (row) {
+      row.appendChild(elem);
+    }
+    return elem;
+  };
+
   const downloadCSVHandler = () => {
-    let table = document.createElement("table");
+    let table = makeElement("table");
     table.setAttribute("id", "download-csv");
-    let thead = document.createElement("thead");
+    let thead = makeElement("thead");
     table.appendChild(thead);
 
-    let row = document.createElement("tr");
-    let thForName = document.createElement("th");
-    let thForSlug = document.createElement("th");
-    let thForImage = document.createElement("th");
-    thForName.innerHTML = "name";
-    thForSlug.innerHTML = "slug";
-    thForImage.innerHTML = "image";
+    let row = makeElement("tr");
+    makeElement("th", "name", row);
+    makeElement("th", "image", row);
 
-    row.appendChild(thForName);
+    let dummyRow = makeElement("tr");
+    makeElement("td", "Dummy Category", dummyRow);
+    makeElement(
+      "td",
+      "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/images%2Fbath.png?alt=media&token=efa81ffa-b1c6-4648-b9ce-43a95cde73aa",
+      dummyRow
+    );
+
     thead.appendChild(row);
+    thead.appendChild(dummyRow);
 
-    document.body.appendChild(table);
-
-    tableToCSV("parent-category.csv");
+    tableToCSV("parent-category.csv", table);
   };
 
   const insertDataHandler = (data) => {

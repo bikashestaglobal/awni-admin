@@ -357,7 +357,7 @@ function LeftNavigation() {
           <div className="sidebar-footer">
             {/* <!-- item--> */}
             <Link
-              to="/awni-admin/setting"
+              to="/awni-admin/profile"
               className="link"
               data-toggle="tooltip"
               title="Settings"

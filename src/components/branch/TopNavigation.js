@@ -60,13 +60,13 @@ function TopNavigation() {
                 {/* <!-- Dark Logo icon --> */}
                 <img
                   src="/assets/images/small-logo.png"
-                  className="dark-logo"
+                  className="small-logo"
                 />
                 {/* <!-- Light Logo icon --> */}
-                <img
+                {/* <img
                   src={"/assets/images/small-logo.png"}
                   className="light-logo"
-                />
+                /> */}
               </b>
               {/* <!--End Logo icon --> */}
               {/* <!-- Logo text --> */}
@@ -288,7 +288,7 @@ function TopNavigation() {
 
                     <li role="separator" className="divider"></li>
                     <li>
-                      <Link to="/awni-admin/account">
+                      <Link to="/awni-admin/profile">
                         <i className="ti-settings"></i> Account Setting
                       </Link>
                     </li>

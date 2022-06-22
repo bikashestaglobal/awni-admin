@@ -66,43 +66,49 @@ const AddRangeFromCSV = () => {
     let thForName = document.createElement("th");
     thForName.innerHTML = "name";
 
+    let dummyRow = document.createElement("tr");
+    let thForDumyName = document.createElement("td");
+    thForDumyName.innerHTML = "dummy";
+
     row.appendChild(thForName);
+    dummyRow.appendChild(thForDumyName);
     thead.appendChild(row);
+    thead.appendChild(dummyRow);
 
-    document.body.appendChild(table);
+    // document.body.appendChild(table);
 
-    tableToCSV("ranges.csv");
+    tableToCSV("ranges.csv", table);
   };
 
   const insertDataHandler = (data) => {
-    fetch(Config.SERVER_URL + "/ranges", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          if (result.status === 200) {
-            M.toast({ html: result.message, classes: "bg-success" });
-            history.goBack();
-          } else {
-            const errorKeys = Object.keys(result.errors);
-            errorKeys.forEach((key) => {
-              M.toast({ html: result.errors[key], classes: "bg-danger" });
-            });
-            M.toast({ html: result.message, classes: "bg-danger" });
-          }
-          setUploadLoading(false);
-        },
-        (error) => {
-          setUploadLoading(false);
-          M.toast({ html: error, classes: "bg-danger" });
-        }
-      );
+    // fetch(Config.SERVER_URL + "/ranges", {
+    //   method: "POST",
+    //   body: JSON.stringify(data),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then(
+    //     (result) => {
+    //       if (result.status === 200) {
+    //         M.toast({ html: result.message, classes: "bg-success" });
+    //         history.goBack();
+    //       } else {
+    //         const errorKeys = Object.keys(result.errors);
+    //         errorKeys.forEach((key) => {
+    //           M.toast({ html: result.errors[key], classes: "bg-danger" });
+    //         });
+    //         M.toast({ html: result.message, classes: "bg-danger" });
+    //       }
+    //       setUploadLoading(false);
+    //     },
+    //     (error) => {
+    //       setUploadLoading(false);
+    //       M.toast({ html: error, classes: "bg-danger" });
+    //     }
+    //   );
   };
 
   // Submit Handler

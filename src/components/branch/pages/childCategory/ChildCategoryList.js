@@ -108,6 +108,7 @@ function ChildCategoryList(props) {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllRecordLoaded(false);
     fetch(
       `${Config.SERVER_URL}/childCategories?skip=${pagination.skip}&limit=${
         pagination.limit
@@ -223,7 +224,7 @@ function ChildCategoryList(props) {
                       pathname: "/awni-admin/childCategory/addFromCSV",
                     }}
                   >
-                    <span className={"fas fa-file"}></span>Add By CSV
+                    <span className={"fas fa-plus"}></span> Add By CSV
                   </Link>
 
                   <Link
@@ -325,6 +326,9 @@ function ChildCategoryList(props) {
                               <option value="10">10</option>
                               <option value="20">20</option>
                               <option value="30">30</option>
+                              <option value={pagination.totalRecord}>
+                                All
+                              </option>
                             </select>
                           </div>
                           <div className="pl-1">

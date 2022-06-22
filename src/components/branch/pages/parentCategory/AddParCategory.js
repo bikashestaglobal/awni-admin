@@ -18,7 +18,10 @@ const AddParentCategory = () => {
     const value = evt.target.value;
     setFormData({
       ...formData,
-      slug: value.toLowerCase().replace(/\s+/g, "-"),
+      slug: value
+        .toLowerCase()
+        .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+        .replace(/\s+/g, "-"),
       name: value,
     });
   };

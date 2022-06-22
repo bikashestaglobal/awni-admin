@@ -38,6 +38,10 @@ const AddSubCatFromCSV = () => {
           // Get data from array and call the api
           objects.map((item, i) => {
             if (item.name) {
+              item.slug = item.name
+                .toLowerCase()
+                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+                .replace(/\s+/g, "-");
               submitHandler(item);
             }
             if (i == objects.length - 1) {
@@ -56,64 +60,41 @@ const AddSubCatFromCSV = () => {
     }
   };
 
-  const downloadCSVHandler = () => {
-    let table = document.createElement("table");
-    table.setAttribute("id", "download-csv");
-    let thead = document.createElement("thead");
-    table.appendChild(thead);
-
-    let row = document.createElement("tr");
-    let thForName = document.createElement("th");
-    let thForSlug = document.createElement("th");
-    let thForCatalogue = document.createElement("th");
-    let thForParCatId = document.createElement("th");
-
-    thForName.innerHTML = "name";
-    thForSlug.innerHTML = "slug";
-    thForCatalogue.innerHTML = "catalogue";
-    thForParCatId.innerHTML = "par_cat_id";
-
-    row.appendChild(thForName);
-    row.appendChild(thForSlug);
-    row.appendChild(thForCatalogue);
-    row.appendChild(thForParCatId);
-
-    thead.appendChild(row);
-
-    document.body.appendChild(table);
-
-    tableToCSV("sub-category.csv");
+  const makeElement = (elemName, innerText = null, row = null) => {
+    const elem = document.createElement(elemName);
+    if (innerText) {
+      elem.innerHTML = innerText;
+    }
+    if (row) {
+      row.appendChild(elem);
+    }
+    return elem;
   };
 
-  const insertDataHandler = (data) => {
-    fetch(Config.SERVER_URL + "/categories", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          if (result.status === 200) {
-            M.toast({ html: result.message, classes: "bg-success" });
-            history.goBack();
-          } else {
-            const errorKeys = Object.keys(result.errors);
-            errorKeys.forEach((key) => {
-              M.toast({ html: result.errors[key], classes: "bg-danger" });
-            });
-            M.toast({ html: result.message, classes: "bg-danger" });
-          }
-          setUploadLoading(false);
-        },
-        (error) => {
-          setUploadLoading(false);
-          M.toast({ html: error, classes: "bg-danger" });
-        }
-      );
+  const downloadCSVHandler = () => {
+    let table = makeElement("table");
+    table.setAttribute("id", "download-csv");
+    let thead = makeElement("thead");
+    table.appendChild(thead);
+
+    let row = makeElement("tr");
+    makeElement("th", "name", row);
+    makeElement("th", "catalogue", row);
+    makeElement("th", "par_cat_id", row);
+
+    let dummyRow = makeElement("tr");
+    makeElement("td", "Dummy Category", dummyRow);
+    makeElement(
+      "td",
+      "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/images%2Fpexels-karolina-grabowska-4207785.jpg?alt=media&token=f0b46e0c-1705-4af8-b4bd-8bad2a1f1063",
+      dummyRow
+    );
+    makeElement("td", "1", dummyRow);
+
+    thead.appendChild(row);
+    thead.appendChild(dummyRow);
+
+    tableToCSV("sub-category.csv", table);
   };
 
   // Submit Handler

@@ -10,6 +10,7 @@ const AddProductFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
+
   const fileChangeHandler = (event) => {
     const files = event.target.files;
     if (files) {
@@ -33,19 +34,22 @@ const AddProductFromCSV = () => {
             return object;
           });
           // Now I call to my API and everything goes ok
-          console.log(objects);
 
           // get items from the array and call the api
           objects.map(async (item, index) => {
             const product = { ...item };
             if (product.color_ids) {
-              product.color_ids = product.color_ids.split(",");
+              product.color_ids = product.color_ids.split("_");
             }
             if (product.images) {
-              product.images = product.images.split(",");
+              product.images = product.images.split("_");
             }
 
-            if (product.name && product.slug) {
+            if (product.name) {
+              product.slug = product.name
+                .toLowerCase()
+                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+                .replace(/\s+/g, "-");
               submitHandler(product);
             }
           });
@@ -59,10 +63,13 @@ const AddProductFromCSV = () => {
     }
   };
 
-  const makeElement = (elemName, innerText = null) => {
+  const makeElement = (elemName, innerText = null, row = null) => {
     const elem = document.createElement(elemName);
     if (innerText) {
       elem.innerHTML = innerText;
+    }
+    if (row) {
+      row.appendChild(elem);
     }
     return elem;
   };
@@ -74,74 +81,48 @@ const AddProductFromCSV = () => {
     table.appendChild(thead);
 
     let row = makeElement("tr");
-    let thForName = makeElement("th", "name");
-    let thForSlug = makeElement("th", "slug");
-    let thForMRP = makeElement("th", "mrp");
-    let thForSellingPrice = makeElement("th", "selling_price");
-    let thForSize = makeElement("th", "size");
-    let thForCode = makeElement("th", "code");
-    let thForWeight = makeElement("th", "weight");
-    let thForParCatId = makeElement("th", "par_cat_id");
-    let thForCatId = makeElement("th", "cat_id");
-    let thForChildCatId = makeElement("th", "child_cat_id");
-    let thForRange = makeElement("th", "range_id");
-    let thForColor = makeElement("th", "color_ids");
-    let thForDescription = makeElement("th", "description");
-    let thForDefaultImage = makeElement("th", "default_image");
-    let thForImages = makeElement("th", "images");
+    makeElement("th", "name", row);
+    makeElement("th", "mrp", row);
+    makeElement("th", "selling_price", row);
+    makeElement("th", "size", row);
+    makeElement("th", "code", row);
+    makeElement("th", "weight", row);
+    makeElement("th", "par_cat_id", row);
+    makeElement("th", "cat_id", row);
+    makeElement("th", "child_cat_id", row);
+    makeElement("th", "range_id", row);
+    makeElement("th", "color_ids", row);
+    makeElement("th", "description", row);
+    makeElement("th", "default_image", row);
+    makeElement("th", "images", row);
 
-    row.appendChild(thForName);
-    row.appendChild(thForSlug);
-    row.appendChild(thForMRP);
-    row.appendChild(thForSellingPrice);
-    row.appendChild(thForSize);
-    row.appendChild(thForCode);
-    row.appendChild(thForWeight);
-    row.appendChild(thForParCatId);
-    row.appendChild(thForCatId);
-    row.appendChild(thForChildCatId);
-    row.appendChild(thForRange);
-    row.appendChild(thForColor);
-    row.appendChild(thForDescription);
-    row.appendChild(thForDefaultImage);
-    row.appendChild(thForImages);
+    let dummyRow = makeElement("tr");
+    makeElement("th", "Dummy Product", dummyRow);
+    makeElement("th", "5000", dummyRow);
+    makeElement("th", "4500", dummyRow);
+    makeElement("th", "100X200X100 MM", dummyRow);
+    makeElement("th", "PROD129CC", dummyRow);
+    makeElement("th", "5K", dummyRow);
+    makeElement("th", "1", dummyRow);
+    makeElement("th", "1", dummyRow);
+    makeElement("th", "1", dummyRow);
+    makeElement("th", "1", dummyRow);
+    makeElement("th", "1_2_3", dummyRow);
+    makeElement("th", "<p>Awesome</p>", dummyRow);
+    makeElement(
+      "th",
+      "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft3.jpg?alt=media&token=04bca1bb-7647-4de2-8b22-64dff00669dd",
+      dummyRow
+    );
+    makeElement(
+      "th",
+      "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft4.jpg?alt=media&token=38e4bdf9-40de-43be-b35a-16cf819ac8f2_https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft1.jpg?alt=media&token=2150140e-3568-4e47-a6c6-446454894fdf",
+      dummyRow
+    );
 
     thead.appendChild(row);
-
-    document.body.appendChild(table);
-
-    tableToCSV("product.csv");
-  };
-
-  const insertDataHandler = (data) => {
-    fetch(Config.SERVER_URL + "/products/byCSV", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          if (result.status === 200) {
-            M.toast({ html: result.message, classes: "bg-success" });
-            history.goBack();
-          } else {
-            const errorKeys = Object.keys(result.errors);
-            errorKeys.forEach((key) => {
-              M.toast({ html: result.errors[key], classes: "bg-danger" });
-            });
-            M.toast({ html: result.message, classes: "bg-danger" });
-          }
-          setUploadLoading(false);
-        },
-        (error) => {
-          setUploadLoading(false);
-          M.toast({ html: error, classes: "bg-danger" });
-        }
-      );
+    thead.appendChild(dummyRow);
+    tableToCSV("product.csv", table);
   };
 
   // Submit Handler
@@ -168,11 +149,11 @@ const AddProductFromCSV = () => {
 
             // history.goBack();
           } else {
-            // const errorKeys = Object.keys(result.errors);
-            // errorKeys.forEach((key) => {
-            //   M.toast({ html: result.errors[key], classes: "bg-danger" });
-            // });
-            // M.toast({ html: result.message, classes: "bg-danger" });
+            const errorKeys = Object.keys(result.errors);
+            errorKeys.forEach((key) => {
+              M.toast({ html: result.errors[key], classes: "bg-danger" });
+            });
+            M.toast({ html: result.message, classes: "bg-danger" });
           }
           setUploaded((old) => {
             return [

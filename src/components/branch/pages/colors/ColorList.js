@@ -4,6 +4,7 @@ import $ from "jquery";
 import { Link } from "react-router-dom";
 import Config from "../../../config/Config";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import date from "date-and-time";
 
 //  Component Function
 const ColorList = (props) => {
@@ -105,6 +106,7 @@ const ColorList = (props) => {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllColorLoaded(false);
     fetch(
       `${Config.SERVER_URL}/colors?skip=${pagination.skip}&limit=${
         pagination.limit
@@ -137,7 +139,7 @@ const ColorList = (props) => {
   // Count Records
   useEffect(() => {
     fetch(
-      `${Config.SERVER_URL}/colors?skip=0&limit=5000&query=${
+      `${Config.SERVER_URL}/colors?skip=0&limit=50000&query=${
         queryText || "null"
       }`,
       {
@@ -249,6 +251,7 @@ const ColorList = (props) => {
                           <tr>
                             <th>#ID</th>
                             <th>NAME</th>
+                            <th>CREATED AT</th>
                             <th className="text-center">ACTION</th>
                           </tr>
                         </thead>
@@ -258,6 +261,12 @@ const ColorList = (props) => {
                               <tr key={index}>
                                 <td>{color.id}</td>
                                 <td>{color.name}</td>
+                                <td>
+                                  {date.format(
+                                    new Date(color.created_at),
+                                    "DD-MM-YYYY"
+                                  )}
+                                </td>
                                 <td className="text-center">
                                   {/* Update Button */}
                                   <Link
@@ -306,6 +315,9 @@ const ColorList = (props) => {
                               <option value="10">10</option>
                               <option value="20">20</option>
                               <option value="30">30</option>
+                              <option value={pagination.totalRecord}>
+                                All
+                              </option>
                             </select>
                           </div>
                           <div className="pl-1">

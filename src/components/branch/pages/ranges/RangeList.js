@@ -106,6 +106,7 @@ function RangeList(props) {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllRecordLoaded(false);
     fetch(
       `${Config.SERVER_URL}/ranges?skip=${pagination.skip}&limit=${
         pagination.limit
@@ -313,6 +314,9 @@ function RangeList(props) {
                               <option value="10">10</option>
                               <option value="20">20</option>
                               <option value="30">30</option>
+                              <option value={pagination.totalRecord}>
+                                All
+                              </option>
                             </select>
                           </div>
                           <div className="pl-1">

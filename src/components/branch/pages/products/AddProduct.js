@@ -43,7 +43,10 @@ function AddProduct() {
     const value = evt.target.value;
     setProduct({
       ...product,
-      slug: value.toLowerCase().replace(/\s+/g, "-"),
+      slug: value
+        .toLowerCase()
+        .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+        .replace(/\s+/g, "-"),
       name: value,
     });
   };

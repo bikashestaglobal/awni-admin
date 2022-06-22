@@ -108,6 +108,7 @@ function SubCategoryList(props) {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllRecordLoaded(false);
     fetch(
       `${Config.SERVER_URL}/categories?skip=${pagination.skip}&limit=${
         pagination.limit
@@ -222,7 +223,7 @@ function SubCategoryList(props) {
                       pathname: "/awni-admin/subCategory/addFromCSV",
                     }}
                   >
-                    <span className={"fas fa-file"}></span>Add By CSV
+                    <span className={"fas fa-plus"}></span> Add By CSV
                   </Link>
 
                   <Link
@@ -268,7 +269,8 @@ function SubCategoryList(props) {
                                 <td>{record.slug}</td>
 
                                 <td>
-                                  {record.catalogue != "null" ? (
+                                  {record.catalogue != "null" &&
+                                  record.catalogue != "" ? (
                                     <a
                                       className="btn btn-info"
                                       target="_blank"
@@ -337,6 +339,9 @@ function SubCategoryList(props) {
                               <option value="10">10</option>
                               <option value="20">20</option>
                               <option value="30">30</option>
+                              <option value={pagination.totalRecord}>
+                                All
+                              </option>
                             </select>
                           </div>
                           <div className="pl-1">

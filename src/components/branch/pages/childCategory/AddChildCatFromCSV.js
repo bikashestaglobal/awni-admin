@@ -38,6 +38,10 @@ const AddChildCatFromCSV = () => {
           // Get data from array and call the api
           objects.map((item, i) => {
             if (item.name) {
+              item.slug = item.name
+                .toLowerCase()
+                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+                .replace(/\s+/g, "-");
               submitHandler(item);
             }
             if (i == objects.length - 1) {
@@ -56,64 +60,37 @@ const AddChildCatFromCSV = () => {
     }
   };
 
-  const downloadCSVHandler = () => {
-    let table = document.createElement("table");
-    table.setAttribute("id", "download-csv");
-    let thead = document.createElement("thead");
-    table.appendChild(thead);
-
-    let row = document.createElement("tr");
-    let thForName = document.createElement("th");
-    let thForSlug = document.createElement("th");
-    let thForParCatId = document.createElement("th");
-    let thForCatId = document.createElement("th");
-
-    thForName.innerHTML = "name";
-    thForSlug.innerHTML = "slug";
-    thForParCatId.innerHTML = "par_cat_id";
-    thForCatId.innerHTML = "cat_id";
-
-    row.appendChild(thForName);
-    row.appendChild(thForSlug);
-    row.appendChild(thForParCatId);
-    row.appendChild(thForCatId);
-
-    thead.appendChild(row);
-
-    document.body.appendChild(table);
-
-    tableToCSV("child-category.csv");
+  const makeElement = (elemName, innerText = null, row = null) => {
+    const elem = document.createElement(elemName);
+    if (innerText) {
+      elem.innerHTML = innerText;
+    }
+    if (row) {
+      row.appendChild(elem);
+    }
+    return elem;
   };
 
-  const insertDataHandler = (data) => {
-    fetch(Config.SERVER_URL + "/categories", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          if (result.status === 200) {
-            M.toast({ html: result.message, classes: "bg-success" });
-            history.goBack();
-          } else {
-            const errorKeys = Object.keys(result.errors);
-            errorKeys.forEach((key) => {
-              M.toast({ html: result.errors[key], classes: "bg-danger" });
-            });
-            M.toast({ html: result.message, classes: "bg-danger" });
-          }
-          setUploadLoading(false);
-        },
-        (error) => {
-          setUploadLoading(false);
-          M.toast({ html: error, classes: "bg-danger" });
-        }
-      );
+  const downloadCSVHandler = () => {
+    let table = makeElement("table");
+    table.setAttribute("id", "download-csv");
+    let thead = makeElement("thead");
+    table.appendChild(thead);
+
+    let row = makeElement("tr");
+    makeElement("th", "name", row);
+    makeElement("th", "par_cat_id", row);
+    makeElement("th", "cat_id", row);
+
+    let dummyRow = makeElement("tr");
+    makeElement("th", "Dummy Category", dummyRow);
+    makeElement("th", "1", dummyRow);
+    makeElement("th", "1", dummyRow);
+
+    thead.appendChild(row);
+    thead.appendChild(dummyRow);
+
+    tableToCSV("child-category.csv", table);
   };
 
   // Submit Handler

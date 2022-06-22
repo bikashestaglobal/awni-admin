@@ -10,6 +10,7 @@ const EditSubCatFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
+  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -36,6 +37,10 @@ const EditSubCatFromCSV = () => {
           // Get data from array and call the api
           objects.map((item, i) => {
             if (item.id != "") {
+              item.slug = item.name
+                .toLowerCase()
+                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+                .replace(/\s+/g, "-");
               submitHandler(item);
             }
           });
@@ -94,34 +99,65 @@ const EditSubCatFromCSV = () => {
       );
   };
 
+  const makeElement = (elemName, innerText = null, row = null) => {
+    const elem = document.createElement(elemName);
+    if (innerText) {
+      elem.innerHTML = innerText;
+    }
+    if (row) {
+      row.appendChild(elem);
+    }
+    return elem;
+  };
+
   const downloadCSVHandler = () => {
-    let table = document.createElement("table");
+    let table = makeElement("table");
     table.setAttribute("id", "download-csv");
-    let thead = document.createElement("thead");
+    let thead = makeElement("thead");
     table.appendChild(thead);
 
-    let row = document.createElement("tr");
-    let thForId = document.createElement("th");
-    let thForParCatId = document.createElement("th");
-    let thForName = document.createElement("th");
-    let thForSlug = document.createElement("th");
-    let thForCatalogue = document.createElement("th");
-    thForId.innerHTML = "id";
-    thForParCatId.innerHTML = "par_cat_id";
-    thForName.innerHTML = "name";
-    thForSlug.innerHTML = "slug";
-    thForCatalogue.innerHTML = "catalogue";
+    let row = makeElement("tr");
+    makeElement("th", "id", row);
+    makeElement("th", "par_cat_id", row);
+    makeElement("th", "name", row);
+    makeElement("th", "catalogue", row);
 
-    row.appendChild(thForId);
-    row.appendChild(thForParCatId);
-    row.appendChild(thForName);
-    row.appendChild(thForSlug);
-    row.appendChild(thForCatalogue);
     thead.appendChild(row);
 
-    document.body.appendChild(table);
+    // Load Data from the Database
+    setIsAllRecordLoaded(false);
+    fetch(`${Config.SERVER_URL}/categories?limit=${50000}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsAllRecordLoaded(true);
+          if (result.status === 200) {
+            result.body.map((item, index) => {
+              let dataRow = document.createElement("tr");
+              makeElement("td", item.id.toString(), dataRow);
+              makeElement("td", item.par_cat_id.toString(), dataRow);
+              makeElement("td", item.name, dataRow);
+              makeElement("td", item.catalogue, dataRow);
 
-    tableToCSV("sub-category.csv");
+              thead.appendChild(dataRow);
+            });
+            tableToCSV("sub-category.csv", table);
+            // setAllRecords(result.body || []);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+          setIsAllRecordLoaded(true);
+        }
+      );
   };
 
   return (
@@ -159,7 +195,20 @@ const EditSubCatFromCSV = () => {
                       className="btn btn-info"
                       type="button"
                     >
-                      <i className="fa fa-download"></i> Download CSV Format
+                      {isAllRecordLoaded ? (
+                        <span>
+                          <i className="fa fa-download"></i> Download CSV Format
+                        </span>
+                      ) : (
+                        <div>
+                          <span
+                            className="spinner-border spinner-border-sm mr-1"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Loading..
+                        </div>
+                      )}
                     </button>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Papa from "papaparse";
 import { useState } from "react";
 import Config from "../../../config/Config";
@@ -10,6 +10,7 @@ const EditColorFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
+  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -91,6 +92,14 @@ const EditColorFromCSV = () => {
       );
   };
 
+  const makeElement = (elemName, innerText = null) => {
+    const elem = document.createElement(elemName);
+    if (innerText) {
+      elem.innerHTML = innerText;
+    }
+    return elem;
+  };
+
   const downloadCSVHandler = () => {
     let table = document.createElement("table");
     table.setAttribute("id", "download-csv");
@@ -98,18 +107,45 @@ const EditColorFromCSV = () => {
     table.appendChild(thead);
 
     let row = document.createElement("tr");
-    let thForId = document.createElement("th");
-    let thForName = document.createElement("th");
-    thForId.innerHTML = "id";
-    thForName.innerHTML = "name";
-
+    let thForId = makeElement("th", "id");
+    let thForName = makeElement("th", "name");
     row.appendChild(thForId);
     row.appendChild(thForName);
     thead.appendChild(row);
 
-    document.body.appendChild(table);
-
-    tableToCSV("colors.csv");
+    // Load Data from the Database
+    setIsAllRecordLoaded(false);
+    fetch(`${Config.SERVER_URL}/colors?limit=${50000}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsAllRecordLoaded(true);
+          if (result.status === 200) {
+            result.body.map((item, index) => {
+              let dataRow = document.createElement("tr");
+              let thForId = makeElement("th", item.id.toString());
+              let thForName = makeElement("th", item.name);
+              dataRow.appendChild(thForId);
+              dataRow.appendChild(thForName);
+              thead.appendChild(dataRow);
+            });
+            tableToCSV("colors.csv", table);
+            // setAllRecords(result.body || []);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+          setIsAllRecordLoaded(true);
+        }
+      );
   };
 
   return (
@@ -147,7 +183,20 @@ const EditColorFromCSV = () => {
                       className="btn btn-info"
                       type="button"
                     >
-                      <i className="fa fa-download"></i> Download CSV Format
+                      {isAllRecordLoaded ? (
+                        <span>
+                          <i className="fa fa-download"></i> Download CSV Format
+                        </span>
+                      ) : (
+                        <div>
+                          <span
+                            className="spinner-border spinner-border-sm mr-1"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Loading..
+                        </div>
+                      )}
                     </button>
                   </div>
                 </div>

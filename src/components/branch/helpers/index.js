@@ -1,9 +1,10 @@
-export default function tableToCSV(fileName = "csv-format.csv") {
+export default function tableToCSV(fileName = "csv-format.csv", table) {
   // Variable to store the final csv data
   var csv_data = [];
 
   // Get each row data
-  var rows = document.getElementsByTagName("tr");
+  var rows = table.getElementsByTagName("tr");
+
   for (var i = 0; i < rows.length; i++) {
     // Get each column data
     var cols = rows[i].querySelectorAll("td,th");
@@ -30,6 +31,7 @@ export default function tableToCSV(fileName = "csv-format.csv") {
 export function downloadCSVFile(csv_data, fileName) {
   // Create CSV file object and feed
   // our csv_data into it
+
   let CSVFile = new Blob([csv_data], {
     type: "text/csv",
   });
@@ -52,6 +54,6 @@ export function downloadCSVFile(csv_data, fileName) {
   temp_link.click();
   document.body.removeChild(temp_link);
 
-  const table = document.querySelector("#download-csv");
-  document.body.removeChild(table);
+  // const table = document.querySelector("#download-csv");
+  // document.body.removeChild(table);
 }
