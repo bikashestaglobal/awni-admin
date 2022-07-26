@@ -719,6 +719,7 @@ function AddProduct() {
                     className="form-control"
                   />
                 </div>
+
                 <div className="col-md-6">
                   {defaultImages ? (
                     <div className={"form-group"}>

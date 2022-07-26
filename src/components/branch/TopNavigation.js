@@ -75,7 +75,12 @@ function TopNavigation() {
                 <img
                   src="/assets/images/awni-logo.png"
                   className="dark-logo"
-                  style={{ width: "120px" }}
+                  style={{
+                    width: "100px",
+                    height: "40px",
+                    marginTop: "10px",
+                    marginLeft: "10px",
+                  }}
                 />
                 {/* <!-- Light Logo text -->     */}
                 <img
@@ -174,7 +179,7 @@ function TopNavigation() {
             {/* <!-- User profile and search --> */}
             <ul className="navbar-nav my-lg-0">
               {/*<!-- Comment -->*/}
-              <li className="nav-item dropdown">
+              {/* <li className="nav-item dropdown">
                 <Link
                   className="nav-link dropdown-toggle text-muted text-muted  waves-dark"
                   to=""
@@ -196,9 +201,8 @@ function TopNavigation() {
                     </li>
                     <li>
                       <div className="message-center">
-                        {/* <!-- Message --> */}
-
-                        {/* <Link to={'/'}>
+                        Message
+                        <Link to={"/"}>
                           <div className="btn btn-primary btn-circle">
                             <i className="ti-user"></i>
                           </div>
@@ -209,7 +213,7 @@ function TopNavigation() {
                             </span>
                             <span className="time">9:02 AM</span>
                           </div>
-                        </Link> */}
+                        </Link>
                       </div>
                     </li>
                     <li>
@@ -220,7 +224,7 @@ function TopNavigation() {
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li> */}
 
               {/* <!-- End Comment --> */}
 

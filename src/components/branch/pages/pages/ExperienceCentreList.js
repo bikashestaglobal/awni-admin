@@ -215,7 +215,7 @@ function ExperienceCentreList(props) {
                             <th>ADDRESS</th>
                             <th>MOBILE</th>
                             <th>MOBILE 2</th>
-                            <th>LOCATION</th>
+                            {/* <th>LOCATION</th> */}
                             <th>CREATED AT</th>
                             <th className="text-center">ACTION</th>
                           </tr>
@@ -229,7 +229,7 @@ function ExperienceCentreList(props) {
                                 <td>{record.address}</td>
                                 <td>{record.mobile_1}</td>
                                 <td>{record.mobile_2}</td>
-                                <td>
+                                {/* <td>
                                   {record.google_map ? (
                                     <a
                                       href={record.google_map}
@@ -241,7 +241,7 @@ function ExperienceCentreList(props) {
                                   ) : (
                                     ""
                                   )}
-                                </td>
+                                </td> */}
 
                                 <td>
                                   {date.format(

@@ -155,6 +155,28 @@ const AddExperienceCentre = () => {
                   />
                 </div>
 
+                {/* GOOGLE MAP PREVIEW */}
+                {formData.google_map ? (
+                  <div className={"form-group col-md-12"}>
+                    <div className="pb-2">
+                      <label htmlFor="" className="text-dark h6 active">
+                        GOOGLE MAP PREVIEW !
+                      </label>
+                    </div>
+                    <iframe
+                      src={formData.google_map}
+                      width="100%"
+                      height="300"
+                      style={{ border: 0 }}
+                      allowfullscreen=""
+                      loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                  </div>
+                ) : (
+                  ""
+                )}
+
                 <div className={"form-group col-md-12"}>
                   <label htmlFor="" className="text-dark h6 active">
                     ADDRESS !
