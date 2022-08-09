@@ -173,6 +173,17 @@ const AddColorFromCSV = () => {
             >
               {/* Color Details */}
               <div className={"row shadow-sm bg-white py-3"}>
+                <div className="col-md-12">
+                  <button
+                    className="btn btn-info"
+                    type="button"
+                    onClick={(evt) => {
+                      history.goBack();
+                    }}
+                  >
+                    <i className="fa fa-arrow-left"></i> Go Back
+                  </button>
+                </div>
                 <div className="col-md-12 d-flex justify-content-between">
                   <h3 className={"my-3 text-info"}>Upload CSV File</h3>
                   <div className="">

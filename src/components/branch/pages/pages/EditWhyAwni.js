@@ -160,12 +160,12 @@ const EditWhyAwni = () => {
         {/* <!-- ============================================================== --> */}
         <div className="row page-titles">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor">Parent Category</h3>
+            <h3 className="text-themecolor">Why Awni</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <a href="#">Admin</a>
               </li>
-              <li className="breadcrumb-item active">Update Category</li>
+              <li className="breadcrumb-item active">Edit Why Awni</li>
             </ol>
           </div>
         </div>
@@ -179,6 +179,17 @@ const EditWhyAwni = () => {
             >
               {/* Why Awmi Details */}
               <div className={"row shadow-sm bg-white py-3"}>
+                <div className="col-md-12">
+                  <button
+                    className="btn btn-info"
+                    type="button"
+                    onClick={(evt) => {
+                      history.goBack();
+                    }}
+                  >
+                    <i className="fa fa-arrow-left"></i> Go Back
+                  </button>
+                </div>
                 <div className="col-md-12">
                   <h3 className={"my-3 text-info"}>Why Awni Details</h3>
                 </div>

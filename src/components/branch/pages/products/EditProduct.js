@@ -119,7 +119,7 @@ function EditProduct() {
       cat_id: selectSCat.value,
       child_cat_id: selectCCat.value,
       color_id: selectColor.value,
-      default_image: defaultImages,
+      default_image: defaultImages == "null" ? "" : defaultImages,
     };
 
     fetch(`${Config.SERVER_URL}/products/${id}`, {
@@ -224,61 +224,56 @@ function EditProduct() {
   };
 
   const fileDeleteHandler = (image, index, type, imageId) => {
-    console.log(imageId);
-
     // Create a reference to the file to delete
-    const fileRef = storage.refFromURL(image);
-    // Delete the file
-    fileRef
-      .delete()
-      .then(() => {
-        // File deleted successfully
-        if (type == "default_image") {
-          setDefaultImages("null");
-          setDefaultImgProgress("");
-          fetch(`${Config.SERVER_URL}/products/${id}`, {
-            method: "PUT",
-            body: JSON.stringify({ default_image: "null" }),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem(
-                "jwt_branch_token"
-              )}`,
-            },
-          })
-            .then((res) => res.json())
-            .then(
-              (result) => {
-                if (result.status === 200) {
-                  M.toast({ html: result.message, classes: "bg-success" });
-                } else {
-                  const errorKeys = Object.keys(result.errors);
-                  errorKeys.forEach((key) => {
-                    M.toast({ html: result.errors[key], classes: "bg-danger" });
-                  });
-                  M.toast({ html: result.message, classes: "bg-danger" });
-                }
-              },
-              (error) => {
-                M.toast({ html: error, classes: "bg-danger" });
-              }
-            );
-        } else {
-          let pImages = [...previewImages];
-          pImages.splice(index, 1);
+    // const fileRef = storage.refFromURL(image);
+    // // Delete the file
+    // fileRef
+    //   .delete()
+    //   .then(() => {
+    // File deleted successfully
+    if (type == "default_image") {
+      setDefaultImages("null");
+      setDefaultImgProgress("");
+      // fetch(`${Config.SERVER_URL}/products/${id}`, {
+      //   method: "PUT",
+      //   body: JSON.stringify({ default_image: "null" }),
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      //   },
+      // })
+      //   .then((res) => res.json())
+      //   .then(
+      //     (result) => {
+      //       if (result.status === 200) {
+      //         M.toast({ html: result.message, classes: "bg-success" });
+      //       } else {
+      //         const errorKeys = Object.keys(result.errors);
+      //         errorKeys.forEach((key) => {
+      //           M.toast({ html: result.errors[key], classes: "bg-danger" });
+      //         });
+      //         M.toast({ html: result.message, classes: "bg-danger" });
+      //       }
+      //     },
+      //     (error) => {
+      //       M.toast({ html: error, classes: "bg-danger" });
+      //     }
+      //   );
+    } else {
+      let pImages = [...previewImages];
+      pImages.splice(index, 1);
 
-          let pInfos = [...progressInfos];
-          pInfos.splice(index, 1);
-          setProgressInfos(pInfos);
-          setPreviewImages(pImages);
-          productImageDeleteHandler(imageId);
-          setProgressInfos([]);
-        }
-      })
-      .catch((error) => {
-        // Uh-oh, an error occurred!
-        M.toast({ html: error, classes: "bg-danger" });
-      });
+      let pInfos = [...progressInfos];
+      pInfos.splice(index, 1);
+      setProgressInfos(pInfos);
+      setPreviewImages(pImages);
+      productImageDeleteHandler(imageId);
+      setProgressInfos([]);
+    }
+    // })
+    // .catch((error) => {
+    //   M.toast({ html: error, classes: "bg-danger" });
+    // });
   };
 
   // Color Submit Handler
@@ -699,9 +694,21 @@ function EditProduct() {
             <form
               onSubmit={submitHandler}
               className="form-horizontal form-material"
+              id="productUpdateForm"
             >
               {/* Product Details */}
               <div className={"row shadow-sm bg-white py-3"}>
+                <div className="col-md-12">
+                  <button
+                    className="btn btn-info"
+                    type="button"
+                    onClick={(evt) => {
+                      history.goBack();
+                    }}
+                  >
+                    <i className="fa fa-arrow-left"></i> Go Back
+                  </button>
+                </div>
                 <div className="col-md-12">
                   <h3 className={"my-3 text-info"}>Product Details</h3>
                 </div>
@@ -1029,29 +1036,6 @@ function EditProduct() {
                     ""
                   )}
                 </div>
-
-                {/* Submit Button */}
-                <div className={"form-group col-md-12"}>
-                  <button
-                    className="btn btn-info rounded px-3 py-2"
-                    type={"submit"}
-                  >
-                    {isAddLoaded ? (
-                      <div>
-                        <i className="fas fa-send"></i> Update Product
-                      </div>
-                    ) : (
-                      <div>
-                        <span
-                          className="spinner-border spinner-border-sm mr-1"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Loading..
-                      </div>
-                    )}
-                  </button>
-                </div>
               </div>
             </form>
 
@@ -1178,6 +1162,32 @@ function EditProduct() {
                 </div>
               </div>
             </form>
+
+            <div className="row shadow-sm bg-white">
+              {/* Submit Button */}
+              <div className={"form-group col-md-12"}>
+                <button
+                  form="productUpdateForm"
+                  className="btn btn-info rounded px-3 py-2"
+                  type={"submit"}
+                >
+                  {isAddLoaded ? (
+                    <div>
+                      <i className="fas fa-send"></i> Update Product
+                    </div>
+                  ) : (
+                    <div>
+                      <span
+                        className="spinner-border spinner-border-sm mr-1"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Loading..
+                    </div>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import $ from "jquery";
 function LeftNavigation() {
   const history = useHistory();
   const { state, dispatch } = useContext(BranchContext);
+  const [activeMenu, setActiveMenu] = useState("");
 
   // Fetching the data
   useEffect(() => {}, []);
@@ -23,6 +24,10 @@ function LeftNavigation() {
   // Remove Left Navigation When Click On The Link
   const removeLeftNavigation = (evt) => {
     $("body").removeClass("show-sidebar");
+  };
+
+  const activeMenuHandler = (name) => {
+    setActiveMenu(name);
   };
 
   // Return Function
@@ -68,7 +73,10 @@ function LeftNavigation() {
                   <Link
                     to="/awni-admin/profile"
                     className="dropdown-item"
-                    onClick={removeLeftNavigation}
+                    onClick={(evt) => {
+                      removeLeftNavigation();
+                      // activeMenuHandler();
+                    }}
                   >
                     <i className="ti-user"></i> My Profile
                   </Link>
@@ -78,7 +86,10 @@ function LeftNavigation() {
                   <Link
                     to="/awni-admin/profile"
                     className="dropdown-item"
-                    onClick={removeLeftNavigation}
+                    onClick={(evt) => {
+                      removeLeftNavigation();
+                      // activeMenuHandler();
+                    }}
                   >
                     <i className="ti-settings"></i> Account Setting
                   </Link>
@@ -96,50 +107,96 @@ function LeftNavigation() {
             {/* <!-- Sidebar navigation--> */}
             <nav className="sidebar-nav">
               <ul id="sidebarnav">
-                <li className="nav-small-cap">PERSONAL</li>
+                {/* <li className="nav-small-cap">PERSONAL</li> */}
                 {/* Dashboard */}
-                <li>
-                  <Link
-                    className="has-arrow waves-dark"
-                    to="/awni-admin"
-                    onClick={removeLeftNavigation}
-                  >
-                    <i className="mdi mdi-gauge"></i>
-                    <span className="hide-menu">Dashboard </span>
-                  </Link>
-                </li>
-                {/* Range */}
-                <li>
-                  <Link
-                    className="has-arrow waves-dark"
-                    to="/awni-admin/ranges"
-                    onClick={removeLeftNavigation}
-                  >
-                    <i className="mdi mdi-gauge"></i>
-                    <span className="hide-menu">Range </span>
-                  </Link>
-                </li>
-
-                {/* Range */}
-                <li>
-                  <Link
-                    className="has-arrow waves-dark"
-                    to="/awni-admin/colors"
-                    onClick={removeLeftNavigation}
-                  >
-                    <i className="mdi mdi-gauge"></i>
-                    <span className="hide-menu">Color </span>
-                  </Link>
-                </li>
-
-                {/* Setup Section */}
-                <li>
+                <li className="active">
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
                     aria-expanded="false"
                   >
                     <i className="mdi mdi-settings"></i>
+                    <span className="hide-menu">DASHBOARD</span>
+                  </Link>
+
+                  <ul aria-expanded="false" className="collapse">
+                    <li>
+                      <Link
+                        className={activeMenu == "" ? "activeLink" : ""}
+                        to="/awni-admin"
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("");
+                        }}
+                      >
+                        Dashboard
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
+                {/* Range */}
+                <li>
+                  <Link
+                    className="has-arrow waves-dark"
+                    to="/"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi mdi-arrange-bring-forward"></i>
+                    <span className="hide-menu">RANGE</span>
+                  </Link>
+
+                  <ul aria-expanded="false" className="collapse">
+                    <li>
+                      <Link
+                        to="/awni-admin/ranges"
+                        className={activeMenu == "range" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("range");
+                        }}
+                      >
+                        Range List
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
+                {/* Colors */}
+                <li>
+                  <Link
+                    className="has-arrow waves-dark"
+                    to="/"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi mdi-format-color-fill"></i>
+                    <span className="hide-menu">COLORS</span>
+                  </Link>
+
+                  <ul aria-expanded="false" className="collapse">
+                    <li>
+                      <Link
+                        to="/awni-admin/colors"
+                        className={activeMenu == "color" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("color");
+                        }}
+                      >
+                        Color List
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
+                {/* Pages Section */}
+                <li>
+                  <Link
+                    className="has-arrow waves-dark"
+                    to="/"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi mdi-book-open-page-variant"></i>
                     <span className="hide-menu">PAGES</span>
                   </Link>
 
@@ -147,7 +204,11 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/contact"
-                        onClick={removeLeftNavigation}
+                        className={activeMenu == "contact" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("contact");
+                        }}
                       >
                         Contact
                       </Link>
@@ -155,7 +216,11 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/about"
-                        onClick={removeLeftNavigation}
+                        className={activeMenu == "about" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("about");
+                        }}
                       >
                         About
                       </Link>
@@ -163,7 +228,11 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/whyAwni"
-                        onClick={removeLeftNavigation}
+                        className={activeMenu == "why-awni" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("why-awni");
+                        }}
                       >
                         About: Why Awni
                       </Link>
@@ -171,7 +240,13 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/experienceCentre"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "experience-centre" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("experience-centre");
+                        }}
                       >
                         Experience Centre
                       </Link>
@@ -186,7 +261,7 @@ function LeftNavigation() {
                     to="/"
                     aria-expanded="false"
                   >
-                    <i className="mdi mdi-account-plus"></i>
+                    <i className="mdi mdi-account-check"></i>
                     <span className="hide-menu">CUSTOMER</span>
                   </Link>
 
@@ -194,7 +269,13 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/customers"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "customer-list" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("customer-list");
+                        }}
                       >
                         Customers List
                       </Link>
@@ -217,7 +298,13 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/enquiries"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "enquiry-list" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("enquiry-list");
+                        }}
                       >
                         Customers Enquiries
                       </Link>
@@ -232,15 +319,21 @@ function LeftNavigation() {
                     to="/"
                     aria-expanded="false"
                   >
-                    <i className="mdi mdi-account-plus"></i>
-                    <span className="hide-menu">Banners</span>
+                    <i className="mdi mdi-image-area"></i>
+                    <span className="hide-menu">BANNERS</span>
                   </Link>
 
                   <ul aria-expanded="false" className="collapse">
                     <li>
                       <Link
                         to="/awni-admin/sliders"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "main-banner" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("main-banner");
+                        }}
                       >
                         Main Slider
                       </Link>
@@ -248,7 +341,13 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/banners"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "homepage-banner" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("homepage-banner");
+                        }}
                       >
                         HomePage Banner
                       </Link>
@@ -263,15 +362,21 @@ function LeftNavigation() {
                     to="/"
                     aria-expanded="false"
                   >
-                    <i className="mdi mdi-book-open-variant"></i>
-                    <span className="hide-menu">Category</span>
+                    <i className="mdi mdi-content-duplicate"></i>
+                    <span className="hide-menu">CATEGORY</span>
                   </Link>
 
                   <ul aria-expanded="false" className="collapse">
                     <li>
                       <Link
                         to="/awni-admin/parentCategory"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "parent-category" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("parent-category");
+                        }}
                       >
                         Parent Category
                       </Link>
@@ -279,7 +384,13 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/subCategory"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "sub-category" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("sub-category");
+                        }}
                       >
                         Sub Category
                       </Link>
@@ -287,7 +398,13 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/childCategory"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "child-category" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("child-category");
+                        }}
                       >
                         Child Category
                       </Link>
@@ -302,7 +419,7 @@ function LeftNavigation() {
                     to="/"
                     aria-expanded="false"
                   >
-                    <i className="mdi mdi-note-multiple-outline"></i>
+                    <i className="mdi mdi-folder-multiple"></i>
                     <span className="hide-menu">PRODUCTS</span>
                   </Link>
 
@@ -310,7 +427,13 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/products"
-                        onClick={removeLeftNavigation}
+                        className={
+                          activeMenu == "product-list" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("product-list");
+                        }}
                       >
                         Product List
                       </Link>
@@ -333,7 +456,10 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/newOrders"
-                        onClick={removeLeftNavigation}
+                        onClick={(evt)=>{
+                          removeLeftNavigation();
+                          activeMenuHandler()
+                        }}
                       >
                         New Orders
                       </Link>
@@ -341,7 +467,10 @@ function LeftNavigation() {
                     <li>
                       <Link
                         to="/awni-admin/orders"
-                        onClick={removeLeftNavigation}
+                        onClick={(evt)=>{
+                          removeLeftNavigation();
+                          activeMenuHandler()
+                        }}
                       >
                         Order List
                       </Link>
@@ -361,7 +490,10 @@ function LeftNavigation() {
               className="link"
               data-toggle="tooltip"
               title="Settings"
-              onClick={removeLeftNavigation}
+              onClick={(evt) => {
+                removeLeftNavigation();
+                activeMenuHandler();
+              }}
             >
               <i className="ti-settings"></i>
             </Link>
@@ -371,7 +503,10 @@ function LeftNavigation() {
               className="link"
               data-toggle="tooltip"
               title="Email"
-              onClick={removeLeftNavigation}
+              onClick={(evt) => {
+                removeLeftNavigation();
+                activeMenuHandler();
+              }}
             >
               <i className="mdi mdi-gmail"></i>
             </Link>

@@ -212,7 +212,7 @@ function HomepageBannerList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>TITLE</th>
                             <th>WEBPAGE</th>
                             <th>POSITION</th>
@@ -226,7 +226,7 @@ function HomepageBannerList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.title}</td>
                                 <td>{record.webpage_url}</td>
                                 <td>{record.position}</td>

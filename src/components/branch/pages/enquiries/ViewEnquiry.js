@@ -90,6 +90,17 @@ const ViewCustomer = () => {
           className={"row page-titles px-1 my-0 shadow-none"}
           style={{ background: "none" }}
         >
+          <div className="col-md-12">
+            <button
+              className="btn btn-info"
+              type="button"
+              onClick={(evt) => {
+                history.goBack();
+              }}
+            >
+              <i className="fa fa-arrow-left"></i> Go Back
+            </button>
+          </div>
           <div className={"col-md-12"}>
             {/* Data */}
             {isCustomerLoaded ? (

@@ -210,7 +210,7 @@ function ExperienceCentreList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th>ADDRESS</th>
                             <th>MOBILE</th>
@@ -224,7 +224,7 @@ function ExperienceCentreList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.name}</td>
                                 <td>{record.address}</td>
                                 <td>{record.mobile_1}</td>

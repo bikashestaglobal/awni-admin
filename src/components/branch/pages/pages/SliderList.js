@@ -210,7 +210,7 @@ function SliderList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>POSITION</th>
                             <th>IMAGE</th>
                             <th>CREATED AT</th>
@@ -221,7 +221,7 @@ function SliderList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.position}</td>
                                 <td>
                                   {record.image != "null" ? (

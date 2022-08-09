@@ -293,7 +293,7 @@ const CustomerList = (props) => {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th>MOBILE</th>
                             <th>EMAIL</th>
@@ -307,7 +307,7 @@ const CustomerList = (props) => {
                           {allCustomers.map((customer, index) => {
                             return (
                               <tr key={index}>
-                                <td>{index + 1}</td>
+                                <td>{customer.id}</td>
                                 <td>{customer.name}</td>
                                 <td>{customer.mobile}</td>
                                 <td>{customer.email}</td>

@@ -56,7 +56,6 @@ const AddChildCategory = () => {
       .then((res) => res.json())
       .then(
         (result) => {
-          console.log(result);
           if (result.status === 200) {
             M.toast({ html: result.message, classes: "bg-success" });
             history.goBack();
@@ -238,6 +237,17 @@ const AddChildCategory = () => {
             >
               {/* Category Details */}
               <div className={"row shadow-sm bg-white py-3"}>
+                <div className="col-md-12">
+                  <button
+                    className="btn btn-info"
+                    type="button"
+                    onClick={(evt) => {
+                      history.goBack();
+                    }}
+                  >
+                    <i className="fa fa-arrow-left"></i> Go Back
+                  </button>
+                </div>
                 <div className="col-md-12">
                   <h3 className={"my-3 text-info"}>Category Details</h3>
                 </div>

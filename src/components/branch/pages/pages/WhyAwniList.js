@@ -193,7 +193,7 @@ function WhyAwniList(props) {
                       pathname: "/awni-admin/whyAwni/add",
                     }}
                   >
-                    <span className={"fas fa-plus"}></span> Add Image
+                    <span className={"fas fa-plus"}></span> Add
                   </Link>
                 </div>
               </div>
@@ -210,7 +210,7 @@ function WhyAwniList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>TITLE</th>
                             <th>IMAGE</th>
                             <th>CREATED AT</th>
@@ -221,7 +221,7 @@ function WhyAwniList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.title}</td>
                                 <td>
                                   {record.image != "null" ? (

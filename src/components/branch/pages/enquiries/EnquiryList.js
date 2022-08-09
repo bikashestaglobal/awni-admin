@@ -269,7 +269,7 @@ function EnquiryList(props) {
                       >
                         <thead>
                           <tr>
-                            <th>SN</th>
+                            <th>#ID</th>
                             <th>NAME</th>
                             <th>EMAIL</th>
                             <th>MOBILE</th>
@@ -285,7 +285,7 @@ function EnquiryList(props) {
                           {allRecords.map(function (record, index) {
                             return (
                               <tr key={index}>
-                                <td>{++index}</td>
+                                <td>{record.id}</td>
                                 <td>{record.name}</td>
                                 <td>{record.email}</td>
                                 <td>{record.mobile}</td>
