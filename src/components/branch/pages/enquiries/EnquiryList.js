@@ -200,8 +200,24 @@ function EnquiryList(props) {
             {/* Heading */}
             <div className={"card mb-0 mt-2 border-0 rounded"}>
               <div className={"card-body pb-0 pt-2"}>
-                <div>
-                  <div className="d-flex float-left">
+                <div className="">
+                  <h4>
+                    {" "}
+                    Total:
+                    {isAllRecordLoaded ? (
+                      pagination.totalRecord
+                    ) : (
+                      <span
+                        className="spinner-border spinner-border-sm mr-1"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                    )}{" "}
+                    Records
+                  </h4>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex ">
                     <h4 className="mt-2 mr-2">Search: </h4>
                     <input
                       type="search"
@@ -215,7 +231,7 @@ function EnquiryList(props) {
                   </div>
 
                   {/* <!-- Button trigger modal --> */}
-                  <div className="float-right d-flex">
+                  <div className=" d-flex">
                     <div className="">
                       <select
                         className="p-2 mr-2"
