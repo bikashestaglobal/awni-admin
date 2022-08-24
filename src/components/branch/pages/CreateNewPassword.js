@@ -4,27 +4,46 @@ import M from "materialize-css";
 import { BranchContext } from "../Branch";
 import Config from "../../config/Config";
 
-function Login() {
+function CreateNewPassword() {
   // History Initialization
   const history = useHistory();
 
   // Create State
-  const [email, setEmail] = useState("codescroller@gmail.com");
-  const [password, setPassword] = useState("123456");
+  const [password, setPassword] = useState("");
+  const [cPassword, setCPassword] = useState("");
   const [isLoaded, setIsLoaded] = useState(true);
 
   // Use Context
   const { state, dispatch } = useContext(BranchContext);
+
   // Submit Handler
-  const submitHandler = (evt) => {
+  const createPasswordHandler = (evt) => {
     evt.preventDefault();
+
+    const { email } = JSON.parse(localStorage.getItem("resetPassword")) || {};
+
+    if (!email) {
+      M.toast({ html: "Please Enter Email !", classes: "bg-success" });
+      history.push("/awni-admin/forget-password");
+      return;
+    }
+
+    if (!password || !cPassword) {
+      M.toast({ html: "Enter the Password", classes: "bg-danger" });
+      return;
+    }
+
+    if (password !== cPassword) {
+      M.toast({ html: "Confirm Password is not Same", classes: "bg-danger" });
+      return;
+    }
     setIsLoaded(false);
     const branchData = {
       email,
       password,
     };
-    fetch(Config.SERVER_URL + "/admin/login", {
-      method: "POST",
+    fetch(Config.SERVER_URL + "/admin/createPassword", {
+      method: "PUT",
       body: JSON.stringify(branchData),
       headers: {
         "Content-Type": "application/json",
@@ -36,10 +55,8 @@ function Login() {
           setIsLoaded(true);
           if (result.status === 200) {
             M.toast({ html: result.message, classes: "bg-success" });
-            localStorage.setItem("branch", JSON.stringify(result.body));
-            localStorage.setItem("jwt_branch_token", result.body.token);
-            dispatch({ type: "BRANCH", payload: result.data });
-            window.location = "/awni-admin";
+            localStorage.removeItem("resetPassword");
+            history.push("/awni-admin/login");
           } else {
             if (result.errors.email)
               M.toast({ html: result.errors.email, classes: "bg-danger" });
@@ -62,24 +79,14 @@ function Login() {
         <div className={"col-md-4 m-auto"}>
           <div className={"card shadow-sm bg-white rounded-0 border-0"}>
             <div className={"card-body"}>
-              <div className={"text-center mb-3"}>
-                <img
-                  className={"img img-fluid"}
-                  src={"/assets/images/awni-logo.png"}
-                  style={{ height: "60px" }}
-                />
+              <div className={"mb-3"}>
+                <h2 className="mt-4 font-waight-bold">CREATE NEW PASSWORD !</h2>
               </div>
-              <form onSubmit={submitHandler} className={"form-material"}>
+              <form
+                onSubmit={createPasswordHandler}
+                className={"form-material"}
+              >
                 <div className={"form-group"}>
-                  <div className={"form-group mb-4"}>
-                    <input
-                      type="text"
-                      value={email}
-                      onChange={(evt) => setEmail(evt.target.value)}
-                      className="form-control"
-                      placeholder={"Enter Email"}
-                    />
-                  </div>
                   <div className={"form-group mb-4"}>
                     <input
                       type="password"
@@ -89,15 +96,22 @@ function Login() {
                       placeholder={"Enter Password"}
                     />
                   </div>
-                  <div className={"text-center"}>
-                    <button
-                      className={
-                        "btn btn-info px-4 shadow-sm rounded-0 border-0"
-                      }
-                    >
+
+                  <div className={"form-group mb-4"}>
+                    <input
+                      type="password"
+                      value={cPassword}
+                      onChange={(evt) => setCPassword(evt.target.value)}
+                      className="form-control"
+                      placeholder={"Confirm Password"}
+                    />
+                  </div>
+
+                  <div className={""}>
+                    <button className={"btn btn-info px-4 shadow-sm rounded-0"}>
                       {isLoaded ? (
                         <div>
-                          <i className="fas fa-sign-in"></i> Login
+                          <i className="fas fa-sign-in"></i> Create Password
                         </div>
                       ) : (
                         <div>
@@ -113,9 +127,7 @@ function Login() {
                   </div>
 
                   <div className={"mt-3"}>
-                    <Link to={"/awni-admin/forget-password"}>
-                      Lost your password?
-                    </Link>
+                    <Link to={"/awni-admin/login"}>Back to Login?</Link>
                   </div>
                 </div>
               </form>
@@ -126,4 +138,4 @@ function Login() {
     </div>
   );
 }
-export default Login;
+export default CreateNewPassword;

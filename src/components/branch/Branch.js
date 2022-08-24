@@ -107,6 +107,9 @@ import EditParCatFromCSV from "./pages/parentCategory/EditParCatFromCSV";
 import EditSubCatFromCSV from "./pages/subCategory/EditSubCatFromCSV";
 import EditChildCatFromCSV from "./pages/childCategory/EditChildCatFromCSV";
 import EditProductFromCSV from "./pages/products/EditProductFomCSV";
+import ForgotPassword from "./pages/ForgotPassword";
+import EnterOtp from "./pages/EnterOtp";
+import CreateNewPassword from "./pages/CreateNewPassword";
 
 // Create Context
 export const BranchContext = createContext();
@@ -130,6 +133,20 @@ const Routing = () => {
     <Switch>
       <Route exact path="/awni-admin" component={Dashboard} />
       <Route exact path="/awni-admin/login" component={Login} />
+      {/* Forget Password */}
+      <Route
+        exact
+        path="/awni-admin/forget-password"
+        component={ForgotPassword}
+      />
+      {/* Enter Otp */}
+      <Route exact path="/awni-admin/enter-otp" component={EnterOtp} />
+      {/* Create Password */}
+      <Route
+        exact
+        path="/awni-admin/create-password"
+        component={CreateNewPassword}
+      />
       <Route exact path="/awni-admin/profile" component={Profile} />
 
       {/* Parent Category */}

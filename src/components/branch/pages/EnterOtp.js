@@ -4,26 +4,34 @@ import M from "materialize-css";
 import { BranchContext } from "../Branch";
 import Config from "../../config/Config";
 
-function Login() {
+function EnterOtp() {
   // History Initialization
   const history = useHistory();
 
   // Create State
-  const [email, setEmail] = useState("codescroller@gmail.com");
-  const [password, setPassword] = useState("123456");
+  const [otp, setOtp] = useState("");
   const [isLoaded, setIsLoaded] = useState(true);
 
   // Use Context
   const { state, dispatch } = useContext(BranchContext);
+
   // Submit Handler
-  const submitHandler = (evt) => {
+  const resendOtpHandler = (evt) => {
     evt.preventDefault();
     setIsLoaded(false);
+
+    const { email } = JSON.parse(localStorage.getItem("resetPassword")) || {};
+
+    if (!email) {
+      M.toast({ html: "Please Enter Email !", classes: "bg-success" });
+      history.push("/awni-admin/forget-password");
+      return;
+    }
+
     const branchData = {
       email,
-      password,
     };
-    fetch(Config.SERVER_URL + "/admin/login", {
+    fetch(Config.SERVER_URL + "/admin/findAccount", {
       method: "POST",
       body: JSON.stringify(branchData),
       headers: {
@@ -35,16 +43,22 @@ function Login() {
         (result) => {
           setIsLoaded(true);
           if (result.status === 200) {
-            M.toast({ html: result.message, classes: "bg-success" });
-            localStorage.setItem("branch", JSON.stringify(result.body));
-            localStorage.setItem("jwt_branch_token", result.body.token);
-            dispatch({ type: "BRANCH", payload: result.data });
-            window.location = "/awni-admin";
+            // M.toast({ html: result.message, classes: "bg-success" });
+            M.toast({
+              html: "OTP Send on Your Email !",
+              classes: "bg-success",
+            });
+
+            localStorage.setItem(
+              "resetPassword",
+              JSON.stringify({
+                email: result.body.email,
+                otp: Number(result.body.otp) * 2,
+              })
+            );
           } else {
             if (result.errors.email)
               M.toast({ html: result.errors.email, classes: "bg-danger" });
-            if (result.errors.password)
-              M.toast({ html: result.errors.password, classes: "bg-danger" });
             if (result.message)
               M.toast({ html: result.message, classes: "bg-danger" });
           }
@@ -56,48 +70,62 @@ function Login() {
       );
   };
 
+  // Submit Handler
+  const verifyOtpHandler = (evt) => {
+    evt.preventDefault();
+
+    const { otp: sendOtp } =
+      JSON.parse(localStorage.getItem("resetPassword")) || {};
+    if (otp == Number(sendOtp) / 2) {
+      M.toast({ html: "OPT Verified Successfully !", classes: "bg-success" });
+      history.push("/awni-admin/create-password");
+    } else {
+      M.toast({ html: "You Entered wrong OTP !", classes: "bg-danger" });
+    }
+  };
+
   return (
     <div className={"container-fluid pt-5"} style={{ height: "100vh" }}>
       <div className={"row"} style={{ paddingTop: "10%" }}>
         <div className={"col-md-4 m-auto"}>
           <div className={"card shadow-sm bg-white rounded-0 border-0"}>
             <div className={"card-body"}>
-              <div className={"text-center mb-3"}>
-                <img
-                  className={"img img-fluid"}
-                  src={"/assets/images/awni-logo.png"}
-                  style={{ height: "60px" }}
-                />
+              <div className={"mb-3"}>
+                <h2 className="mt-4 font-waight-bold">VERIFY OTP !</h2>
               </div>
-              <form onSubmit={submitHandler} className={"form-material"}>
+              <form onSubmit={verifyOtpHandler} className={"form-material"}>
                 <div className={"form-group"}>
                   <div className={"form-group mb-4"}>
                     <input
                       type="text"
-                      value={email}
-                      onChange={(evt) => setEmail(evt.target.value)}
+                      value={otp}
+                      onChange={(evt) => setOtp(evt.target.value)}
                       className="form-control"
-                      placeholder={"Enter Email"}
+                      placeholder={"1234"}
                     />
                   </div>
-                  <div className={"form-group mb-4"}>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(evt) => setPassword(evt.target.value)}
-                      className="form-control"
-                      placeholder={"Enter Password"}
-                    />
-                  </div>
-                  <div className={"text-center"}>
+
+                  <div className={""}>
                     <button
                       className={
                         "btn btn-info px-4 shadow-sm rounded-0 border-0"
                       }
                     >
+                      <div>
+                        <i className="fas fa-sign-in"></i> Verify OTP
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      className={
+                        "btn btn-outline-info px-4 shadow-sm rounded-0 ml-2"
+                      }
+                      onClick={resendOtpHandler}
+                    >
                       {isLoaded ? (
                         <div>
-                          <i className="fas fa-sign-in"></i> Login
+                          <i className="fas fa-sign-in"></i> Resend
                         </div>
                       ) : (
                         <div>
@@ -113,9 +141,7 @@ function Login() {
                   </div>
 
                   <div className={"mt-3"}>
-                    <Link to={"/awni-admin/forget-password"}>
-                      Lost your password?
-                    </Link>
+                    <Link to={"/awni-admin/login"}>Back to Login?</Link>
                   </div>
                 </div>
               </form>
@@ -126,4 +152,4 @@ function Login() {
     </div>
   );
 }
-export default Login;
+export default EnterOtp;

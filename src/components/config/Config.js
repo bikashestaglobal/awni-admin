@@ -11,7 +11,7 @@ const hostname = window.location.hostname;
 //   CLIENT_URL: "http://54.201.100.185",
 // };
 
-// Current server file
+// // Current server file
 export default {
   SERVER_URL: "http://52.26.254.71/api/v1",
   CLIENT_URL: "http://54.201.100.185",

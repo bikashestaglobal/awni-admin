@@ -49,7 +49,6 @@ function Dashboard() {
         (result) => {
           setAllProductsLoading(false);
           if (result.status == 200) {
-            console.log(result.body);
             setAllProducts(result.body.length || 0);
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
