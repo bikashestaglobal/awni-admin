@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 
@@ -57,7 +57,7 @@ const AddColor = () => {
             <h3 className="text-themecolor">Colors</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Add Color</li>
             </ol>

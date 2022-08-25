@@ -138,7 +138,7 @@ function ChildCategoryList(props) {
           setIsAllRecordLoaded(true);
         }
       );
-  }, [pagination, isDeleted, queryText]);
+  }, [pagination.skip, pagination.limit, isDeleted, queryText]);
 
   // Count Records
   useEffect(() => {
@@ -320,6 +320,7 @@ function ChildCategoryList(props) {
                             <select
                               name=""
                               id=""
+                              value={pagination.limit}
                               className="form-control"
                               onChange={limitHandler}
                             >

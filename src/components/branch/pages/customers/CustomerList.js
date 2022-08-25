@@ -145,7 +145,7 @@ const CustomerList = (props) => {
           setIsAllCustomersLoaded(true);
         }
       );
-  }, [pagination, isDeleted, queryText, filterButon]);
+  }, [pagination.skip, pagination.limit, isDeleted, queryText, filterButon]);
 
   // Count Records
   useEffect(() => {
@@ -189,7 +189,7 @@ const CustomerList = (props) => {
             <h3 className="text-themecolor m-b-0 m-t-0">Customer</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link to="/">Admin</Link>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Customer List</li>
             </ol>
@@ -394,12 +394,16 @@ const CustomerList = (props) => {
                             <select
                               name=""
                               id=""
+                              value={pagination.limit}
                               className="form-control"
                               onChange={limitHandler}
                             >
                               <option value="10">10</option>
                               <option value="20">20</option>
                               <option value="30">30</option>
+                              <option value={pagination.totalRecord}>
+                                All
+                              </option>
                             </select>
                           </div>
                           <div className="pl-1">

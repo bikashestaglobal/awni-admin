@@ -49,7 +49,6 @@ const Contact = () => {
       .then((res) => res.json())
       .then(
         (result) => {
-          console.log(result);
           if (result.status === 200) {
             M.toast({ html: result.message, classes: "bg-success" });
           } else {
@@ -121,7 +120,7 @@ const Contact = () => {
             <h3 className="text-themecolor">Contact</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link to="/awni-admin">Home</Link>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Update Contact</li>
             </ol>

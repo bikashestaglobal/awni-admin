@@ -4,6 +4,7 @@ import $ from "jquery";
 import { Link } from "react-router-dom";
 import Config from "../../../config/Config";
 import date from "date-and-time";
+import ReactHtmlTableToExcel from "react-html-table-to-excel";
 // import { storage } from "../../../firebase/FirebaseConfig";
 
 //  Component Function
@@ -106,6 +107,7 @@ function ExperienceCentreList(props) {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllRecordLoaded(false);
     fetch(
       `${Config.SERVER_URL}/experienceCentres?skip=${pagination.skip}&limit=${pagination.limit}`,
       {
@@ -131,11 +133,11 @@ function ExperienceCentreList(props) {
           setIsAllRecordLoaded(true);
         }
       );
-  }, [pagination, isDeleted]);
+  }, [pagination.skip, pagination.limit, isDeleted]);
 
   // Count Records
   useEffect(() => {
-    fetch(`${Config.SERVER_URL}/experienceCentres?skip=0&limit=0`, {
+    fetch(`${Config.SERVER_URL}/experienceCentres?skip=0&limit=500000`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -153,7 +155,6 @@ function ExperienceCentreList(props) {
         },
         (error) => {
           M.toast({ html: error, classes: "bg-danger" });
-          setIsAllRecordLoaded(true);
         }
       );
   }, [isDeleted]);
@@ -206,6 +207,7 @@ function ExperienceCentreList(props) {
                   <div className="card-body py-0">
                     <div className="table-responsive">
                       <table
+                        id="table-to-xls"
                         className={"table table-bordered table-striped my-0"}
                       >
                         <thead>
@@ -286,17 +288,33 @@ function ExperienceCentreList(props) {
                       </table>
                       {/* Pagination */}
                       <div className="mt-2 d-flex justify-content-between">
-                        <div className="limit form-group shadow-sm px-3 border">
-                          <select
-                            name=""
-                            id=""
-                            className="form-control"
-                            onChange={limitHandler}
-                          >
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                          </select>
+                        <div className="d-flex justify-content-between">
+                          <div className="limit form-group shadow-sm px-3 border">
+                            <select
+                              name=""
+                              id=""
+                              value={pagination.limit}
+                              className="form-control"
+                              onChange={limitHandler}
+                            >
+                              <option value="10">10</option>
+                              <option value="20">20</option>
+                              <option value="30">30</option>
+                              <option value={pagination.totalRecord}>
+                                All
+                              </option>
+                            </select>
+                          </div>
+                          <div className="pl-1">
+                            <ReactHtmlTableToExcel
+                              id="test-table-xls-button"
+                              className="btn btn-info"
+                              table="table-to-xls"
+                              filename="experience-centre"
+                              sheet="data"
+                              buttonText="Export to Excel"
+                            />
+                          </div>
                         </div>
                         <nav aria-label="Page navigation example">
                           <ul className="pagination">
@@ -308,7 +326,7 @@ function ExperienceCentreList(props) {
                               <a
                                 className="page-link"
                                 href="#"
-                                tabindex="-1"
+                                tabIndex="-1"
                                 onClick={previousPageHandler}
                               >
                                 Previous
@@ -316,7 +334,7 @@ function ExperienceCentreList(props) {
                             </li>
                             {[...Array(pagination.totalPage)].map((_, i) => {
                               return (
-                                <li className="page-item">
+                                <li className="page-item" key={i}>
                                   <a
                                     className="page-link"
                                     href="#"

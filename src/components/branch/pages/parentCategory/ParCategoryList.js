@@ -136,7 +136,7 @@ function ParCategoryList(props) {
           setIsAllRecordLoaded(true);
         }
       );
-  }, [pagination, isDeleted, queryText]);
+  }, [pagination.limit, pageHandler.skip, isDeleted, queryText]);
 
   // Count Records
   useEffect(() => {
@@ -335,6 +335,7 @@ function ParCategoryList(props) {
                             <select
                               name=""
                               id=""
+                              value={pagination.limit}
                               className="form-control"
                               onChange={limitHandler}
                             >

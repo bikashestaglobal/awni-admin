@@ -680,7 +680,7 @@ function EditProduct() {
             <h3 className="text-themecolor m-b-0 m-t-0">Products</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link to="/">Admin</Link>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Add Product</li>
             </ol>

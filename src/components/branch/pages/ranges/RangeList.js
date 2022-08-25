@@ -134,7 +134,7 @@ function RangeList(props) {
           setIsAllRecordLoaded(true);
         }
       );
-  }, [pagination, isDeleted, queryText]);
+  }, [pagination.skip, pagination.limit, isDeleted, queryText]);
 
   // Count Records
   useEffect(() => {
@@ -308,6 +308,7 @@ function RangeList(props) {
                             <select
                               name=""
                               id=""
+                              value={pagination.limit}
                               className="form-control"
                               onChange={limitHandler}
                             >

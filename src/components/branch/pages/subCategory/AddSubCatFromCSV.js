@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import tableToCSV from "../../helpers";
 
 const AddSubCatFromCSV = () => {
@@ -147,7 +147,7 @@ const AddSubCatFromCSV = () => {
             <h3 className="text-themecolor">Sub Category</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Add Category</li>
             </ol>

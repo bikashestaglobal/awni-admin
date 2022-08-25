@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import tableToCSV from "../../helpers";
 
 const AddProductFromCSV = () => {
@@ -250,7 +250,7 @@ const AddProductFromCSV = () => {
             <h3 className="text-themecolor">Products</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Add Product</li>
             </ol>

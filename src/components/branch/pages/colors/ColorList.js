@@ -176,7 +176,7 @@ const ColorList = (props) => {
             <h3 className="text-themecolor m-b-0 m-t-0">Colors</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link to="/">Admin</Link>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Color List</li>
             </ol>
@@ -309,6 +309,7 @@ const ColorList = (props) => {
                             <select
                               name=""
                               id=""
+                              value={pagination.limit}
                               className="form-control"
                               onChange={limitHandler}
                             >
@@ -325,7 +326,7 @@ const ColorList = (props) => {
                               id="test-table-xls-button"
                               className="btn btn-info"
                               table="table-to-xls"
-                              filename="colors.csv"
+                              filename="colors"
                               sheet="color"
                               buttonText="Export to Excel"
                             />

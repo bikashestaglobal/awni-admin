@@ -137,7 +137,7 @@ function SubCategoryList(props) {
           setIsAllRecordLoaded(true);
         }
       );
-  }, [pagination, isDeleted, queryText]);
+  }, [pagination.limit, pagination.skip, isDeleted, queryText]);
 
   // Count Records
   useEffect(() => {
@@ -333,6 +333,7 @@ function SubCategoryList(props) {
                             <select
                               name=""
                               id=""
+                              value={pagination.limit}
                               className="form-control"
                               onChange={limitHandler}
                             >

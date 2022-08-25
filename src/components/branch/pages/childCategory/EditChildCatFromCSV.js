@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import tableToCSV from "../../helpers";
 
 const EditChildCatFromCSV = () => {
@@ -37,10 +37,10 @@ const EditChildCatFromCSV = () => {
           // Get data from array and call the api
           objects.map((item, i) => {
             if (item.id != "") {
-              item.slug = item.name
-                .toLowerCase()
-                .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
-                .replace(/\s+/g, "-");
+              // item.slug = item.name
+              //   .toLowerCase()
+              //   .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
+              //   .replace(/\s+/g, "-");
               submitHandler(item);
             }
           });
@@ -170,7 +170,7 @@ const EditChildCatFromCSV = () => {
             <h3 className="text-themecolor">Child Category</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Update Category</li>
             </ol>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 
@@ -34,9 +34,9 @@ const EditColor = () => {
             M.toast({ html: result.message, classes: "bg-success" });
             history.goBack();
           } else {
-            const errorKeys = Object.keys(result.error);
+            const errorKeys = Object.keys(result.errors);
             errorKeys.forEach((key) => {
-              M.toast({ html: result.error[key], classes: "bg-danger" });
+              M.toast({ html: result.errors[key], classes: "bg-danger" });
             });
             M.toast({ html: result.message, classes: "bg-danger" });
           }
@@ -84,7 +84,7 @@ const EditColor = () => {
             <h3 className="text-themecolor">Colors</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Update Color</li>
             </ol>

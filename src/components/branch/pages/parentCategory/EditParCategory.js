@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 import { storage } from "../../../../firebase/FirebaseConfig";
@@ -174,7 +174,7 @@ const EditParCategory = () => {
             <h3 className="text-themecolor">Parent Category</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Admin</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Update Category</li>
             </ol>
@@ -213,7 +213,9 @@ const EditParCategory = () => {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(evt) => titleChangeHandler(evt)}
+                    onChange={(evt) =>
+                      setFormData({ ...formData, name: evt.target.value })
+                    }
                     className="form-control"
                     placeholder={"Sanetery Ware"}
                   />

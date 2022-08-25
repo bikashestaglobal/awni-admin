@@ -109,7 +109,7 @@ function LeftNavigation() {
               <ul id="sidebarnav">
                 {/* <li className="nav-small-cap">PERSONAL</li> */}
                 {/* Dashboard */}
-                <li className="active">
+                <li className={activeMenu == "" ? "active" : ""}>
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -136,7 +136,7 @@ function LeftNavigation() {
                 </li>
 
                 {/* Range */}
-                <li>
+                <li className={activeMenu == "range" ? "active" : ""}>
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -163,7 +163,7 @@ function LeftNavigation() {
                 </li>
 
                 {/* Colors */}
-                <li>
+                <li className={activeMenu == "color" ? "active" : ""}>
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -190,7 +190,16 @@ function LeftNavigation() {
                 </li>
 
                 {/* Pages Section */}
-                <li>
+                <li
+                  className={
+                    activeMenu == "contact" ||
+                    activeMenu == "about" ||
+                    activeMenu == "experience-centre" ||
+                    activeMenu == "why-awni"
+                      ? "active"
+                      : ""
+                  }
+                >
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -255,7 +264,7 @@ function LeftNavigation() {
                 </li>
 
                 {/* Customer Section */}
-                <li>
+                <li className={activeMenu == "customer-list" ? "active" : ""}>
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -284,7 +293,7 @@ function LeftNavigation() {
                 </li>
 
                 {/* Enquiry Section */}
-                <li>
+                <li className={activeMenu == "enquiry-list" ? "active" : ""}>
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -313,7 +322,14 @@ function LeftNavigation() {
                 </li>
 
                 {/* Banner Section */}
-                <li>
+                <li
+                  className={
+                    activeMenu == "main-banner" ||
+                    activeMenu == "homepage-banner"
+                      ? "active"
+                      : ""
+                  }
+                >
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -356,7 +372,15 @@ function LeftNavigation() {
                 </li>
 
                 {/* Category */}
-                <li>
+                <li
+                  className={
+                    activeMenu == "parent-category" ||
+                    activeMenu == "sub-category" ||
+                    activeMenu == "child-category"
+                      ? "active"
+                      : ""
+                  }
+                >
                   <Link
                     className="has-arrow waves-dark"
                     to="/"
@@ -413,7 +437,7 @@ function LeftNavigation() {
                 </li>
 
                 {/* Product Section */}
-                <li>
+                <li className={activeMenu == "product-list" ? "active" : ""}>
                   <Link
                     className="has-arrow waves-dark"
                     to="/"

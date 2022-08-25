@@ -106,6 +106,7 @@ function HomepageBannerList(props) {
 
   // Get Data From Database
   useEffect(() => {
+    setIsAllRecordLoaded(false);
     fetch(
       `${Config.SERVER_URL}/homepageBanners?skip=${pagination.skip}&limit=${pagination.limit}`,
       {
@@ -299,12 +300,14 @@ function HomepageBannerList(props) {
                           <select
                             name=""
                             id=""
+                            value={pagination.limit}
                             className="form-control"
                             onChange={limitHandler}
                           >
                             <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="30">30</option>
+                            <option value={pagination.totalRecord}>All</option>
                           </select>
                         </div>
                         <nav aria-label="Page navigation example">

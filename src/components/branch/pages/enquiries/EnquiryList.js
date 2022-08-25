@@ -129,19 +129,27 @@ function EnquiryList(props) {
       .then((res) => res.json())
       .then(
         (result) => {
-          setIsAllRecordLoaded(true);
           if (result.status === 200) {
             setAllRecords(result.body || []);
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
           }
+          setIsAllRecordLoaded(true);
         },
         (error) => {
           M.toast({ html: error, classes: "bg-danger" });
           setIsAllRecordLoaded(true);
         }
       );
-  }, [pagination, isDeleted, statusFilter, queryText, startDate, endDate]);
+  }, [
+    pagination.skip,
+    pagination.limit,
+    isDeleted,
+    statusFilter,
+    queryText,
+    startDate,
+    endDate,
+  ]);
 
   // Count Records
   useEffect(() => {
@@ -170,7 +178,6 @@ function EnquiryList(props) {
         },
         (error) => {
           M.toast({ html: error, classes: "bg-danger" });
-          setIsAllRecordLoaded(true);
         }
       );
   }, [isDeleted, statusFilter, queryText, startDate, endDate]);
@@ -394,11 +401,15 @@ function EnquiryList(props) {
                               name=""
                               id=""
                               className="form-control"
+                              value={pagination.limit}
                               onChange={limitHandler}
                             >
                               <option value="10">10</option>
                               <option value="20">20</option>
                               <option value="30">30</option>
+                              <option value={pagination.totalRecord}>
+                                All
+                              </option>
                             </select>
                           </div>
                           <div className="pl-1">
@@ -422,7 +433,7 @@ function EnquiryList(props) {
                               <a
                                 className="page-link"
                                 href="#"
-                                tabindex="-1"
+                                tabIndex="-1"
                                 onClick={previousPageHandler}
                               >
                                 Previous
@@ -430,7 +441,7 @@ function EnquiryList(props) {
                             </li>
                             {[...Array(pagination.totalPage)].map((_, i) => {
                               return (
-                                <li className="page-item">
+                                <li className="page-item" key={i}>
                                   <a
                                     className="page-link"
                                     href="#"

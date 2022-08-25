@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 import { storage } from "../../../../firebase/FirebaseConfig";
@@ -94,7 +94,7 @@ const EditExperienceCenter = () => {
             <h3 className="text-themecolor">Experience Centre</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Admin</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
               <li className="breadcrumb-item active">Update Centre</li>
             </ol>
