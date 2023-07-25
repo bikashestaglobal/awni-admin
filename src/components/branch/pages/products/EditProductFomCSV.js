@@ -1,16 +1,86 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Papa from "papaparse";
 import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
 import { useHistory, Link } from "react-router-dom";
-import tableToCSV from "../../helpers";
+import { CSVLink } from "react-csv";
 
 const EditProductFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
-  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
+  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(false);
+  const [headers, setHeaders] = useState(null);
+  const [data, setData] = useState("");
+
+  useEffect(() => {
+    setIsAllRecordLoaded(false);
+    const headers = [
+      { label: "id", key: "id" },
+      { label: "name", key: "name" },
+      { label: "mrp", key: "mrp" },
+      { label: "selling_price", key: "selling_price" },
+      { label: "status", key: "status" },
+      { label: "size", key: "size" },
+      { label: "code", key: "code" },
+      { label: "weight", key: "weight" },
+      { label: "par_cat_id", key: "par_cat_id" },
+      { label: "cat_id", key: "cat_id" },
+      { label: "child_cat_id", key: "child_cat_id" },
+      { label: "range_id", key: "range_id" },
+      { label: "color_ids", key: "color_ids" },
+      { label: "description", key: "description" },
+      { label: "default_image", key: "default_image" },
+      { label: "images", key: "images" },
+    ];
+    setHeaders(headers);
+    const data = [];
+
+    fetch(`${Config.SERVER_URL}/products/withColorAndImages`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            result.body.map((item, index) => {
+              let d = {
+                id: item.id,
+                name: item.name,
+                mrp: item.mrp,
+                selling_price: item.selling_price,
+                status: item.status,
+                size: item.size,
+                code: item.code,
+                weight: item.weight,
+                par_cat_id: item.par_cat_id,
+                cat_id: item.cat_id,
+                child_cat_id: item.child_cat_id,
+                range_id: item.range_id,
+                color_ids: item.color_ids,
+                description: item.description,
+                default_image: item.default_image,
+                images: item.images,
+              };
+              data.push(d);
+            });
+            setData(data);
+            setIsAllRecordLoaded(true);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+          setIsAllRecordLoaded(true);
+        }
+      );
+  }, []);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -62,90 +132,6 @@ const EditProductFromCSV = () => {
       //   },
       // });
     }
-  };
-
-  const makeElement = (elemName, innerText = null, row = null) => {
-    const elem = document.createElement(elemName);
-    if (innerText) {
-      elem.innerHTML = innerText;
-    }
-    if (row) {
-      row.appendChild(elem);
-    }
-    return elem;
-  };
-
-  const downloadCSVHandler = () => {
-    let table = makeElement("table");
-    table.setAttribute("id", "download-csv");
-    let thead = makeElement("thead");
-    table.appendChild(thead);
-
-    let row = makeElement("tr");
-    makeElement("th", "id", row);
-    makeElement("th", "name", row);
-    makeElement("th", "mrp", row);
-    makeElement("th", "selling_price", row);
-    makeElement("th", "status", row);
-    makeElement("th", "size", row);
-    makeElement("th", "code", row);
-    makeElement("th", "weight", row);
-    makeElement("th", "par_cat_id", row);
-    makeElement("th", "cat_id", row);
-    makeElement("th", "child_cat_id", row);
-    makeElement("th", "range_id", row);
-    makeElement("th", "color_ids", row);
-    makeElement("th", "description", row);
-    makeElement("th", "default_image", row);
-    makeElement("th", "images", row);
-
-    thead.appendChild(row);
-    // Load Data from the Database
-    setIsAllRecordLoaded(false);
-    fetch(`${Config.SERVER_URL}/products/withColorAndImages`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          setIsAllRecordLoaded(true);
-          if (result.status === 200) {
-            result.body.map((item, index) => {
-              let dataRow = document.createElement("tr");
-              makeElement("td", item.id, dataRow);
-              makeElement("td", item.name, dataRow);
-              makeElement("td", item.mrp, dataRow);
-              makeElement("td", item.selling_price, dataRow);
-              makeElement("td", item.status, dataRow);
-              makeElement("td", item.size, dataRow);
-              makeElement("td", item.code, dataRow);
-              makeElement("td", item.weight, dataRow);
-              makeElement("td", item.par_cat_id, dataRow);
-              makeElement("td", item.cat_id, dataRow);
-              makeElement("td", item.child_cat_id, dataRow);
-              makeElement("td", item.range_id, dataRow);
-              makeElement("td", item.color_ids, dataRow);
-              makeElement("td", item.description, dataRow);
-              makeElement("td", item.default_image, dataRow);
-              makeElement("td", item.images, dataRow);
-
-              thead.appendChild(dataRow);
-            });
-            tableToCSV("product.csv", table);
-            // setAllRecords(result.body || []);
-          } else {
-            M.toast({ html: result.message, classes: "bg-danger" });
-          }
-        },
-        (error) => {
-          M.toast({ html: error, classes: "bg-danger" });
-          setIsAllRecordLoaded(true);
-        }
-      );
   };
 
   // Submit Handler
@@ -357,7 +343,9 @@ const EditProductFromCSV = () => {
             </ol>
           </div>
         </div>
-
+        {/* <CSVLink data={data} headers={headers}>
+          Download me
+        </CSVLink> */}
         {/* Add Color Form */}
         <div className="row">
           <div className={"col-md-11 mx-auto"}>
@@ -381,26 +369,25 @@ const EditProductFromCSV = () => {
                 <div className="col-md-12 d-flex justify-content-between">
                   <h3 className={"my-3 text-info"}>Upload CSV File</h3>
                   <div className="">
-                    <button
-                      onClick={downloadCSVHandler}
-                      className="btn btn-info"
-                      type="button"
-                    >
-                      {isAllRecordLoaded ? (
-                        <span>
-                          <i className="fa fa-download"></i> Download CSV Format
-                        </span>
-                      ) : (
-                        <div>
-                          <span
-                            className="spinner-border spinner-border-sm mr-1"
-                            role="status"
-                            aria-hidden="true"
-                          ></span>
-                          Loading..
-                        </div>
-                      )}
-                    </button>
+                    {isAllRecordLoaded ? (
+                      <CSVLink
+                        className="btn btn-info"
+                        data={data}
+                        headers={headers}
+                        filename="products.csv"
+                      >
+                        Download CSV Format
+                      </CSVLink>
+                    ) : (
+                      <button className="btn btn-info" type="button">
+                        <span
+                          className="spinner-border spinner-border-sm mr-1"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Loading..
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -432,7 +419,6 @@ const EditProductFromCSV = () => {
             </form>
           </div>
         </div>
-
         <div className="row">
           <div className="col-md-11 mx-auto">
             <div className={"row shadow-sm bg-white py-3"}>

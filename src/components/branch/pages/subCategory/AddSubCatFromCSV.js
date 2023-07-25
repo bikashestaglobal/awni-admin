@@ -80,6 +80,7 @@ const AddSubCatFromCSV = () => {
     let row = makeElement("tr");
     makeElement("th", "name", row);
     makeElement("th", "catalogue", row);
+    makeElement("th", "breadcrumb_banner", row);
     makeElement("th", "par_cat_id", row);
 
     let dummyRow = makeElement("tr");
@@ -89,6 +90,12 @@ const AddSubCatFromCSV = () => {
       "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/images%2Fpexels-karolina-grabowska-4207785.jpg?alt=media&token=f0b46e0c-1705-4af8-b4bd-8bad2a1f1063",
       dummyRow
     );
+    makeElement(
+      "td",
+      "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/images%2Fpexels-karolina-grabowska-4207785.jpg?alt=media&token=f0b46e0c-1705-4af8-b4bd-8bad2a1f1063",
+      dummyRow
+    );
+
     makeElement("td", "1", dummyRow);
 
     thead.appendChild(row);

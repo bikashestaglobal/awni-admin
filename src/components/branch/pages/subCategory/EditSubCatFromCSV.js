@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Papa from "papaparse";
 import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
 import { useHistory, Link } from "react-router-dom";
-import tableToCSV from "../../helpers";
+import { CSVLink } from "react-csv";
 
 const EditSubCatFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
   const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
+  const [tableHeaders, setTableHeaders] = useState([
+    { label: "id", key: "id" },
+    { label: "par_cat_id", key: "par_cat_id" },
+    { label: "name", key: "name" },
+    { label: "catalogue", key: "catalogue" },
+    { label: "breadcrumb_banner", key: "breadcrumb_banner" },
+  ]);
+  const [tableData, setTableData] = useState([]);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -99,32 +107,8 @@ const EditSubCatFromCSV = () => {
       );
   };
 
-  const makeElement = (elemName, innerText = null, row = null) => {
-    const elem = document.createElement(elemName);
-    if (innerText) {
-      elem.innerHTML = innerText;
-    }
-    if (row) {
-      row.appendChild(elem);
-    }
-    return elem;
-  };
-
-  const downloadCSVHandler = () => {
-    let table = makeElement("table");
-    table.setAttribute("id", "download-csv");
-    let thead = makeElement("thead");
-    table.appendChild(thead);
-
-    let row = makeElement("tr");
-    makeElement("th", "id", row);
-    makeElement("th", "par_cat_id", row);
-    makeElement("th", "name", row);
-    makeElement("th", "catalogue", row);
-
-    thead.appendChild(row);
-
-    // Load Data from the Database
+  // Load data
+  useEffect(() => {
     setIsAllRecordLoaded(false);
     fetch(`${Config.SERVER_URL}/categories?limit=${50000}`, {
       method: "GET",
@@ -138,19 +122,22 @@ const EditSubCatFromCSV = () => {
         (result) => {
           setIsAllRecordLoaded(true);
           if (result.status === 200) {
+            const dataArray = [];
             result.body.map((item, index) => {
-              let dataRow = document.createElement("tr");
-              makeElement("td", item.id.toString(), dataRow);
-              makeElement("td", item.par_cat_id.toString(), dataRow);
-              makeElement("td", item.name, dataRow);
-              makeElement("td", item.catalogue, dataRow);
-
-              thead.appendChild(dataRow);
+              let data = {
+                id: item.id,
+                par_cat_id: item.par_cat_id.toString(),
+                name: item.name,
+                catalogue: item.catalogue,
+                breadcrumb_banner: item.breadcrumb_banner,
+              };
+              dataArray.push(data);
             });
-            tableToCSV("sub-category.csv", table);
-            // setAllRecords(result.body || []);
+            setTableData(dataArray);
+            setIsAllRecordLoaded(true);
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
+            setIsAllRecordLoaded(true);
           }
         },
         (error) => {
@@ -158,7 +145,7 @@ const EditSubCatFromCSV = () => {
           setIsAllRecordLoaded(true);
         }
       );
-  };
+  }, []);
 
   return (
     <div className="page-wrapper">
@@ -201,26 +188,25 @@ const EditSubCatFromCSV = () => {
                 <div className="col-md-12 d-flex justify-content-between">
                   <h3 className={"my-3 text-info"}>Upload CSV File</h3>
                   <div className="">
-                    <button
-                      onClick={downloadCSVHandler}
-                      className="btn btn-info"
-                      type="button"
-                    >
-                      {isAllRecordLoaded ? (
-                        <span>
-                          <i className="fa fa-download"></i> Download CSV Format
-                        </span>
-                      ) : (
-                        <div>
-                          <span
-                            className="spinner-border spinner-border-sm mr-1"
-                            role="status"
-                            aria-hidden="true"
-                          ></span>
-                          Loading..
-                        </div>
-                      )}
-                    </button>
+                    {isAllRecordLoaded ? (
+                      <CSVLink
+                        className="btn btn-info"
+                        data={tableData}
+                        headers={tableHeaders}
+                        filename="sub-category.csv"
+                      >
+                        Download CSV Format
+                      </CSVLink>
+                    ) : (
+                      <button className="btn btn-info" type="button">
+                        <span
+                          className="spinner-border spinner-border-sm mr-1"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Loading..
+                      </button>
+                    )}
                   </div>
                 </div>
 

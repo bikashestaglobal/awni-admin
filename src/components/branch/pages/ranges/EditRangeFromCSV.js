@@ -4,13 +4,18 @@ import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
 import { useHistory } from "react-router-dom";
-import tableToCSV from "../../helpers";
+import { CSVLink } from "react-csv";
 
 const EditRangeFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
-  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
+  const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(false);
+  const [tableHeaders, setTableHeaders] = useState([
+    { label: "id", key: "id" },
+    { label: "name", key: "name" },
+  ]);
+  const [tableData, setTableData] = useState([]);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -92,28 +97,7 @@ const EditRangeFromCSV = () => {
       );
   };
 
-  const makeElement = (elemName, innerText = null) => {
-    const elem = document.createElement(elemName);
-    if (innerText) {
-      elem.innerHTML = innerText;
-    }
-    return elem;
-  };
-
-  const downloadCSVHandler = () => {
-    let table = document.createElement("table");
-    table.setAttribute("id", "download-csv");
-    let thead = document.createElement("thead");
-    table.appendChild(thead);
-
-    let row = document.createElement("tr");
-    let thForId = makeElement("th", "id");
-    let thForName = makeElement("th", "name");
-    row.appendChild(thForId);
-    row.appendChild(thForName);
-    thead.appendChild(row);
-
-    // Load Data from the Database
+  useEffect(() => {
     setIsAllRecordLoaded(false);
     fetch(`${Config.SERVER_URL}/ranges?limit=${50000}`, {
       method: "GET",
@@ -125,20 +109,21 @@ const EditRangeFromCSV = () => {
       .then((res) => res.json())
       .then(
         (result) => {
-          setIsAllRecordLoaded(true);
           if (result.status === 200) {
+            const dataArray = [];
             result.body.map((item, index) => {
-              let dataRow = document.createElement("tr");
-              let thForId = makeElement("th", item.id.toString());
-              let thForName = makeElement("th", item.name);
-              dataRow.appendChild(thForId);
-              dataRow.appendChild(thForName);
-              thead.appendChild(dataRow);
+              let data = {
+                id: item.id,
+                name: item.name,
+              };
+              dataArray.push(data);
             });
-            tableToCSV("ranges.csv", table);
+            setTableData(dataArray);
+            setIsAllRecordLoaded(true);
             // setAllRecords(result.body || []);
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
+            setIsAllRecordLoaded(true);
           }
         },
         (error) => {
@@ -146,7 +131,7 @@ const EditRangeFromCSV = () => {
           setIsAllRecordLoaded(true);
         }
       );
-  };
+  }, []);
 
   return (
     <div className="page-wrapper">
@@ -189,26 +174,25 @@ const EditRangeFromCSV = () => {
                 <div className="col-md-12 d-flex justify-content-between">
                   <h3 className={"my-3 text-info"}>Upload CSV File</h3>
                   <div className="">
-                    <button
-                      onClick={downloadCSVHandler}
-                      className="btn btn-info"
-                      type="button"
-                    >
-                      {isAllRecordLoaded ? (
-                        <span>
-                          <i className="fa fa-download"></i> Download CSV Format
-                        </span>
-                      ) : (
-                        <div>
-                          <span
-                            className="spinner-border spinner-border-sm mr-1"
-                            role="status"
-                            aria-hidden="true"
-                          ></span>
-                          Loading..
-                        </div>
-                      )}
-                    </button>
+                    {isAllRecordLoaded ? (
+                      <CSVLink
+                        className="btn btn-info"
+                        data={tableData}
+                        headers={tableHeaders}
+                        filename="ranges.csv"
+                      >
+                        Download CSV Format
+                      </CSVLink>
+                    ) : (
+                      <button className="btn btn-info" type="button">
+                        <span
+                          className="spinner-border spinner-border-sm mr-1"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Loading..
+                      </button>
+                    )}
                   </div>
                 </div>
 

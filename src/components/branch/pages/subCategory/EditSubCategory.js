@@ -4,11 +4,13 @@ import M from "materialize-css";
 import Config from "../../../config/Config";
 import { storage } from "../../../../firebase/FirebaseConfig";
 import Select from "react-select";
+import { getImageDimensions, checkImageFile } from "../../helpers";
+
 const EditSubCategory = () => {
   const history = useHistory();
   const { id } = useParams();
   const [isUpdateLoaded, setIsUpdateLoaded] = useState(true);
-  const [imageUploading, setImageUploading] = useState(false);
+  const [bannerUploading, setBannerUploading] = useState(false);
   const [catalogueUploading, setCatalogueUploading] = useState(false);
   const [allDataLoaded, setAllDataLoaded] = useState(false);
   const [parentCategories, setParentCategories] = useState([]);
@@ -18,21 +20,40 @@ const EditSubCategory = () => {
     image: "",
     par_cat_id: "",
     catalogue: "",
+    breadcrumb_banner: "",
   });
-  const [progress, setProgress] = useState("");
+  const [progress, setBannerProgress] = useState("");
   const [catalogueProgress, setCatalogueProgress] = useState("");
 
-  // For File
-  const fileChangeHandler = (e, type) => {
-    if (e.target.files[0]) {
-      handleUpload(e.target.files[0], type);
+  // For Image
+  const fileChangeHandler = async (e, type) => {
+    let file = e.target.files[0];
+
+    if (file && checkImageFile(file)) {
+      if (type == "breadcrumb_banner") {
+        const { width, height } = await getImageDimensions(file);
+        if (width != 1920 || height != 451) {
+          M.toast({
+            html: "Banner size must be (1920X451 px)",
+            classes: "bg-danger",
+          });
+          return;
+        }
+      }
+      handleUpload(file, type);
+    } else {
+      M.toast({
+        html: "File must be image",
+        classes: "bg-danger",
+      });
+      return;
     }
   };
 
   // Upload File
   const handleUpload = (image, type) => {
-    if (type == "image") {
-      setImageUploading(true);
+    if (type == "breadcrumb_banner") {
+      setBannerUploading(true);
     } else {
       setCatalogueUploading(true);
     }
@@ -43,8 +64,8 @@ const EditSubCategory = () => {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-        if (type == "image") {
-          setProgress(progress);
+        if (type == "breadcrumb_banner") {
+          setBannerProgress(progress);
         } else {
           setCatalogueProgress(progress);
         }
@@ -62,8 +83,8 @@ const EditSubCategory = () => {
               ...formData,
               [type]: url,
             });
-            if (type == "image") {
-              setImageUploading(false);
+            if (type == "breadcrumb_banner") {
+              setBannerUploading(false);
             } else {
               setCatalogueUploading(false);
             }
@@ -94,10 +115,11 @@ const EditSubCategory = () => {
             (result) => {
               if (result.status === 200) {
                 setFormData({ ...formData, [type]: "null" });
-                if (type == "image") {
-                  setProgress("");
-                  const imageIputBox = document.getElementById("imageIputBox");
-                  imageIputBox.value = null;
+                if (type == "breadcrumb_banner") {
+                  setBannerProgress("");
+                  const bannerIputBox =
+                    document.getElementById("bannerIputBox");
+                  bannerIputBox.value = null;
                 } else {
                   setCatalogueProgress("");
                   const catalogueIputBox =
@@ -131,6 +153,7 @@ const EditSubCategory = () => {
       image: formData.image,
       par_cat_id: formData.par_cat_id,
       catalogue: formData.catalogue,
+      breadcrumb_banner: formData.breadcrumb_banner,
     };
     fetch(`${Config.SERVER_URL}/categories/${id}`, {
       method: "PUT",
@@ -174,6 +197,7 @@ const EditSubCategory = () => {
       .then(
         (result) => {
           if (result.status === 200) {
+            console.log(result.body);
             setFormData(result.body);
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
@@ -289,43 +313,45 @@ const EditSubCategory = () => {
                     />
                   </div>
 
-                  {/* Category Image */}
-                  {/* <div className="col-md-12">
+                  {/* BREADCRUMB BANNER () */}
+                  <div className="col-md-12">
                     <div className="row">
-                      
-                      {formData.image == "null" ? (
+                      {!formData.breadcrumb_banner ||
+                      formData.breadcrumb_banner == "null" ? (
                         <div className={"form-group mb-12 col-md-6"}>
                           <label className={"text-dark h6 mb-2"}>
-                            CATEGORY IMAGE
+                            CATEGORY BREADCRUMB BANNER(1920X451 px)
                           </label>
                           <input
                             type="file"
                             name=""
-                            id={"imageIputBox"}
+                            id={"bannerIputBox"}
                             className="form-control"
-                            onChange={(e) => fileChangeHandler(e, "image")}
+                            onChange={(e) =>
+                              fileChangeHandler(e, "breadcrumb_banner")
+                            }
                           />
                         </div>
                       ) : (
                         <div className={"form-group mb-12 col-md-6"}>
                           <label className={"text-dark h6 mb-2"}>
-                            CATEGORY IMAGE !
+                            BREADCRUMB BANNER !
                           </label>
                         </div>
                       )}
                       <div className={"form-group mb-12 col-md-6"}>
-                        {imageUploading ? (
+                        {bannerUploading ? (
                           <div className="bg-white p-3 text-center ">
                             <span
                               class="spinner-border spinner-border-sm mr-1"
                               role="status"
                               aria-hidden="true"
                             ></span>
-                            Image Uploading ({progress}%)
+                            Banner Uploading ({progress}%)
                           </div>
                         ) : (
                           <div className="img-frame">
-                            {formData.image != "null" ? (
+                            {formData?.breadcrumb_banner != "null" ? (
                               <div className="">
                                 <img
                                   style={{
@@ -333,13 +359,16 @@ const EditSubCategory = () => {
                                     width: "80px",
                                     borderRadius: "40px",
                                   }}
-                                  src={formData.image}
+                                  src={formData.breadcrumb_banner}
                                 />
                                 <button
                                   type="button"
                                   className="btn bg-danger"
                                   onClick={(evt) =>
-                                    fileDeleteHandler(formData.image, "image")
+                                    fileDeleteHandler(
+                                      formData.breadcrumb_banner,
+                                      "breadcrumb_banner"
+                                    )
                                   }
                                 >
                                   X
@@ -352,7 +381,7 @@ const EditSubCategory = () => {
                         )}
                       </div>
                     </div>
-                  </div> */}
+                  </div>
 
                   {/* Category Catalogue */}
                   <div className="col-md-12">

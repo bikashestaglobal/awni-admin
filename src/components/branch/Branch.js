@@ -87,14 +87,20 @@ import HomepageBannerList from "./pages/pages/HomepageBannerList";
 import EditHomepageBanner from "./pages/pages/EditHomepageBanner";
 import AddHomepageBanner from "./pages/pages/AddHomepageBanner";
 import EnquiryList from "./pages/enquiries/EnquiryList";
+import ViewEnquiry from "./pages/enquiries/ViewEnquiry";
 import AddEnquiry from "./pages/enquiries/AddEnquiry";
 import EditEnquiry from "./pages/enquiries/EditEnquiry";
+
+// Franchisee
+import FranchiseeList from "./pages/franchise/FranchiseeList";
+import EditFranchisee from "./pages/franchise/EditFranchisee";
+import ViewFranchisee from "./pages/franchise/ViewFranchisee";
+
 import ChildCategoryList from "./pages/childCategory/ChildCategoryList";
 import AddChildCategory from "./pages/childCategory/AddChildCategory";
 import EditChildCategory from "./pages/childCategory/EditChildCategory";
 import EditCustomer from "./pages/customers/EditCustomer";
 import ViewCustomer from "./pages/customers/ViewCustomer";
-import ViewEnquiry from "./pages/enquiries/ViewEnquiry";
 import AddColorFromCSV from "./pages/colors/AddColorFromCSV";
 import AddRangeFromCSV from "./pages/ranges/AddRangeFromCSV";
 import AddParCatFromCSV from "./pages/parentCategory/AddParCatFromCSV";
@@ -342,6 +348,19 @@ const Routing = () => {
         exact
         path="/awni-admin/enquiry/view/:id"
         component={ViewEnquiry}
+      />
+
+      {/* Franchisee */}
+      <Route exact path="/awni-admin/franchisee" component={FranchiseeList} />
+      <Route
+        exact
+        path="/awni-admin/franchisee/edit/:id"
+        component={EditFranchisee}
+      />
+      <Route
+        exact
+        path="/awni-admin/franchisee/view/:id"
+        component={ViewFranchisee}
       />
 
       {/* Deals */}

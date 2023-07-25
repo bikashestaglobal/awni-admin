@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Papa from "papaparse";
 import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
 import { useHistory, Link } from "react-router-dom";
 import tableToCSV from "../../helpers";
+import { CSVLink } from "react-csv";
 
 const EditChildCatFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
   const [isAllRecordLoaded, setIsAllRecordLoaded] = useState(true);
+  const [tableHeaders, setTableHeaders] = useState([
+    { label: "id", key: "id" },
+    { label: "par_cat_id", key: "par_cat_id" },
+    { label: "cat_id", key: "cat_id" },
+    { label: "name", key: "name" },
+  ]);
+  const [tableData, setTableData] = useState([]);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -159,6 +167,45 @@ const EditChildCatFromCSV = () => {
       );
   };
 
+  // Load data
+  useEffect(() => {
+    setIsAllRecordLoaded(false);
+    fetch(`${Config.SERVER_URL}/childCategories?limit=${50000}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsAllRecordLoaded(true);
+          if (result.status === 200) {
+            const dataArray = [];
+            result.body.map((item, index) => {
+              let data = {
+                id: item.id,
+                par_cat_id: item.par_cat_id,
+                cat_id: item.cat_id,
+                name: item.name,
+              };
+              dataArray.push(data);
+            });
+            setTableData(dataArray);
+            setIsAllRecordLoaded(true);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+            setIsAllRecordLoaded(true);
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+          setIsAllRecordLoaded(true);
+        }
+      );
+  }, []);
+
   return (
     <div className="page-wrapper">
       <div className="container-fluid">
@@ -200,26 +247,25 @@ const EditChildCatFromCSV = () => {
                 <div className="col-md-12 d-flex justify-content-between">
                   <h3 className={"my-3 text-info"}>Upload CSV File</h3>
                   <div className="">
-                    <button
-                      onClick={downloadCSVHandler}
-                      className="btn btn-info"
-                      type="button"
-                    >
-                      {isAllRecordLoaded ? (
-                        <span>
-                          <i className="fa fa-download"></i> Download CSV Format
-                        </span>
-                      ) : (
-                        <div>
-                          <span
-                            className="spinner-border spinner-border-sm mr-1"
-                            role="status"
-                            aria-hidden="true"
-                          ></span>
-                          Loading..
-                        </div>
-                      )}
-                    </button>
+                    {isAllRecordLoaded ? (
+                      <CSVLink
+                        className="btn btn-info"
+                        data={tableData}
+                        headers={tableHeaders}
+                        filename="child-category.csv"
+                      >
+                        Download CSV Format
+                      </CSVLink>
+                    ) : (
+                      <button className="btn btn-info" type="button">
+                        <span
+                          className="spinner-border spinner-border-sm mr-1"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Loading..
+                      </button>
+                    )}
                   </div>
                 </div>
 

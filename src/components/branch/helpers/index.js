@@ -5,6 +5,8 @@ export default function tableToCSV(fileName = "csv-format.csv", table) {
   // Get each row data
   var rows = table.getElementsByTagName("tr");
 
+  console.log(rows);
+
   for (var i = 0; i < rows.length; i++) {
     // Get each column data
     var cols = rows[i].querySelectorAll("td,th");
@@ -56,4 +58,23 @@ export function downloadCSVFile(csv_data, fileName) {
 
   // const table = document.querySelector("#download-csv");
   // document.body.removeChild(table);
+}
+
+export async function getImageDimensions(file) {
+  let img = new Image();
+  img.src = URL.createObjectURL(file);
+  await img.decode();
+  let width = img.width;
+  let height = img.height;
+  return {
+    width,
+    height,
+  };
+}
+
+export function checkImageFile(file) {
+  const fileType = file["type"];
+  const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+  if (!validImageTypes.includes(fileType)) return false;
+  return true;
 }

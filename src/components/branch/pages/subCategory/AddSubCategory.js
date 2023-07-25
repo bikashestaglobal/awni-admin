@@ -4,21 +4,23 @@ import M from "materialize-css";
 import Config from "../../../config/Config";
 import { storage } from "../../../../firebase/FirebaseConfig";
 import Select from "react-select";
+import { getImageDimensions, checkImageFile } from "../../helpers";
 
 const AddSubCategory = () => {
   const history = useHistory();
   const [isAddLoaded, setIsAddLoaded] = useState(true);
-  const [imageUploading, setImageUploading] = useState(false);
+  const [imageUploading, setBannerUploading] = useState(false);
   const [catalogueUploading, setCatalogueUploading] = useState(false);
   const [parentCategories, setParentCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
     image: "null",
+    breadcrumb_banner: "null",
     catalogue: "null",
     par_cat_id: "",
   });
-  const [progress, setProgress] = useState("");
+  const [progress, setBannerProgress] = useState("");
   const [catalogueProgress, setCatalogueProgress] = useState("");
 
   const titleChangeHandler = (evt) => {
@@ -70,16 +72,34 @@ const AddSubCategory = () => {
   };
 
   // For Image
-  const fileChangeHandler = (e, type) => {
-    if (e.target.files[0]) {
-      handleUpload(e.target.files[0], type);
+  const fileChangeHandler = async (e, type) => {
+    let file = e.target.files[0];
+
+    if (file && checkImageFile(file)) {
+      if (type == "breadcrumb_banner") {
+        const { width, height } = await getImageDimensions(file);
+        if (width != 1920 || height != 451) {
+          M.toast({
+            html: "Banner size must be (1920X451 px)",
+            classes: "bg-danger",
+          });
+          return;
+        }
+      }
+      handleUpload(file, type);
+    } else {
+      M.toast({
+        html: "File must be image",
+        classes: "bg-danger",
+      });
+      return;
     }
   };
 
   // Upload Image
   const handleUpload = (image, type) => {
-    if (type == "image") {
-      setImageUploading(true);
+    if (type == "breadcrumb_banner") {
+      setBannerUploading(true);
     } else {
       setCatalogueUploading(true);
     }
@@ -90,8 +110,8 @@ const AddSubCategory = () => {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-        if (type == "image") {
-          setProgress(progress);
+        if (type == "breadcrumb_banner") {
+          setBannerProgress(progress);
         } else {
           setCatalogueProgress(progress);
         }
@@ -109,8 +129,8 @@ const AddSubCategory = () => {
               ...formData,
               [type]: url,
             });
-            if (type == "image") {
-              setImageUploading(false);
+            if (type == "breadcrumb_banner") {
+              setBannerUploading(false);
             } else {
               setCatalogueUploading(false);
             }
@@ -128,10 +148,10 @@ const AddSubCategory = () => {
       .then(() => {
         // File deleted successfully
         setFormData({ ...formData, [type]: "null" });
-        if (type == "image") {
-          setProgress("");
-          const imageIputBox = document.getElementById("imageIputBox");
-          imageIputBox.value = null;
+        if (type == "breadcrumb_banner") {
+          setBannerProgress("");
+          const bannerIputBox = document.getElementById("bannerIputBox");
+          bannerIputBox.value = null;
         } else {
           setCatalogueProgress("");
           const catalogueIputBox = document.getElementById("catalogueIputBox");
@@ -244,21 +264,21 @@ const AddSubCategory = () => {
                   />
                 </div>
 
-                {/* Images */}
-                {/* <div className={"form-group mb-12 col-md-6"}>
+                {/* BREADCRUMB BANNER */}
+                <div className={"form-group mb-12 col-md-6"}>
                   <label className={"text-dark h6 mb-2"}>
-                    CATEGORY IMAGE !
+                    CATEGORY BREADCRUMB BANNER(1920X451 px) !
                   </label>
                   <input
                     type="file"
                     name=""
-                    id={"imageIputBox"}
+                    id={"bannerIputBox"}
                     className="form-control"
-                    onChange={(e) => fileChangeHandler(e, "image")}
+                    onChange={(e) => fileChangeHandler(e, "breadcrumb_banner")}
                   />
-                </div> */}
+                </div>
 
-                {/* <div className={"form-group mb-12 col-md-6"}>
+                <div className={"form-group mb-12 col-md-6"}>
                   {imageUploading ? (
                     <div className="bg-white p-3 text-center ">
                       <span
@@ -266,11 +286,11 @@ const AddSubCategory = () => {
                         role="status"
                         aria-hidden="true"
                       ></span>
-                      Image Uploading ({progress}%)
+                      Banner Uploading ({progress}%)
                     </div>
                   ) : (
                     <div className="img-frame">
-                      {formData.image != "null" ? (
+                      {formData.breadcrumb_banner != "null" ? (
                         <div className="">
                           <img
                             style={{
@@ -278,13 +298,16 @@ const AddSubCategory = () => {
                               width: "150px",
                               borderRadius: "75px",
                             }}
-                            src={formData.image}
+                            src={formData.breadcrumb_banner}
                           />
                           <button
                             type="button"
                             className="btn bg-danger"
                             onClick={(evt) =>
-                              fileDeleteHandler(formData.image, "image")
+                              fileDeleteHandler(
+                                formData.breadcrumb_banner,
+                                "breadcrumb_banner"
+                              )
                             }
                           >
                             X
@@ -295,7 +318,7 @@ const AddSubCategory = () => {
                       )}
                     </div>
                   )}
-                </div> */}
+                </div>
 
                 {/* Catalogue */}
                 <div className={"form-group mb-12 col-md-6"}>

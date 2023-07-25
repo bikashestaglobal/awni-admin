@@ -321,6 +321,35 @@ function LeftNavigation() {
                   </ul>
                 </li>
 
+                {/* Franchisee Section */}
+                <li className={activeMenu == "franchisee-list" ? "active" : ""}>
+                  <Link
+                    className="has-arrow waves-dark"
+                    to="/"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi mdi-account-plus"></i>
+                    <span className="hide-menu">FRANCHISEE</span>
+                  </Link>
+
+                  <ul aria-expanded="false" className="collapse">
+                    <li>
+                      <Link
+                        to="/awni-admin/franchisee"
+                        className={
+                          activeMenu == "franchisee-list" ? "activeLink" : ""
+                        }
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("franchisee-list");
+                        }}
+                      >
+                        Franchisee Inquiry
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
                 {/* Banner Section */}
                 <li
                   className={

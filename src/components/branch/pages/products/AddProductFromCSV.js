@@ -4,12 +4,49 @@ import { useState } from "react";
 import Config from "../../../config/Config";
 import M from "materialize-css";
 import { Link, useHistory } from "react-router-dom";
-import tableToCSV from "../../helpers";
+import { CSVLink } from "react-csv";
 
 const AddProductFromCSV = () => {
   const history = useHistory();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploaded, setUploaded] = useState([]);
+  const [tableHeaders, setTableHeaders] = useState([
+    { label: "name", key: "name" },
+    { label: "mrp", key: "mrp" },
+    { label: "selling_price", key: "selling_price" },
+    { label: "size", key: "size" },
+    { label: "code", key: "code" },
+    { label: "weight", key: "weight" },
+    { label: "par_cat_id", key: "par_cat_id" },
+    { label: "cat_id", key: "cat_id" },
+    { label: "child_cat_id", key: "child_cat_id" },
+    { label: "range_id", key: "range_id" },
+    { label: "color_ids", key: "color_ids" },
+    { label: "description", key: "description" },
+    { label: "default_image", key: "default_image" },
+    { label: "images", key: "images" },
+  ]);
+
+  const [tableData, setTableData] = useState([
+    {
+      name: "Dummy Product",
+      mrp: "1000",
+      selling_price: "900",
+      size: "100X200X100 MM",
+      code: "PROD129CC",
+      weight: "5K",
+      par_cat_id: "1",
+      cat_id: "1",
+      child_cat_id: "1",
+      range_id: "1",
+      color_ids: "1_2_3",
+      description: "<p>Awesome</p>",
+      default_image:
+        "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft3.jpg?alt=media&token=04bca1bb-7647-4de2-8b22-64dff00669dd",
+      images:
+        "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft4.jpg?alt=media&token=38e4bdf9-40de-43be-b35a-16cf819ac8f2_https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft1.jpg?alt=media&token=2150140e-3568-4e47-a6c6-446454894fdf",
+    },
+  ]);
 
   const fileChangeHandler = (event) => {
     const files = event.target.files;
@@ -61,68 +98,6 @@ const AddProductFromCSV = () => {
       //   },
       // });
     }
-  };
-
-  const makeElement = (elemName, innerText = null, row = null) => {
-    const elem = document.createElement(elemName);
-    if (innerText) {
-      elem.innerHTML = innerText;
-    }
-    if (row) {
-      row.appendChild(elem);
-    }
-    return elem;
-  };
-
-  const downloadCSVHandler = () => {
-    let table = makeElement("table");
-    table.setAttribute("id", "download-csv");
-    let thead = makeElement("thead");
-    table.appendChild(thead);
-
-    let row = makeElement("tr");
-    makeElement("th", "name", row);
-    makeElement("th", "mrp", row);
-    makeElement("th", "selling_price", row);
-    makeElement("th", "size", row);
-    makeElement("th", "code", row);
-    makeElement("th", "weight", row);
-    makeElement("th", "par_cat_id", row);
-    makeElement("th", "cat_id", row);
-    makeElement("th", "child_cat_id", row);
-    makeElement("th", "range_id", row);
-    makeElement("th", "color_ids", row);
-    makeElement("th", "description", row);
-    makeElement("th", "default_image", row);
-    makeElement("th", "images", row);
-
-    let dummyRow = makeElement("tr");
-    makeElement("th", "Dummy Product", dummyRow);
-    makeElement("th", "5000", dummyRow);
-    makeElement("th", "4500", dummyRow);
-    makeElement("th", "100X200X100 MM", dummyRow);
-    makeElement("th", "PROD129CC", dummyRow);
-    makeElement("th", "5K", dummyRow);
-    makeElement("th", "1", dummyRow);
-    makeElement("th", "1", dummyRow);
-    makeElement("th", "1", dummyRow);
-    makeElement("th", "1", dummyRow);
-    makeElement("th", "1_2_3", dummyRow);
-    makeElement("th", "<p>Awesome</p>", dummyRow);
-    makeElement(
-      "th",
-      "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft3.jpg?alt=media&token=04bca1bb-7647-4de2-8b22-64dff00669dd",
-      dummyRow
-    );
-    makeElement(
-      "th",
-      "https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft4.jpg?alt=media&token=38e4bdf9-40de-43be-b35a-16cf819ac8f2_https://firebasestorage.googleapis.com/v0/b/perfect-app-5eef5.appspot.com/o/products%2Ft1.jpg?alt=media&token=2150140e-3568-4e47-a6c6-446454894fdf",
-      dummyRow
-    );
-
-    thead.appendChild(row);
-    thead.appendChild(dummyRow);
-    tableToCSV("product.csv", table);
   };
 
   // Submit Handler
@@ -280,13 +255,14 @@ const AddProductFromCSV = () => {
                 <div className="col-md-12 d-flex justify-content-between">
                   <h3 className={"my-3 text-info"}>Upload CSV File</h3>
                   <div className="">
-                    <button
-                      onClick={downloadCSVHandler}
+                    <CSVLink
                       className="btn btn-info"
-                      type="button"
+                      data={tableData}
+                      headers={tableHeaders}
+                      filename="products.csv"
                     >
-                      <i className="fa fa-download"></i> Download CSV Format
-                    </button>
+                      Download CSV Format
+                    </CSVLink>
                   </div>
                 </div>
 

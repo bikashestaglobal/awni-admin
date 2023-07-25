@@ -5,6 +5,6 @@ const hostname = window.location.hostname;
 // };
 
 export default {
-  SERVER_URL: "http://35.89.12.176/api/v1",
+  SERVER_URL: "http://localhost:80/api/v1",
   CLIENT_URL: "http://54.201.100.185",
 };
