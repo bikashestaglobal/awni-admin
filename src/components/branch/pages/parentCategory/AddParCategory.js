@@ -3,6 +3,7 @@ import { useHistory, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 import { storage } from "../../../../firebase/FirebaseConfig";
+import Resizer from "react-image-file-resizer";
 const AddParentCategory = () => {
   const history = useHistory();
   const [isAddLoaded, setIsAddLoaded] = useState(true);
@@ -62,17 +63,125 @@ const AddParentCategory = () => {
       );
   };
 
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        1126,
+        1313,
+        "JPEG",
+        100,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "base64",
+        1126,
+        1313
+      );
+    });
+
+  const resizeImageToDataURL = (file, maxWidth, maxHeight, callback) => {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const resizedDataURL = canvas.toDataURL(file.type);
+        callback(resizedDataURL);
+      };
+
+      img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  // const dataURIToBlob = (dataURI) => {
+  //   const splitDataURI = dataURI.split(",");
+  //   const byteString =
+  //     splitDataURI[0].indexOf("base64") >= 0
+  //       ? atob(splitDataURI[1])
+  //       : decodeURI(splitDataURI[1]);
+  //   const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
+  //   const ia = new Uint8Array(byteString.length);
+  //   for (let i = 0; i < byteString.length; i++)
+  //     ia[i] = byteString.charCodeAt(i);
+  //   return new Blob([ia], { type: mimeString });
+  // };
+
   // For Image
-  const imgChangeHandler = (e, type) => {
-    if (e.target.files[0]) {
-      handleUpload(e.target.files[0], type);
+  const imgChangeHandler = async (e, type) => {
+    const file = e.target.files[0];
+    if (file) {
+      // write compress code
+      // const image = await resizeFile(file);
+      // Resizer.imageFileResizer(
+      //   file,
+      //   1313,
+      //   1126,
+      //   "JPEG", // output format
+      //   90,
+      //   0, // rotation (0 = no rotation)
+      //   (resizedImage) => {
+      //     // The resized image is available as a File object
+      //     // You can use this file to display the image or upload it to the server
+      //     console.log("Resized image:", resizedImage);
+      //     handleUpload(resizedImage, type);
+      //     // If you want to display the resized image, you can create a URL for it
+      //     const resizedImageUrl = URL.createObjectURL(resizedImage);
+      //     console.log("Resized image URL:", resizedImageUrl);
+      //     // Now you can use the resizedImageUrl to display the image in an <img> tag
+      //     // For example:
+      //     // setImageUrl(resizedImageUrl); // Save the URL in state to display the image
+      //   },
+      //   "file" // output type ('file' or 'base64'),
+      //   // 1313, // originalWidth (maintain aspect ratio)
+      //   // 1126 // originalHeight (maintain aspect ratio)
+      // );
+      handleUpload(file, type);
     }
   };
 
   // Upload Image
-  const handleUpload = (image) => {
+  const handleUpload = async (image) => {
     setImageUploading(true);
+
+    // const storageRef = storage.ref("images/yy.jpg");
+
+    // const uploadTask = storageRef.putString(image, "data_url");
+    // const uploadTask = storageRef.putString(image, "base64");
+
     const uploadTask = storage.ref(`images/${image.name}`).put(image);
+
+    // uploadTask.putString(image, "data_url").then((snapshot) => {
+    //   console.log("Uploaded a data_url string!");
+    // });
+
+    // storage.ref.putString(image, "data_url").then((snapshot) => {
+    //   console.log("Uploaded a data_url string!");
+    // });
+
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -101,6 +210,12 @@ const AddParentCategory = () => {
   };
 
   const imgDeleteHandler = (image) => {
+    setFormData({ ...formData, image: "null" });
+    setProgress("");
+    const imageIputBox = document.getElementById("imageIputBox");
+    imageIputBox.value = null;
+    return;
+
     // Create a reference to the file to delete
     const fileRef = storage.refFromURL(image);
     // Delete the file

@@ -78,3 +78,63 @@ export function checkImageFile(file) {
   if (!validImageTypes.includes(fileType)) return false;
   return true;
 }
+
+export const compressImage = (file, maxWidth, maxHeight, quality) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = (event) => {
+      const image = new Image();
+      image.src = event.target.result;
+
+      image.onload = () => {
+        let width = image.width;
+        let height = image.height;
+
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          file.type,
+          quality
+        );
+      };
+
+      image.onerror = (error) => {
+        reject(error);
+      };
+    };
+
+    reader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
+
+export const convertByteToMb = (byte) => {
+  let result = byte / 1024;
+  if (result >= 1024) {
+    result = `${(result / 1024).toFixed(2)} MB`;
+  } else {
+    result = `${result.toFixed(2)} KB`;
+  }
+  return result;
+};

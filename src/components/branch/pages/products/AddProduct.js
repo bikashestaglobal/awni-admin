@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -6,11 +6,15 @@ import M, { toast } from "materialize-css";
 import Config from "../../../config/Config";
 import { storage } from "../../../../firebase/FirebaseConfig";
 import Select from "react-select";
+import Resizer from "react-image-file-resizer";
+import { compressImage, convertByteToMb } from "../../helpers";
+import { type } from "jquery";
 
 function AddProduct() {
   const history = useHistory();
   const [isAddLoaded, setIsAddLoaded] = useState(true);
-
+  const defaultImageRef = useRef(null);
+  const imagesRef = useRef(null);
   const [product, setProduct] = useState({
     name: "",
     slug: "",
@@ -39,6 +43,32 @@ function AddProduct() {
   const [colors, setColors] = useState([]);
   const [ranges, setRanges] = useState([]);
 
+  const [defaultRawImage, setDefaultRawImage] = useState("");
+  const [rawImages, setRawImages] = useState([]);
+
+  // For Image Compressing
+  const [compressValue, setCompressValue] = useState(50);
+  const [isCompress, setIsCompress] = useState(true);
+  const [
+    compressedDefaultImageForPreview,
+    setCompressedDefaultImageForPreview,
+  ] = useState({
+    url: "",
+    originalSize: "",
+    compressedSize: "",
+  });
+  const [compressedImages, setCompressedImages] = useState("");
+
+  const [compressedDefaultImageForUpload, setCompressedDefaultImageForUpload] =
+    useState(null);
+
+  const [compressedImagesForPreview, setCompressedImagesForPreview] = useState(
+    []
+  );
+  const [compressedImagesForUpload, setCompressedImagesForUpload] = useState(
+    []
+  );
+
   const titleChangeHandler = (evt) => {
     const value = evt.target.value;
     setProduct({
@@ -51,7 +81,7 @@ function AddProduct() {
     });
   };
 
-  // Iamage Change
+  // Image Change
   const imageChangeHandler = (event, type) => {
     if (type == "default_image") {
       handleUpload(event.target.files[0], "", type);
@@ -62,6 +92,133 @@ function AddProduct() {
         });
       }
     }
+  };
+
+  const handleImageChange = async (files, type) => {
+    if (type == "default_image") {
+      // const file = event.target.files[0];
+      let file = files;
+      if (!file) return;
+
+      setDefaultRawImage(file);
+
+      if (!isCompress) {
+        handleUpload(file, "", type);
+        return;
+      }
+
+      const maxWidth = 1126; // Set your desired maximum width
+      const maxHeight = 1313; // Set your desired maximum height
+      const quality = compressValue / 100; // Set the image quality (0 to 1)
+
+      try {
+        const compressedBlob = await compressImage(
+          file,
+          maxWidth,
+          maxHeight,
+          quality
+        );
+        const compressedFile = new File([compressedBlob], file.name, {
+          type: compressedBlob.type,
+        });
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          setCompressedDefaultImageForPreview({
+            url: e.target.result,
+            compressedSize: convertByteToMb(compressedFile.size),
+            originalSize: convertByteToMb(file.size),
+          });
+          setCompressedDefaultImageForUpload(compressedFile);
+        };
+        reader.readAsDataURL(compressedFile);
+
+        // handleUpload(compressedFile, "", "default_image");
+        // setCompressedImage(compressedFile);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+      }
+    } else {
+      if (files && files.length) {
+        setRawImages(files);
+        if (!isCompress) {
+          [...files].map((value, index) => {
+            handleUpload(value, index);
+          });
+          return;
+        }
+
+        // const files = event.target.files;
+        const maxWidth = 1126; // Set your desired maximum width
+        const maxHeight = 1313; // Set your desired maximum height
+        const quality = compressValue / 100; // Set the image quality (0 to 1)
+
+        try {
+          for (let file of files) {
+            const compressedBlob = await compressImage(
+              file,
+              maxWidth,
+              maxHeight,
+              quality
+            );
+            const compressedFile = new File([compressedBlob], file.name, {
+              type: compressedBlob.type,
+            });
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              setCompressedImagesForPreview((oldImage) => {
+                return [
+                  ...oldImage,
+                  {
+                    url: e.target.result,
+                    compressedSize: convertByteToMb(compressedFile.size),
+                    originalSize: convertByteToMb(file.size),
+                  },
+                ];
+              });
+              setCompressedImagesForUpload((oldImage) => {
+                return [...oldImage, compressedFile];
+              });
+            };
+            reader.readAsDataURL(compressedFile);
+          }
+
+          // handleUpload(compressedFile, "", "default_image");
+          // setCompressedImage(compressedFile);
+        } catch (error) {
+          console.error("Error compressing image:", error);
+        }
+      }
+    }
+  };
+
+  const compressAgain = () => {
+    handleImageChange(defaultRawImage, "default_image");
+    handleImageChange(rawImages);
+    setCompressedImagesForPreview([]);
+    setCompressedImagesForUpload([]);
+  };
+
+  const handleUploadImageBtnClick = () => {
+    if (compressedDefaultImageForUpload)
+      handleUpload(compressedDefaultImageForUpload, "", "default_image");
+
+    if (compressedImagesForUpload.length)
+      compressedImagesForUpload.map((value, index) => {
+        handleUpload(value, index);
+      });
+
+    setCompressedImagesForPreview([]);
+    setCompressedImagesForUpload([]);
+    setCompressedDefaultImageForUpload(null);
+    setCompressedDefaultImageForPreview({
+      url: "",
+      originalSize: "",
+      compressedSize: "",
+    });
+    setDefaultRawImage("");
+    setRawImages([]);
   };
 
   // Upload Image
@@ -93,7 +250,6 @@ function AddProduct() {
           .child(image.name)
           .getDownloadURL()
           .then((url) => {
-            console.log(url);
             if (type == "default_image") {
               setDefaultImages(url);
             } else {
@@ -250,6 +406,48 @@ function AddProduct() {
         // Uh-oh, an error occurred!
         M.toast({ html: error, classes: "bg-danger" });
       });
+  };
+
+  const handleDeletePreviewImage = (type, index) => {
+    if (type === "default_image") {
+      setCompressedDefaultImageForPreview({
+        url: "",
+        originalSize: "",
+        compressedSize: "",
+      });
+      setCompressedDefaultImageForUpload(null);
+      defaultImageRef.current.value = null;
+      setDefaultRawImage("");
+    } else {
+      // Delete image from preview
+      const allCompressedImagesForPreview = [...compressedImagesForPreview];
+      const filteredImagesForPreview = allCompressedImagesForPreview.filter(
+        (_, __) => {
+          return index != __;
+        }
+      );
+      setCompressedImagesForPreview(filteredImagesForPreview);
+
+      // Delete image from upload
+      if (compressedImagesForUpload) {
+        const allCompressedImagesForUpload = [...compressedImagesForUpload];
+        const filteredImagesForUpload = allCompressedImagesForUpload.filter(
+          (_, __) => {
+            return index != __;
+          }
+        );
+        setCompressedImagesForUpload(filteredImagesForUpload);
+      }
+
+      // Delete image from row
+      const allRawImages = [...rawImages];
+      const filteredRawImages = allRawImages.filter((_, __) => {
+        return index != __;
+      });
+      setRawImages(filteredRawImages);
+
+      imagesRef.current.value = null;
+    }
   };
 
   const addColorHandler = (evt) => {
@@ -716,7 +914,79 @@ function AddProduct() {
               {/* Product Images */}
               <div className={"row shadow-sm bg-white mt-3 py-3"}>
                 <div className="col-md-12">
-                  <h3 className={"my-3 text-info"}>Product Images</h3>
+                  <div className="row">
+                    <div className="col-md-12">
+                      <h3 className={"my-3 text-info"}>
+                        Image Compressor Setting
+                      </h3>
+                    </div>
+                    <div className="col-md-12">
+                      <div className="row">
+                        <div className="col-md-3">
+                          <div className="form-check p-0 m-0">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id="compress-image"
+                              value={isCompress}
+                              checked={isCompress}
+                              onChange={(evt) => {
+                                setIsCompress(evt.target.checked);
+                              }}
+                            />
+                            <label
+                              className="form-check-label"
+                              for="compress-image"
+                            >
+                              Compress Image
+                            </label>
+                          </div>
+                        </div>
+                        {isCompress && (
+                          <div className="col-md-3">
+                            <span className="text-danger text-sm">High</span>
+                            <input
+                              className="ml-2"
+                              value={compressValue}
+                              onChange={(evt) => {
+                                setCompressValue(evt.target.value);
+                              }}
+                              type="range"
+                            />
+                            {/* <span className="text-danger text-sm pl-2">
+                              {compressValue}%
+                            </span> */}
+
+                            <span className="text-danger text-sm pl-2">
+                              Low
+                            </span>
+                          </div>
+                        )}
+
+                        {isCompress && (
+                          <div className="col-md-2">
+                            {defaultRawImage || rawImages.length ? (
+                              <button
+                                type="button"
+                                className="btn btn-info"
+                                onClick={compressAgain}
+                              >
+                                Compress Again
+                              </button>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-md-12">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <h3 className={"my-3 text-info"}>Product Images</h3>
+                    </div>
+                  </div>
                 </div>
 
                 <div className={"form-group col-md-6"}>
@@ -725,42 +995,85 @@ function AddProduct() {
                   </label>
                   <input
                     type="file"
-                    multiple
-                    onChange={(evt) => imageChangeHandler(evt, "default_image")}
+                    ref={defaultImageRef}
+                    onChange={(evt) =>
+                      handleImageChange(evt.target.files[0], "default_image")
+                    }
                     className="form-control"
                   />
                 </div>
 
                 <div className="col-md-6">
-                  {defaultImages ? (
-                    <div className={"form-group"}>
-                      <img
-                        style={{
-                          maxHeight: "200px",
-                          maxWidth: "200px",
-                          border: "1px solid #5a5a5a",
-                        }}
-                        src={defaultImages}
-                      />
-                      <button
-                        style={{
-                          position: "absolute",
-                          top: "40%",
-                          right: "45%",
-                        }}
-                        type="button"
-                        className="btn bg-light text-danger"
-                        title={"Delete Image"}
-                        onClick={(evt) =>
-                          fileDeleteHandler(defaultImages, "", "default_image")
-                        }
-                      >
-                        X
-                      </button>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                  <div className="row">
+                    {compressedDefaultImageForPreview.url && (
+                      <div className="col-md-6">
+                        <p className="m-0 p-0">Compressed Preview</p>
+                        <img
+                          style={{
+                            maxWidth: "200px",
+                            border: "1px solid #5a5a5a",
+                          }}
+                          src={compressedDefaultImageForPreview.url}
+                        />
+                        <p className="m-0 p-0">
+                          Original Size :{" "}
+                          {compressedDefaultImageForPreview.originalSize}
+                        </p>
+                        <p className="m-0 p-0">
+                          Compressed Size :{" "}
+                          {compressedDefaultImageForPreview.compressedSize}
+                        </p>
+                        <button
+                          style={{
+                            position: "absolute",
+                            top: "40%",
+                            right: "45%",
+                          }}
+                          type="button"
+                          className="btn bg-light text-danger"
+                          title={"Delete Image"}
+                          onClick={(evt) => {
+                            handleDeletePreviewImage("default_image");
+                          }}
+                        >
+                          X
+                        </button>
+                      </div>
+                    )}
+
+                    {defaultImages ? (
+                      <div className={"form-group col-md-6 pt-4"}>
+                        <img
+                          style={{
+                            maxWidth: "200px",
+                            border: "1px solid #5a5a5a",
+                          }}
+                          src={defaultImages}
+                        />
+                        <button
+                          style={{
+                            position: "absolute",
+                            top: "40%",
+                            right: "45%",
+                          }}
+                          type="button"
+                          className="btn bg-light text-danger"
+                          title={"Delete Image"}
+                          onClick={(evt) =>
+                            fileDeleteHandler(
+                              defaultImages,
+                              "",
+                              "default_image"
+                            )
+                          }
+                        >
+                          X
+                        </button>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
 
                   {defaultImgProgress ? (
                     <div className="progress">
@@ -779,6 +1092,24 @@ function AddProduct() {
                   )}
                 </div>
 
+                {/* <div className="col-md-12">
+                  {compressedDefaultImageForPreview.url && !defaultImages ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleUpload(
+                          compressedDefaultImageForUpload,
+                          "",
+                          "default_image"
+                        );
+                      }}
+                      className="btn btn-info"
+                    >
+                      Upload
+                    </button>
+                  ) : null}
+                </div> */}
+
                 {/* Products Multiple Images */}
                 <div className={"form-group col-md-12"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -787,9 +1118,54 @@ function AddProduct() {
                   <input
                     type="file"
                     multiple
-                    onChange={imageChangeHandler}
+                    // onChange={imageChangeHandler}
+                    ref={imagesRef}
+                    onChange={(event) => {
+                      handleImageChange(event.target.files);
+                    }}
                     className="form-control"
                   />
+                </div>
+
+                {/* Multiple Compressed Image Preview  */}
+                <div className="col-md-12">
+                  <div className="row">
+                    {compressedImagesForPreview.map((image, index) => {
+                      return (
+                        <div className={"form-group col-md-3"} key={index}>
+                          <p className="h6 p-0 m-0">Compressed Preview</p>
+                          <img
+                            style={{
+                              width: "100%",
+                              border: "1px solid #5a5a5a",
+                            }}
+                            src={image.url}
+                          />
+                          <p className="m-0 p-0">
+                            Original Size : {image.originalSize}
+                          </p>
+                          <p className="m-0 p-0">
+                            Compressed Size : {image.compressedSize}
+                          </p>
+                          <button
+                            style={{
+                              position: "absolute",
+                              top: "40%",
+                              right: "45%",
+                            }}
+                            type="button"
+                            className="btn bg-light text-danger"
+                            title={"Delete Image"}
+                            onClick={(evt) => {
+                              handleDeletePreviewImage("images", index);
+                            }}
+                          >
+                            X
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/*Multiple Image Preview */}
@@ -850,6 +1226,18 @@ function AddProduct() {
 
                 {/* Submit Button */}
                 <div className={"form-group col-md-12"}>
+                  {(compressedImagesForPreview.length &&
+                    !previewImages.length) ||
+                  (compressedDefaultImageForPreview.url && !defaultImages) ? (
+                    <button
+                      type="button"
+                      onClick={handleUploadImageBtnClick}
+                      className="btn btn-info mr-2"
+                    >
+                      Upload Image
+                    </button>
+                  ) : null}
+
                   <button
                     className="btn btn-info rounded px-3 py-2"
                     type={"submit"}
