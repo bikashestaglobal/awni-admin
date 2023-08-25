@@ -116,6 +116,18 @@ import EditProductFromCSV from "./pages/products/EditProductFomCSV";
 import ForgotPassword from "./pages/ForgotPassword";
 import EnterOtp from "./pages/EnterOtp";
 import CreateNewPassword from "./pages/CreateNewPassword";
+import NatureList from "./pages/natures/NatureList";
+import AddNature from "./pages/natures/AddNature";
+import EditNature from "./pages/natures/EditNature";
+import SurfaceList from "./pages/surfaces/SurfaceList";
+import AddSurface from "./pages/surfaces/AddSurface";
+import EditSurface from "./pages/surfaces/EditSurface";
+import SeriesList from "./pages/series/SeriesList";
+import AddSeries from "./pages/series/AddSeries";
+import EditSeries from "./pages/series/EditSeries";
+import PatternList from "./pages/patterns/PatternList";
+import AddPattern from "./pages/patterns/AddPattern";
+import EditPattern from "./pages/patterns/EditPattern";
 
 // Create Context
 export const BranchContext = createContext();
@@ -421,6 +433,55 @@ const Routing = () => {
         component={EditColorFromCSV}
       />
       <Route exact path="/awni-admin/color/edit/:id" component={EditColor} />
+
+      {/* Natures */}
+      <Route exact path="/awni-admin/natures" component={NatureList} />
+      <Route exact path="/awni-admin/nature/add" component={AddNature} />
+      <Route exact path="/awni-admin/nature/edit/:id" component={EditNature} />
+      {/* <Route
+        exact
+        path="/awni-admin/nature/addFromCSV"
+        component={AddColorFromCSV}
+      /> */}
+      {/* <Route
+        exact
+        path="/awni-admin/color/editFromCSV"
+        component={EditColorFromCSV}
+      /> */}
+
+      {/* Surfaces */}
+      <Route exact path="/awni-admin/surfaces" component={SurfaceList} />
+      <Route exact path="/awni-admin/surface/add" component={AddSurface} />
+      <Route
+        exact
+        path="/awni-admin/surface/edit/:id"
+        component={EditSurface}
+      />
+
+      {/* Series */}
+      <Route exact path="/awni-admin/series" component={SeriesList} />
+      <Route exact path="/awni-admin/series/add" component={AddSeries} />
+      <Route exact path="/awni-admin/series/edit/:id" component={EditSeries} />
+
+      {/* Patterns */}
+      <Route exact path="/awni-admin/patterns" component={PatternList} />
+      <Route exact path="/awni-admin/pattern/add" component={AddPattern} />
+      <Route
+        exact
+        path="/awni-admin/pattern/edit/:id"
+        component={EditPattern}
+      />
+
+      {/* <Route
+        exact
+        path="/awni-admin/nature/addFromCSV"
+        component={AddColorFromCSV}
+      /> */}
+      {/* <Route
+        exact
+        path="/awni-admin/color/editFromCSV"
+        component={EditColorFromCSV}
+      /> */}
 
       {/* Orders */}
       <Route exact path="/awni-admin/newOrders" component={NewOrders} />

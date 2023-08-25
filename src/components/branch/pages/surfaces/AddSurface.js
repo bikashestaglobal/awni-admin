@@ -3,7 +3,7 @@ import { useHistory, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 
-const AddShape = () => {
+const AddSurface = () => {
   const history = useHistory();
   const [isAddLoaded, setIsAddLoaded] = useState(true);
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ const AddShape = () => {
     setIsAddLoaded(false);
     evt.preventDefault();
 
-    fetch(Config.SERVER_URL + "/shapes", {
+    fetch(Config.SERVER_URL + "/surfaces", {
       method: "POST",
       body: JSON.stringify(formData),
       headers: {
@@ -67,12 +67,12 @@ const AddShape = () => {
         {/* <!-- ============================================================== --> */}
         <div className="row page-titles">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor">Shapes</h3>
+            <h3 className="text-themecolor">Surfaces</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link to="/awni-admin">Admin</Link>
               </li>
-              <li className="breadcrumb-item active">Add Shape</li>
+              <li className="breadcrumb-item active">Add Surface</li>
             </ol>
           </div>
         </div>
@@ -98,7 +98,7 @@ const AddShape = () => {
                   </button>
                 </div>
                 <div className="col-md-12">
-                  <h3 className={"my-3 text-info"}>Shape Details</h3>
+                  <h3 className={"my-3 text-info"}>Surface Details</h3>
                 </div>
 
                 {/* Enter Name */}
@@ -154,7 +154,7 @@ const AddShape = () => {
                   >
                     {isAddLoaded ? (
                       <div>
-                        <i className="fas fa-plus"></i> Add Shape
+                        <i className="fas fa-plus"></i> Add Surface
                       </div>
                     ) : (
                       <div>
@@ -177,4 +177,4 @@ const AddShape = () => {
   );
 };
 
-export default AddShape;
+export default AddSurface;

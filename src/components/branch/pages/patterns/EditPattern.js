@@ -1,25 +1,33 @@
-import React, { useState } from "react";
-import { useHistory, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 
-const AddShape = () => {
+const EditPattern = () => {
   const history = useHistory();
-  const [isAddLoaded, setIsAddLoaded] = useState(true);
+  const { id } = useParams();
+  const [isUpdateLoaded, setIsUpdateLoaded] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
     description: "",
+    status: "",
   });
 
   // Submit Handler
   const submitHandler = (evt) => {
-    setIsAddLoaded(false);
+    setIsUpdateLoaded(false);
     evt.preventDefault();
+    const updateData = {
+      name: formData.name,
+      slug: formData.slug,
+      description: formData.description || "",
+      status: formData.status,
+    };
 
-    fetch(Config.SERVER_URL + "/shapes", {
-      method: "POST",
-      body: JSON.stringify(formData),
+    fetch(`${Config.SERVER_URL}/patterns/${formData.id}`, {
+      method: "PUT",
+      body: JSON.stringify(updateData),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
@@ -38,53 +46,63 @@ const AddShape = () => {
             });
             M.toast({ html: result.message, classes: "bg-danger" });
           }
-          setIsAddLoaded(true);
+          setIsUpdateLoaded(true);
         },
         (error) => {
-          setIsAddLoaded(true);
+          setIsUpdateLoaded(true);
           M.toast({ html: error, classes: "bg-danger" });
         }
       );
   };
 
-  const nameChangeHandler = (evt) => {
-    const value = evt.target.value;
-    setFormData({
-      ...formData,
-      slug: value
-        .toLowerCase()
-        .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "")
-        .replace(/\s+/g, "-"),
-      name: value,
-    });
-  };
+  // get Records
+  useEffect(() => {
+    fetch(`${Config.SERVER_URL}/patterns/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            setFormData(result.body);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  }, []);
 
   return (
     <div className="page-wrapper">
       <div className="container-fluid">
-        {/* <!-- ============================================================== --> */}
+        {/* <!-- ====================================== --> */}
         {/* <!-- Bread crumb and right sidebar toggle --> */}
-        {/* <!-- ============================================================== --> */}
+        {/* <!-- ================================ --> */}
         <div className="row page-titles">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor">Shapes</h3>
+            <h3 className="text-themecolor">Patterns</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link to="/awni-admin">Admin</Link>
               </li>
-              <li className="breadcrumb-item active">Add Shape</li>
+              <li className="breadcrumb-item active">Update Pattern</li>
             </ol>
           </div>
         </div>
 
-        {/* Add Form */}
         <div className="row">
           <div className={"col-md-11 mx-auto"}>
             <form
               onSubmit={submitHandler}
               className="form-horizontal form-material"
             >
-              {/* Surface Details */}
               <div className={"row shadow-sm bg-white py-3"}>
                 <div className="col-md-12">
                   <button
@@ -98,10 +116,10 @@ const AddShape = () => {
                   </button>
                 </div>
                 <div className="col-md-12">
-                  <h3 className={"my-3 text-info"}>Shape Details</h3>
+                  <h3 className={"my-3 text-info"}>Pattern Details</h3>
                 </div>
 
-                {/* Enter Name */}
+                {/* ENTER NAME */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
                     ENTER NAME !
@@ -109,12 +127,15 @@ const AddShape = () => {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={nameChangeHandler}
+                    onChange={(evt) =>
+                      setFormData({ ...formData, name: evt.target.value })
+                    }
                     className="form-control"
                     placeholder={"Enter name"}
                   />
                 </div>
-                {/* Enter SLUG */}
+
+                {/* ENTER SLUG */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
                     ENTER SLUG !
@@ -122,39 +143,63 @@ const AddShape = () => {
                   <input
                     type="text"
                     value={formData.slug}
-                    onChange={(event) => {
-                      setFormData({ ...formData, slug: event.target.value });
-                    }}
+                    onChange={(evt) =>
+                      setFormData({ ...formData, slug: evt.target.value })
+                    }
                     className="form-control"
                     placeholder={"Enter slug"}
                   />
                 </div>
-                {/* Enter Description */}
-                <div className={"form-group col-md-12"}>
+
+                {/* SELECT STATUS */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SELECT STATUS !
+                  </label>
+                  <select
+                    name=""
+                    value={formData?.status?.toString()}
+                    onChange={(evt) => {
+                      setFormData({
+                        ...formData,
+                        status: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    id=""
+                  >
+                    <option value="true">ACTIVE</option>
+                    <option value="false">DISABLE</option>
+                  </select>
+                </div>
+
+                {/* ENTER DESCRIPTION */}
+                <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
                     ENTER DESCRIPTION !
                   </label>
                   <input
                     type="text"
                     value={formData.description}
-                    onChange={(event) => {
+                    onChange={(evt) =>
                       setFormData({
                         ...formData,
-                        description: event.target.value,
-                      });
-                    }}
+                        description: evt.target.value,
+                      })
+                    }
                     className="form-control"
                     placeholder={"Enter description"}
                   />
                 </div>
+
                 <div className={"form-group col-md-6"}>
                   <button
                     className="btn btn-info rounded px-3 py-2"
                     type={"submit"}
                   >
-                    {isAddLoaded ? (
+                    {isUpdateLoaded ? (
                       <div>
-                        <i className="fas fa-plus"></i> Add Shape
+                        <i className="fas fa-refresh"></i> Update Shape
                       </div>
                     ) : (
                       <div>
@@ -177,4 +222,4 @@ const AddShape = () => {
   );
 };
 
-export default AddShape;
+export default EditPattern;

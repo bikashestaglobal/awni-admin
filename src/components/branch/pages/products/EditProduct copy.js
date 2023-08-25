@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -11,8 +11,6 @@ import { compressImage, convertByteToMb } from "../../helpers";
 function EditProduct() {
   const history = useHistory();
   const { id } = useParams();
-  const defaultImageRef = useRef(null);
-  const imagesRef = useRef(null);
   const [isAddLoaded, setIsAddLoaded] = useState(true);
 
   const [product, setProduct] = useState({
@@ -31,7 +29,7 @@ function EditProduct() {
 
   const [previewImages, setPreviewImages] = useState([]);
   const [progressInfos, setProgressInfos] = useState([]);
-  const [defaultImage, setDefaultImage] = useState("");
+  const [defaultImages, setDefaultImages] = useState("");
   const [defaultImgProgress, setDefaultImgProgress] = useState("");
   const [description, setDescription] = useState("");
   const [applicationArea, setApplicationArea] = useState("");
@@ -133,7 +131,7 @@ function EditProduct() {
           .getDownloadURL()
           .then((url) => {
             if (type == "default_image") {
-              setDefaultImage(url);
+              setDefaultImages(url);
             } else {
               imageSubmitHandler(id, url);
               // setPreviewImages((old) => [...old, url]);
@@ -310,7 +308,7 @@ function EditProduct() {
       cat_id: selectSCat.value,
       child_cat_id: selectCCat.value,
       color_id: selectColor.value,
-      default_image: defaultImage == "null" ? "" : defaultImage,
+      default_image: defaultImages == "null" ? "" : defaultImages,
     };
 
     fetch(`${Config.SERVER_URL}/products/${id}`, {
@@ -423,7 +421,7 @@ function EditProduct() {
     //   .then(() => {
     // File deleted successfully
     if (type == "default_image") {
-      setDefaultImage("null");
+      setDefaultImages("null");
       setDefaultImgProgress("");
       // fetch(`${Config.SERVER_URL}/products/${id}`, {
       //   method: "PUT",
@@ -465,48 +463,6 @@ function EditProduct() {
     // .catch((error) => {
     //   M.toast({ html: error, classes: "bg-danger" });
     // });
-  };
-
-  const handleDeletePreviewImage = (type, index) => {
-    if (type === "default_image") {
-      setCompressedDefaultImageForPreview({
-        url: "",
-        originalSize: "",
-        compressedSize: "",
-      });
-      setCompressedDefaultImageForUpload(null);
-      defaultImageRef.current.value = null;
-      setDefaultRawImage("");
-    } else {
-      // Delete image from preview
-      const allCompressedImagesForPreview = [...compressedImagesForPreview];
-      const filteredImagesForPreview = allCompressedImagesForPreview.filter(
-        (_, __) => {
-          return index != __;
-        }
-      );
-      setCompressedImagesForPreview(filteredImagesForPreview);
-
-      // Delete image from upload
-      if (compressedImagesForUpload) {
-        const allCompressedImagesForUpload = [...compressedImagesForUpload];
-        const filteredImagesForUpload = allCompressedImagesForUpload.filter(
-          (_, __) => {
-            return index != __;
-          }
-        );
-        setCompressedImagesForUpload(filteredImagesForUpload);
-      }
-
-      // Delete image from row
-      const allRawImages = [...rawImages];
-      const filteredRawImages = allRawImages.filter((_, __) => {
-        return index != __;
-      });
-      setRawImages(filteredRawImages);
-
-      imagesRef.current.value = null;
-    }
   };
 
   // Color Submit Handler
@@ -619,8 +575,7 @@ function EditProduct() {
           setProductLoaded(true);
           if (result.status === 200) {
             setProduct(result.body);
-            setDefaultImage(result.body.default_image || "");
-
+            setDefaultImages(result.body.default_image || "");
             setDescription(result.body?.description || "");
             setApplicationArea(result.body?.application_area || "");
             setFeatures(result.body?.features || "");
@@ -1685,7 +1640,7 @@ function EditProduct() {
                 </div>
               </div>
 
-              {/* Product Image */}
+              {/* Product Images */}
               <div className={"row shadow-sm bg-white mt-3 py-3"}>
                 <div className="col-md-12">
                   <div className="row">
@@ -1703,7 +1658,6 @@ function EditProduct() {
                               type="checkbox"
                               id="compress-image"
                               value={isCompress}
-                              ref={defaultImageRef}
                               checked={isCompress}
                               onChange={(evt) => {
                                 setIsCompress(evt.target.checked);
@@ -1764,7 +1718,7 @@ function EditProduct() {
                   <label htmlFor="" className="text-dark h6 active">
                     PRODUCT DEFAULT IMAGE
                   </label>
-                  {String(defaultImage) == "null" ? (
+                  {String(defaultImages) == "null" ? (
                     <input
                       type="file"
                       multiple
@@ -1778,73 +1732,36 @@ function EditProduct() {
                     ""
                   )}
                 </div>
-                <div className="col-md-6">
-                  <div className="row">
-                    {compressedDefaultImageForPreview.url && (
-                      <div className="col-md-6">
-                        <p className="m-0 p-0">Compressed Preview</p>
-                        <img
-                          style={{
-                            maxWidth: "200px",
-                            border: "1px solid #5a5a5a",
-                          }}
-                          src={compressedDefaultImageForPreview.url}
-                        />
-                        <p className="m-0 p-0">
-                          Original Size :{" "}
-                          {compressedDefaultImageForPreview.originalSize}
-                        </p>
-                        <p className="m-0 p-0">
-                          Compressed Size :{" "}
-                          {compressedDefaultImageForPreview.compressedSize}
-                        </p>
-                        <button
-                          style={{
-                            position: "absolute",
-                            top: "40%",
-                            right: "45%",
-                          }}
-                          type="button"
-                          className="btn bg-light text-danger"
-                          title={"Delete Image"}
-                          onClick={(evt) => {
-                            handleDeletePreviewImage("default_image");
-                          }}
-                        >
-                          X
-                        </button>
-                      </div>
-                    )}
-
-                    {defaultImage != "null" ? (
-                      <div className={"form-group col-md-6 pt-4"}>
-                        <img
-                          style={{
-                            maxWidth: "200px",
-                            border: "1px solid #5a5a5a",
-                          }}
-                          src={defaultImage}
-                        />
-                        <button
-                          style={{
-                            position: "absolute",
-                            top: "40%",
-                            right: "45%",
-                          }}
-                          type="button"
-                          className="btn bg-light text-danger"
-                          title={"Delete Image"}
-                          onClick={(evt) =>
-                            fileDeleteHandler(defaultImage, "", "default_image")
-                          }
-                        >
-                          X
-                        </button>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                <div className="col-md-6 text-center">
+                  {String(defaultImages) != "null" ? (
+                    <div className={"form-group"}>
+                      <img
+                        style={{
+                          maxHeight: "200px",
+                          maxWidth: "200px",
+                          border: "1px solid #5a5a5a",
+                        }}
+                        src={defaultImages}
+                      />
+                      <button
+                        style={{
+                          position: "absolute",
+                          top: "40%",
+                          right: "45%",
+                        }}
+                        type="button"
+                        className="btn bg-light text-danger"
+                        title={"Delete Image"}
+                        onClick={(evt) =>
+                          fileDeleteHandler(defaultImages, "", "default_image")
+                        }
+                      >
+                        X
+                      </button>
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   {defaultImgProgress ? (
                     <div className="progress">
@@ -1876,53 +1793,9 @@ function EditProduct() {
                   <input
                     type="file"
                     multiple
-                    ref={imagesRef}
-                    // onChange={imageChangeHandler}
-                    onChange={(event) => {
-                      handleImageChange(event.target.files);
-                    }}
+                    onChange={imageChangeHandler}
                     className="form-control"
                   />
-                </div>
-                {/* Multiple Compressed Image Preview  */}
-                <div className="col-md-12">
-                  <div className="row">
-                    {compressedImagesForPreview.map((image, index) => {
-                      return (
-                        <div className={"form-group col-md-3"} key={index}>
-                          <p className="h6 p-0 m-0">Compressed Preview</p>
-                          <img
-                            style={{
-                              width: "100%",
-                              border: "1px solid #5a5a5a",
-                            }}
-                            src={image.url}
-                          />
-                          <p className="m-0 p-0">
-                            Original Size : {image.originalSize}
-                          </p>
-                          <p className="m-0 p-0">
-                            Compressed Size : {image.compressedSize}
-                          </p>
-                          <button
-                            style={{
-                              position: "absolute",
-                              top: "40%",
-                              right: "45%",
-                            }}
-                            type="button"
-                            className="btn bg-light text-danger"
-                            title={"Delete Image"}
-                            onClick={(evt) => {
-                              handleDeletePreviewImage("images", index);
-                            }}
-                          >
-                            X
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
 
                 {/*Multiple Image Preview */}
@@ -1989,9 +1862,9 @@ function EditProduct() {
                 </div>
 
                 <div className="col-md-12">
-                  {compressedImagesForPreview.length ||
-                  (compressedDefaultImageForPreview.url &&
-                    defaultImage == "null") ? (
+                  {(compressedImagesForPreview.length &&
+                    !previewImages.length) ||
+                  (compressedDefaultImageForPreview.url && !defaultImages) ? (
                     <button
                       type="button"
                       onClick={handleUploadImageBtnClick}

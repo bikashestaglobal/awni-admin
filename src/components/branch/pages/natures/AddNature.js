@@ -3,7 +3,7 @@ import { useHistory, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 
-const AddShape = () => {
+const AddNature = () => {
   const history = useHistory();
   const [isAddLoaded, setIsAddLoaded] = useState(true);
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ const AddShape = () => {
     setIsAddLoaded(false);
     evt.preventDefault();
 
-    fetch(Config.SERVER_URL + "/shapes", {
+    fetch(Config.SERVER_URL + "/natures", {
       method: "POST",
       body: JSON.stringify(formData),
       headers: {
@@ -28,6 +28,7 @@ const AddShape = () => {
       .then((res) => res.json())
       .then(
         (result) => {
+          console.log(result);
           if (result.status === 200) {
             M.toast({ html: result.message, classes: "bg-success" });
             history.goBack();
@@ -67,24 +68,24 @@ const AddShape = () => {
         {/* <!-- ============================================================== --> */}
         <div className="row page-titles">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor">Shapes</h3>
+            <h3 className="text-themecolor">Natures</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link to="/awni-admin">Admin</Link>
               </li>
-              <li className="breadcrumb-item active">Add Shape</li>
+              <li className="breadcrumb-item active">Add Nature</li>
             </ol>
           </div>
         </div>
 
-        {/* Add Form */}
+        {/* Add Nature Form */}
         <div className="row">
           <div className={"col-md-11 mx-auto"}>
             <form
               onSubmit={submitHandler}
               className="form-horizontal form-material"
             >
-              {/* Surface Details */}
+              {/* Nature Details */}
               <div className={"row shadow-sm bg-white py-3"}>
                 <div className="col-md-12">
                   <button
@@ -98,10 +99,10 @@ const AddShape = () => {
                   </button>
                 </div>
                 <div className="col-md-12">
-                  <h3 className={"my-3 text-info"}>Shape Details</h3>
+                  <h3 className={"my-3 text-info"}>Nature Details</h3>
                 </div>
 
-                {/* Enter Name */}
+                {/* Nature Name */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
                     ENTER NAME !
@@ -114,7 +115,7 @@ const AddShape = () => {
                     placeholder={"Enter name"}
                   />
                 </div>
-                {/* Enter SLUG */}
+                {/* Nature SLUG */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
                     ENTER SLUG !
@@ -129,7 +130,7 @@ const AddShape = () => {
                     placeholder={"Enter slug"}
                   />
                 </div>
-                {/* Enter Description */}
+                {/* Nature Description */}
                 <div className={"form-group col-md-12"}>
                   <label htmlFor="" className="text-dark h6 active">
                     ENTER DESCRIPTION !
@@ -154,7 +155,7 @@ const AddShape = () => {
                   >
                     {isAddLoaded ? (
                       <div>
-                        <i className="fas fa-plus"></i> Add Shape
+                        <i className="fas fa-plus"></i> Add Nature
                       </div>
                     ) : (
                       <div>
@@ -177,4 +178,4 @@ const AddShape = () => {
   );
 };
 
-export default AddShape;
+export default AddNature;

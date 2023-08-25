@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Link } from "react-router-dom";
 import M from "materialize-css";
 import Config from "../../../config/Config";
 
@@ -7,9 +7,11 @@ const EditShape = () => {
   const history = useHistory();
   const { id } = useParams();
   const [isUpdateLoaded, setIsUpdateLoaded] = useState(true);
-
-  const [shape, setShape] = useState({
+  const [formData, setFormData] = useState({
     name: "",
+    slug: "",
+    description: "",
+    status: "",
   });
 
   // Submit Handler
@@ -17,9 +19,13 @@ const EditShape = () => {
     setIsUpdateLoaded(false);
     evt.preventDefault();
     const updateData = {
-      name: shape.name,
+      name: formData.name,
+      slug: formData.slug,
+      description: formData.description || "",
+      status: formData.status,
     };
-    fetch(`${Config.SERVER_URL}/shape/${shape.id}`, {
+
+    fetch(`${Config.SERVER_URL}/shapes/${formData.id}`, {
       method: "PUT",
       body: JSON.stringify(updateData),
       headers: {
@@ -30,14 +36,13 @@ const EditShape = () => {
       .then((res) => res.json())
       .then(
         (result) => {
-          console.log(result);
           if (result.status === 200) {
             M.toast({ html: result.message, classes: "bg-success" });
             history.goBack();
           } else {
-            const errorKeys = Object.keys(result.error);
+            const errorKeys = Object.keys(result.errors);
             errorKeys.forEach((key) => {
-              M.toast({ html: result.error[key], classes: "bg-danger" });
+              M.toast({ html: result.errors[key], classes: "bg-danger" });
             });
             M.toast({ html: result.message, classes: "bg-danger" });
           }
@@ -52,7 +57,7 @@ const EditShape = () => {
 
   // get Records
   useEffect(() => {
-    fetch(`${Config.SERVER_URL}/shape/${id}`, {
+    fetch(`${Config.SERVER_URL}/shapes/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +68,7 @@ const EditShape = () => {
       .then(
         (result) => {
           if (result.status === 200) {
-            setShape(result.body);
+            setFormData(result.body);
           } else {
             M.toast({ html: result.message, classes: "bg-danger" });
           }
@@ -77,47 +82,113 @@ const EditShape = () => {
   return (
     <div className="page-wrapper">
       <div className="container-fluid">
-        {/* <!-- ============================================================== --> */}
+        {/* <!-- ====================================== --> */}
         {/* <!-- Bread crumb and right sidebar toggle --> */}
-        {/* <!-- ============================================================== --> */}
+        {/* <!-- ================================ --> */}
         <div className="row page-titles">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor">Shape</h3>
+            <h3 className="text-themecolor">Shapes</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <Link to="/awni-admin">Admin</Link>
               </li>
-              <li className="breadcrumb-item active">Update Shape</li>
+              <li className="breadcrumb-item active">Update Shapes</li>
             </ol>
           </div>
         </div>
 
-        {/* Add Shape Form */}
         <div className="row">
           <div className={"col-md-11 mx-auto"}>
             <form
               onSubmit={submitHandler}
               className="form-horizontal form-material"
             >
-              {/* Coupon Details */}
               <div className={"row shadow-sm bg-white py-3"}>
+                <div className="col-md-12">
+                  <button
+                    className="btn btn-info"
+                    type="button"
+                    onClick={(evt) => {
+                      history.goBack();
+                    }}
+                  >
+                    <i className="fa fa-arrow-left"></i> Go Back
+                  </button>
+                </div>
                 <div className="col-md-12">
                   <h3 className={"my-3 text-info"}>Shape Details</h3>
                 </div>
 
-                {/* Shape Name */}
+                {/* ENTER NAME */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
-                    SHAPE NAME HERE !
+                    ENTER NAME !
                   </label>
                   <input
                     type="text"
-                    value={shape.name}
+                    value={formData.name}
                     onChange={(evt) =>
-                      setShape({ ...shape, name: evt.target.value })
+                      setFormData({ ...formData, name: evt.target.value })
                     }
                     className="form-control"
-                    placeholder={"Heart"}
+                    placeholder={"Enter name"}
+                  />
+                </div>
+
+                {/* ENTER SLUG */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    ENTER SLUG !
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(evt) =>
+                      setFormData({ ...formData, slug: evt.target.value })
+                    }
+                    className="form-control"
+                    placeholder={"Enter slug"}
+                  />
+                </div>
+
+                {/* SELECT STATUS */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SELECT STATUS !
+                  </label>
+                  <select
+                    name=""
+                    value={formData?.status?.toString()}
+                    onChange={(evt) => {
+                      setFormData({
+                        ...formData,
+                        status: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    id=""
+                  >
+                    <option value="true">ACTIVE</option>
+                    <option value="false">DISABLE</option>
+                  </select>
+                </div>
+
+                {/* ENTER DESCRIPTION */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    ENTER DESCRIPTION !
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.description}
+                    onChange={(evt) =>
+                      setFormData({
+                        ...formData,
+                        description: evt.target.value,
+                      })
+                    }
+                    className="form-control"
+                    placeholder={"Enter description"}
                   />
                 </div>
 

@@ -135,6 +135,82 @@ function LeftNavigation() {
                   </ul>
                 </li>
 
+                {/* Setting */}
+                <li className={activeMenu == "setting" ? "active" : ""}>
+                  <Link
+                    className="has-arrow waves-dark"
+                    to="/"
+                    aria-expanded="false"
+                  >
+                    <i className="mdi mdi-arrange-bring-forward"></i>
+                    <span className="hide-menu">SETTING</span>
+                  </Link>
+
+                  <ul aria-expanded="false" className="collapse">
+                    <li>
+                      <Link
+                        to="/awni-admin/natures"
+                        className={activeMenu == "nature" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("nature");
+                        }}
+                      >
+                        Nature
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/awni-admin/surfaces"
+                        className={activeMenu == "surface" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("surface");
+                        }}
+                      >
+                        Surfaces
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/awni-admin/series"
+                        className={activeMenu == "series" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("series");
+                        }}
+                      >
+                        Series
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/awni-admin/shapes"
+                        className={activeMenu == "shapes" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("shapes");
+                        }}
+                      >
+                        Shapes
+                      </Link>
+                    </li>
+
+                    <li>
+                      <Link
+                        to="/awni-admin/patterns"
+                        className={activeMenu == "patterns" ? "activeLink" : ""}
+                        onClick={(evt) => {
+                          removeLeftNavigation();
+                          activeMenuHandler("patterns");
+                        }}
+                      >
+                        Patterns
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
                 {/* Range */}
                 <li className={activeMenu == "range" ? "active" : ""}>
                   <Link

@@ -43,6 +43,12 @@ function AddProduct() {
   const [colors, setColors] = useState([]);
   const [ranges, setRanges] = useState([]);
 
+  const [natures, setNatures] = useState([]);
+  const [surfaces, setSurfaces] = useState([]);
+  const [series, setSeries] = useState([]);
+  const [shapes, setShapes] = useState([]);
+  const [patterns, setPatterns] = useState([]);
+
   const [defaultRawImage, setDefaultRawImage] = useState("");
   const [rawImages, setRawImages] = useState([]);
 
@@ -628,6 +634,155 @@ function AddProduct() {
       );
   }, []);
 
+  // get Natures
+  useEffect(() => {
+    let url = `${Config.SERVER_URL}/natures?limit=5000`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            // if (!result.body.length) setSelectSCat([]);
+            let f = result.body.map((v) => {
+              return { label: v.name, value: v.id };
+            });
+            setNatures(f);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  }, []);
+
+  // get Surfaces
+  useEffect(() => {
+    let url = `${Config.SERVER_URL}/surfaces?limit=5000`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            // if (!result.body.length) setSelectSCat([]);
+            let f = result.body.map((v) => {
+              return { label: v.name, value: v.id };
+            });
+            setSurfaces(f);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  }, []);
+
+  // get Series
+  useEffect(() => {
+    let url = `${Config.SERVER_URL}/series?limit=5000`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            // if (!result.body.length) setSelectSCat([]);
+            let f = result.body.map((v) => {
+              return { label: v.name, value: v.id };
+            });
+            setSeries(f);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  }, []);
+
+  // get Shapes
+  useEffect(() => {
+    let url = `${Config.SERVER_URL}/shapes?limit=5000`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            // if (!result.body.length) setSelectSCat([]);
+            let f = result.body.map((v) => {
+              return { label: v.name, value: v.id };
+            });
+            setShapes(f);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  }, []);
+
+  // get Patterns
+  useEffect(() => {
+    let url = `${Config.SERVER_URL}/patterns?limit=5000`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt_branch_token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            // if (!result.body.length) setSelectSCat([]);
+            let f = result.body.map((v) => {
+              return { label: v.name, value: v.id };
+            });
+            setPatterns(f);
+          } else {
+            M.toast({ html: result.message, classes: "bg-danger" });
+          }
+        },
+        (error) => {
+          M.toast({ html: error, classes: "bg-danger" });
+        }
+      );
+  }, []);
   return (
     <div className="page-wrapper px-0 pt-0">
       <div className={"container-fluid"}>
@@ -647,10 +802,11 @@ function AddProduct() {
 
         {/* Listing Form */}
         <div className="row mt-2">
-          <div className={"col-md-10 mx-auto"}>
+          <div className={"col-md-11 mx-auto"}>
             <form
               onSubmit={submitHandler}
               className="form-horizontal form-material"
+              id="productUpdateForm"
             >
               {/* Product Details */}
               <div className={"row shadow-sm bg-white py-3"}>
@@ -668,7 +824,6 @@ function AddProduct() {
                 <div className="col-md-12">
                   <h3 className={"my-3 text-info"}>Product Details</h3>
                 </div>
-
                 {/* Product Name */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -682,7 +837,6 @@ function AddProduct() {
                     placeholder={"Big Rectangle Cake"}
                   />
                 </div>
-
                 {/* Product Slug */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -698,7 +852,6 @@ function AddProduct() {
                     placeholder={"big-rectangle-cake"}
                   />
                 </div>
-
                 {/* Product MRP */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -714,7 +867,6 @@ function AddProduct() {
                     placeholder={"599"}
                   />
                 </div>
-
                 {/* Product Selling Price */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -733,7 +885,6 @@ function AddProduct() {
                     placeholder={"550"}
                   />
                 </div>
-
                 {/* Product Size */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -752,7 +903,6 @@ function AddProduct() {
                     placeholder={"370x525x280 mm"}
                   />
                 </div>
-
                 {/* Product Code */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -771,7 +921,6 @@ function AddProduct() {
                     placeholder={"LAS-WHT-91153"}
                   />
                 </div>
-
                 {/* Product Weight */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -790,7 +939,133 @@ function AddProduct() {
                     placeholder={"5K"}
                   />
                 </div>
+                {/* ENTER BRAND NAME */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    ENTER BRAND NAME
+                  </label>
+                  <input
+                    type="text"
+                    value={product.brand}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        brand: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"AWNI"}
+                  />
+                </div>
+                {/* ENTER CONCEPT */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    ENTER CONCEPT
+                  </label>
+                  <input
+                    type="text"
+                    value={product.concept}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        concept: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"LM 105"}
+                  />
+                </div>
+                {/* COUNTRY OF ORIGIN */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    COUNTRY OF ORIGIN
+                  </label>
+                  <input
+                    type="text"
+                    value={product.origin_country}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        origin_country: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"INDIA"}
+                  />
+                </div>
+                {/* RELATED PRODUCT */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    RELATED PRODUCT
+                  </label>
+                  <input
+                    type="text"
+                    value={product.related_product}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        related_product: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"ENTER RELATED PRODUCT"}
+                  />
+                </div>
+                {/* PC PER BOX */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    PC PER BOX
+                  </label>
+                  <input
+                    type="number"
+                    value={product.pc_per_box}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        pc_per_box: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"5"}
+                  />
+                </div>
+                {/* COVERED AREA */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    COVERED AREA (Sq. Mtr.)
+                  </label>
+                  <input
+                    type="number"
+                    value={product.covered_area}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        covered_area: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"0.81"}
+                  />
+                </div>
 
+                {/* MOVEMENT */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    MOVEMENT
+                  </label>
+                  <input
+                    type="number"
+                    value={product.movement}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        movement: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"movement"}
+                  />
+                </div>
                 {/* PARENT CATEGORIES */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -805,7 +1080,6 @@ function AddProduct() {
                     />
                   </div>
                 </div>
-
                 {/* SUB CATEGORY */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -820,7 +1094,6 @@ function AddProduct() {
                     />
                   </div>
                 </div>
-
                 {/* CHILD CATEGORY */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -835,7 +1108,6 @@ function AddProduct() {
                     />
                   </div>
                 </div>
-
                 {/* RANGE */}
                 <div className={"form-group col-md-6"}>
                   <label htmlFor="" className="text-dark h6 active">
@@ -846,6 +1118,76 @@ function AddProduct() {
                       options={ranges}
                       onChange={(evt) => {
                         setProduct({ ...product, range_id: evt.value });
+                      }}
+                    />
+                  </div>
+                </div>
+                {/* SELECT NATURE */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SELECT NATURE
+                  </label>
+                  <div className="p-2">
+                    <Select
+                      options={natures}
+                      onChange={(evt) => {
+                        setProduct({ ...product, nature_id: evt.value });
+                      }}
+                    />
+                  </div>
+                </div>
+                {/* SELECT SURFACE */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SELECT SURFACE
+                  </label>
+                  <div className="p-2">
+                    <Select
+                      options={surfaces}
+                      onChange={(evt) => {
+                        setProduct({ ...product, surface_id: evt.value });
+                      }}
+                    />
+                  </div>
+                </div>
+                {/* SELECT SERIES */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SELECT SERIES
+                  </label>
+                  <div className="p-2">
+                    <Select
+                      options={series}
+                      onChange={(evt) => {
+                        setProduct({ ...product, series_id: evt.value });
+                      }}
+                    />
+                  </div>
+                </div>
+                {/* SELECT SHAPE */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SELECT SHAPE
+                  </label>
+                  <div className="p-2">
+                    <Select
+                      options={shapes}
+                      onChange={(evt) => {
+                        setProduct({ ...product, shape_id: evt.value });
+                      }}
+                    />
+                  </div>
+                </div>
+                {/* SELECT PATTERN */}
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SELECT PATTERN
+                  </label>
+                  <div className="p-2">
+                    <Select
+                      options={patterns}
+                      onChange={(evt) => {
+                        setProduct({ ...product, pattern_id: evt.value });
                       }}
                     />
                   </div>
@@ -898,7 +1240,30 @@ function AddProduct() {
                 <div className="col-md-12">
                   <h3 className={"my-3 text-info"}>Product Description</h3>
                 </div>
+
+                {/* SHORT DESCRIPTION */}
                 <div className={"form-group col-md-12"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    SHORT DESCRIPTION
+                  </label>
+                  <input
+                    type="text"
+                    value={product.short_description}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        short_description: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"Short Description"}
+                  />
+                </div>
+
+                <div className={"form-group col-md-12"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    LONG DESCRIPTION
+                  </label>
                   <CKEditor
                     editor={ClassicEditor}
                     style={{ height: "100px" }}
@@ -907,6 +1272,80 @@ function AddProduct() {
                       setProduct({ ...product, description: data });
                     }}
                     data={product.description}
+                  />
+                </div>
+
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    APPLICATION AREA
+                  </label>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    style={{ height: "100px" }}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setProduct({ ...product, application_area: data });
+                    }}
+                    data={product.application_area}
+                  />
+                </div>
+                <div className={"form-group col-md-6"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    FEATURES
+                  </label>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    style={{ height: "100px" }}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setProduct({ ...product, features: data });
+                    }}
+                    data={product.features}
+                  />
+                </div>
+              </div>
+
+              {/* Meta Details */}
+              <div className={"row shadow-sm bg-white mt-3 py-3"}>
+                <div className="col-md-12">
+                  <h3 className={"my-3 text-info"}>Meta Details</h3>
+                </div>
+
+                {/* META TITLE */}
+                <div className={"form-group col-md-12"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    META TITLE
+                  </label>
+                  <input
+                    type="text"
+                    value={product.meta_title}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        meta_title: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"Meta Title"}
+                  />
+                </div>
+
+                {/* META DESCRIPTION */}
+                <div className={"form-group col-md-12"}>
+                  <label htmlFor="" className="text-dark h6 active">
+                    META DESCRIPTION
+                  </label>
+                  <input
+                    type="text"
+                    value={product.meta_description}
+                    onChange={(evt) => {
+                      setProduct({
+                        ...product,
+                        meta_description: evt.target.value,
+                      });
+                    }}
+                    className="form-control"
+                    placeholder={"Meta Description"}
                   />
                 </div>
               </div>

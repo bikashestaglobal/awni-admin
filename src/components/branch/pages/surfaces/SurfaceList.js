@@ -7,7 +7,7 @@ import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import date from "date-and-time";
 
 //  Component Function
-const ShapeList = (props) => {
+const SurfaceList = (props) => {
   const [pagination, setPagination] = useState({
     skip: 0,
     limit: 10,
@@ -108,7 +108,7 @@ const ShapeList = (props) => {
   useEffect(() => {
     setIsAllDataLoaded(false);
     fetch(
-      `${Config.SERVER_URL}/shapes?skip=${pagination.skip}&limit=${
+      `${Config.SERVER_URL}/surfaces?skip=${pagination.skip}&limit=${
         pagination.limit
       }&query=${queryText || "null"}&status=All`,
       {
@@ -139,7 +139,7 @@ const ShapeList = (props) => {
   // Count Records
   useEffect(() => {
     fetch(
-      `${Config.SERVER_URL}/shapes?skip=0&limit=50000&query=${
+      `${Config.SERVER_URL}/surfaces?skip=0&limit=50000&query=${
         queryText || "null"
       }&status=All`,
       {
@@ -173,12 +173,12 @@ const ShapeList = (props) => {
         {/* Bread crumb and right sidebar toggle */}
         <div className="row page-titles mb-0">
           <div className="col-md-5 col-8 align-self-center">
-            <h3 className="text-themecolor m-b-0 m-t-0">Shapes</h3>
+            <h3 className="text-themecolor m-b-0 m-t-0">Surfaces</h3>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link to="/awni-admin">Admin</Link>
               </li>
-              <li className="breadcrumb-item active">Shape List</li>
+              <li className="breadcrumb-item active">Surface List</li>
             </ol>
           </div>
         </div>
@@ -210,16 +210,16 @@ const ShapeList = (props) => {
                   <Link
                     className="btn btn-info float-right rounded"
                     to={{
-                      pathname: "/awni-admin/shape/add",
+                      pathname: "/awni-admin/surface/add",
                     }}
                   >
-                    <span className={"fas fa-plus"}></span> Shape
+                    <span className={"fas fa-plus"}></span> Surface
                   </Link>
 
                   <Link
                     className="btn btn-info float-right rounded mr-2"
                     to={{
-                      pathname: "/awni-admin/shape/addFromCSV",
+                      pathname: "/awni-admin/surface/addFromCSV",
                     }}
                   >
                     <span className={"fas fa-file"}></span> Add By CSV
@@ -228,7 +228,7 @@ const ShapeList = (props) => {
                   <Link
                     className="btn btn-info float-right rounded mr-2"
                     to={{
-                      pathname: "/awni-admin/shape/editFromCSV",
+                      pathname: "/awni-admin/surface/editFromCSV",
                     }}
                   >
                     <span className={"fas fa-edit"}></span> Update By CSV
@@ -276,7 +276,7 @@ const ShapeList = (props) => {
                                   <Link
                                     className="ml-2 btn btn-info footable-edit rounded"
                                     to={{
-                                      pathname: `/awni-admin/shape/edit/${data.id}`,
+                                      pathname: `/awni-admin/surface/edit/${data.id}`,
                                     }}
                                   >
                                     <span
@@ -330,7 +330,7 @@ const ShapeList = (props) => {
                               id="test-table-xls-button"
                               className="btn btn-info"
                               table="table-to-xls"
-                              filename="shape"
+                              filename="surface"
                               sheet="data"
                               buttonText="Export to Excel"
                             />
@@ -466,4 +466,4 @@ const ShapeList = (props) => {
   );
 };
 
-export default ShapeList;
+export default SurfaceList;
